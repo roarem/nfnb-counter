@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "Eigen/Core"
 #include <vector>
 #include <string>
 #include <fstream>
