@@ -21,7 +21,7 @@ class Plot:
     def __call__(self):
         pass
 
-    def NPOM(self):
+    def NBNFPicture(self):
         majorLocator = MultipleLocator(10)
         majorFormatter = FormatStrFormatter('%d')
         minorLocator = MultipleLocator(1)
@@ -97,7 +97,10 @@ class Plot:
         leg.get_frame().set_alpha(0.0)
         plt.show()
 
+    def var_NPOM(self):
+        pass
+
 
 if __name__=="__main__":
     P = Plot(root_file_path="../out/test.root")
-    P.NPOM()
+    P.NBNFPicture()
