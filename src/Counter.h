@@ -36,7 +36,7 @@ class Count
         float stop  = NBins + start;
         void InitializeNBNF();
 
-        const char* NBNFFilename = "test.root";
+        const char* NBNFFilename = "7TeV_4M.root";
         std::vector<const char*> HistNames;
         std::vector<TH1F*> ALL;
         std::vector<TH1F*> DIV;
