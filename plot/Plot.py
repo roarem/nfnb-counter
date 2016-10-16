@@ -1,3 +1,6 @@
+import matplotlib as mpl
+mpl.rc('text',usetex=True)
+mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import numpy as np
@@ -11,12 +14,6 @@ class Plot:
             self.f = ROOT.TFile(root_file_path)
         except:
             print("Could not find root file")
-        
-        #self.npoms1h0 = ROOT.gROOT.FindObject("NPOM_01_00")
-        #self.npoms1h0_nf = ROOT.gROOT.FindObject("NPOM_NF_01_00")
-        #self.npoms1h0.Divide(self.npoms1h0_nf)
-        #self.npoms1h0.Draw()
-        #print(self.npoms1h0.GetNbinsX())
 
     def __call__(self):
         pass
@@ -53,16 +50,16 @@ class Plot:
             smooth = spline(nf[:len(npom)],npom,nfnew)
             #ax.plot(nf[:len(npom)],npom,marker='',linestyle='-',label='NPOMS {}'.format(i))
             smooth = np.trim_zeros(smooth,trim='b')
-            ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=1.5,\
+            ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=3.5,\
                     color='grey',label='NPOMS {}'.format(i))
 
         ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
-                    marker='o',markersize=8,color='black',\
+                    marker='o',markersize=10,color='black',\
                     label='experimental')
         ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
-                    marker='s',markersize=8,color='black',label='simulation')
+                    marker='s',markersize=10,color='black',label='simulation')
 
-        fontsize_labels = 24
+        #fontsize_labels = 24
         ax.set_xlim(-1,25)
         ax.set_ylim(0,15)
         x0,x1 = ax.get_xlim()
@@ -71,8 +68,9 @@ class Plot:
 
         [ax.text(-0.4,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
 
-        ax.set_ylabel('$<n_B(n_F)>$',fontsize=fontsize_labels)
-        ax.set_xlabel('$n_F$',fontsize=fontsize_labels)
+        fontdict = {'fontsize':27,'weight':'bold'}
+        ax.set_ylabel('$<n_B(n_F)>$',fontdict=fontdict)#fontsize=fontsize_labels)
+        ax.set_xlabel('$n_F$',fontdict=fontdict)#fontsize_labels)
         ax.grid(which='minor',alpha=0.5)
         #ax.yaxis.set_major_locator(majorLocator)
         #ax.yaxis.set_major_formatter(majorFormatter)
@@ -80,24 +78,24 @@ class Plot:
         ax.xaxis.set_major_locator(majorLocator)
         ax.xaxis.set_major_formatter(majorFormatter)
         ax.xaxis.set_minor_locator(minorLocator)
-        [tick.label.set_fontsize(14) for tick in ax.xaxis.get_major_ticks()]
-        [tick.label.set_fontsize(14) for tick in ax.yaxis.get_major_ticks()]
-        ax.xaxis.set_tick_params(which='major',size=12)
-        ax.yaxis.set_tick_params(which='major',size=12)
-        ax.xaxis.set_tick_params(which='minor',size=8)
-        ax.yaxis.set_tick_params(which='minor',size=8)
+        [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
+        [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
+        ax.xaxis.set_tick_params(which='major',length=12,width=4)
+        ax.yaxis.set_tick_params(which='major',length=12,width=4)
+        ax.xaxis.set_tick_params(which='minor',length=8 ,width=2)
+        ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
         handles, labels = ax.get_legend_handles_labels()    
 
         leg = plt.legend((handles[7],handles[8],handles[0]),\
                          ('ALICE pp, $\sqrt{s}$=7 TeV',\
-                          'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
+                          r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
                           'NPOMH = 0 and for NPOMS = {0,...,6}'),\
                          loc='best',fontsize=24)
 
         leg.get_frame().set_alpha(0.0)
         plt.show()
 
-    def var_NPOM(self):
+    def var_NPOMS(self):
         pass
 
 
