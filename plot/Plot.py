@@ -10,15 +10,23 @@ from scipy.interpolate import spline
 class Plot:
 
     def __init__(self,root_file_path=None):
+        self.filepath = root_file_path
         try:
-            self.f = ROOT.TFile(root_file_path)
+            self.f = ROOT.TFile(self.filepath)
         except:
             print("Could not find root file")
 
     def __call__(self):
         pass
 
-    def plotSetup(self,xlim=[],ylim=[]):
+    def Re_Open(self):
+        self.f.Close()
+        self.f = ROOT.TFile(self.filepath)
+
+    def Close(self):
+        self.f.Close()
+
+    def plotSetup(self,xlim=None,ylim=None):
 
         majorLocator = MultipleLocator(10)
         majorFormatter = FormatStrFormatter('%d')
@@ -137,38 +145,69 @@ class Plot:
 
         handles, labels = ax.get_legend_handles_labels()    
         #leg = plt.legend(handles,labels)
-        leg = plt.legend((handles[0],handles[1],handles[8],handles[9]),#handles[10]),\
-                         ('ALICE pp, $\sqrt{s}$=7 TeV',\
+        leg = plt.legend((handles[8],handles[9],handles[0],handles[7]),#handles[10]),\
+                         (\
+                          'ALICE pp, $\sqrt{s}$=7 TeV',\
                           r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
-                          #'{:.3f}+{:.3f}x fit of simulated data'.format(fit_a,fit_b),\
                           'NPOMH = 0 and for NPOMS = \{0,...,6\}',\
-                          'All NPOMS and NPOMH = 0'),\
+                          'All NPOMS and NPOMH = 0'\
+                          ),\
+                          #'{:.3f}+{:.3f}x fit of simulated data'.format(fit_a,fit_b),\
                           loc='best',fontsize=24)
 
         leg.get_frame().set_alpha(0.0)
         plt.show()
+        self.Close()
 
     def var_NPOMS(self):
         
+        '''
+        allS        = np.zeros((NSNH,NSNH,239)) 
+        allS_err    = np.zeros((NSNH,NSNH,239))
+        allS_nf     = np.zeros((NSNH,NSNH,239)) 
+        allS_nf_err = np.zeros((NSNH,NSNH,239))
+        for i in range(NSNH):
+            for j in range(NSNH):
+                tempS           = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
+                tempS_nf        = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
+                for k in range(1,tempS.GetNbinsX()):
+                    allS[i,j,k-1]         = tempS.GetBinContent(k)
+                    allS_err[i,j,k-1]     = tempS.GetBinError(k)
+                    allS_nf[i,j,k-1]      = tempS_nf.GetBinContent(k)
+                    allS_nf_err[i,j,k-1]  = tempS_nf.GetBinError(k)
+
+        for N in [7,6,5]:
+            tempS = np.sum(allS[:N+1,:,:],axis=(0,1))
+            tempS_nf = np.sum(allS_nf[:N+1,:,:],axis=(0,1))
+            label = '$N = {}$'.format(N)
+            #ax.errorbar(np.nan_to_num(tempS/tempS_nf),yerr=allS
+            ax.plot(np.nan_to_num(tempS/tempS_nf),linestyle='-',label=label)
+        '''
         fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])
-        #fig, ax = plt.subplots()
        
         NSNH = 25
         Sstart =17 
-        allS    = np.zeros((NSNH,NSNH,239)) 
-        allS_nf = np.zeros((NSNH,NSNH,239)) 
-        for i in range(NSNH):
-            for j in range(NSNH):
-                tempS = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
-                tempS_nf = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
-                allS[i,j] = np.asarray([tempS.GetBinContent(k) for k in range(1,tempS.GetNbinsX())])
-                allS_nf[i,j] = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,tempS_nf.GetNbinsX())])
+        N = [17,9,8,7,6,5]
+        #N = range(5,14,3)
+        for k,n in enumerate(N):
+            for i in range(n+1):
+                for j in range(NSNH):
+                    if i or j:
+                        tempS.Add   (ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j)))
+                        tempS_nf.Add(ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    else:
+                        tempS      = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
+                        tempS_nf   = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
+            tempS.Divide(tempS_nf)
+            Nbins = tempS.GetNbinsX()
+            tempAllS_nf  = np.linspace(0,Nbins,Nbins-1)
+            tempAllS     = np.asarray([tempS.GetBinContent(i) for i in range(1,Nbins)])
+            tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
+            label = '$N = {}$'.format(n)
+            #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=3,label=label)
+            ax.plot(tempAllS_nf,tempAllS,label=label)
+            self.Re_Open()
 
-        for i in range(7):
-            tempS = np.sum(allS[:Sstart-2*i,:,:],axis=(0,1))
-            tempS_nf = np.sum(allS_nf[:Sstart-2*i,:,:],axis=(0,1))
-            label = '$>{}$'.format(Sstart-2*i)
-            ax.plot(np.nan_to_num(tempS/tempS_nf),label=label)
 
         simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
         Nbins       = simNBNF_in.GetNbinsX()
@@ -182,14 +221,20 @@ class Plot:
         expNF,expNBNF,expXerr,expYerr = np.loadtxt('../out/nbnf_7000_exp',unpack=True)
         ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
                     marker='o',markersize=10,color='black',\
-                    label='experimental',zorder=10)
+                    label='experiment',zorder=10)
         
+        fontdict = {'fontsize':27,'weight':'bold'}
+        ax.set_ylabel(r'$\langle n_B(n_F)\rangle$',fontdict=fontdict)
+        ax.set_xlabel('$n_F$',fontdict=fontdict)
+        ax.set_title('$\\sum\\limits^{N}_{NPOMS=0}\\sum\\limits^{24}_{NPOMH=0} \\langle n_{B}(n_{F})\\rangle$',fontdict=fontdict)
         handles, labels = ax.get_legend_handles_labels()
         leg = plt.legend(handles,labels,loc='best')
         leg.get_frame().set_alpha(0.0)
+
         plt.show()
+        self.Close()
 
 if __name__=="__main__":
     P = Plot(root_file_path="../out/7TeV_4M.root")
-    P.NBNFPicture()
-    #P.var_NPOMS()
+    #P.NBNFPicture()
+    P.var_NPOMS()
