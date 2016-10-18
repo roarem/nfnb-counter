@@ -19,7 +19,7 @@ class Plot:
     def __call__(self):
         pass
 
-    def Re_Open(self):
+    def ReOpen(self):
         self.f.Close()
         self.f = ROOT.TFile(self.filepath)
 
@@ -31,7 +31,6 @@ class Plot:
         majorLocator = MultipleLocator(10)
         majorFormatter = FormatStrFormatter('%d')
         minorLocator = MultipleLocator(1)
-
         fig, ax = plt.subplots()
 
         ax.grid(which='minor',alpha=0.5)
@@ -62,7 +61,7 @@ class Plot:
         fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])#plt.subplots()
         
 ############################# Experimental data ################################
-        expNF,expNBNF,expXerr,expYerr = np.loadtxt('../out/nbnf_7000_exp',unpack=True)
+        expNF,expNBNF,expXerr,expYerr = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/nbnf_7000_exp',unpack=True)
         ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
                     marker='o',markersize=10,color='black',\
                     label='experimental',zorder=10)
@@ -112,6 +111,7 @@ class Plot:
 
 
 ################## All soft pomerons and 0 hard pomerons########################
+        self.ReOpen()
         simS = np.zeros(239)
         S = ROOT.gROOT.FindObject("NPOM_00_00")
         S_nf = ROOT.gROOT.FindObject("NPOM_NF_00_00")
@@ -136,7 +136,7 @@ class Plot:
         #            marker='*',markersize=12,color='black',label='all npoms')
         
 
-################# Plot settings ################################################
+######################### Plot settings ################################################
         [ax.text(-0.4,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
 
         fontdict = {'fontsize':27,'weight':'bold'}
@@ -161,34 +161,15 @@ class Plot:
 
     def var_NPOMS(self):
         
-        '''
-        allS        = np.zeros((NSNH,NSNH,239)) 
-        allS_err    = np.zeros((NSNH,NSNH,239))
-        allS_nf     = np.zeros((NSNH,NSNH,239)) 
-        allS_nf_err = np.zeros((NSNH,NSNH,239))
-        for i in range(NSNH):
-            for j in range(NSNH):
-                tempS           = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
-                tempS_nf        = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
-                for k in range(1,tempS.GetNbinsX()):
-                    allS[i,j,k-1]         = tempS.GetBinContent(k)
-                    allS_err[i,j,k-1]     = tempS.GetBinError(k)
-                    allS_nf[i,j,k-1]      = tempS_nf.GetBinContent(k)
-                    allS_nf_err[i,j,k-1]  = tempS_nf.GetBinError(k)
-
-        for N in [7,6,5]:
-            tempS = np.sum(allS[:N+1,:,:],axis=(0,1))
-            tempS_nf = np.sum(allS_nf[:N+1,:,:],axis=(0,1))
-            label = '$N = {}$'.format(N)
-            #ax.errorbar(np.nan_to_num(tempS/tempS_nf),yerr=allS
-            ax.plot(np.nan_to_num(tempS/tempS_nf),linestyle='-',label=label)
-        '''
-        fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])
+        fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,15])
+        #fig1, ax1 = self.plotSetup(xlim=[-1,25],ylim=[0,15])
        
+# (sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{B}(n_{F})>)/(sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{F}>) #
         NSNH = 25
         Sstart =17 
-        N = [17,9,8,7,6,5]
-        #N = range(5,14,3)
+        N = [8,7,6]
+
+        fit = lambda a,b,x: a+b*x
         for k,n in enumerate(N):
             for i in range(n+1):
                 for j in range(NSNH):
@@ -198,31 +179,64 @@ class Plot:
                     else:
                         tempS      = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
                         tempS_nf   = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
+
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
             tempAllS_nf  = np.linspace(0,Nbins,Nbins-1)
             tempAllS     = np.asarray([tempS.GetBinContent(i) for i in range(1,Nbins)])
             tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
             label = '$N = {}$'.format(n)
-            #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=3,label=label)
-            ax.plot(tempAllS_nf,tempAllS,label=label)
-            self.Re_Open()
+            #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
+            #ax.plot(tempAllS_nf,tempAllS,label=label)
+
+            temp_fit = tempS.Fit('pol1','SQN','',0,30)
+            cof_a = temp_fit.Parameter(0)
+            cof_b = temp_fit.Parameter(1)
+            ax.plot(tempAllS_nf[:30],fit(cof_a,cof_b,tempAllS_nf[:30]),label=label)
 
 
+            self.ReOpen()
+######################### Simulated for all npom ###############################
         simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,Nbins-1)
         simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
         simNBNF_err = np.asarray([simNBNF_in.GetBinError(i) for i in range(1,Nbins)])
-        ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
-                    marker='s',markersize=10,color='black',label='simulation',\
-                    zorder=9)
+        temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
+        cof_a = temp_fit.Parameter(0)
+        cof_b = temp_fit.Parameter(1)
+        label='all npoms'
+        #print('difference b_corr exp and sim = {}'.format(cof_b-0.564))
+        ax.plot(simNF[:30],fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
+                alpha=1,label=label+' fit')
+        #ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+        #            marker='s',markersize=10,color='black',label=label,\
+        #            zorder=9)
 
-        expNF,expNBNF,expXerr,expYerr = np.loadtxt('../out/nbnf_7000_exp',unpack=True)
-        ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
-                    marker='o',markersize=10,color='black',\
-                    label='experiment',zorder=10)
-        
+######################## Experimental data #####################################
+        expNF,expNBNF,expXerr,expYerr = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/nbnf_7000_exp',unpack=True)
+        #ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
+        #            marker='o',markersize=10,color='black',\
+        #            label='experiment',zorder=10)
+######################## Experiamental fit #####################################
+        ax.plot([-0.5,30],[0.64,17.57],linestyle='--',linewidth=2,alpha=1,label='experiment fit')
+        #ax.plot(expNF-0.5,fit(0.64,0.564,expNF-0.5),linestyle='--',label='experiment fit')
+        #expROOTNF = ROOT.TH1F("for_fit_nf","forFitNF",len(expNF),0,30)
+        #expROOTNBNF = ROOT.TH1F("for_fit_nbnf","forFitNBNF",len(expNF),0,30)
+        #i=0
+        #for nf,nbnf,err in zip(expNF,expNBNF,expYerr):
+        #    expROOTNF.SetBinContent(i,nf)
+        #    expROOTNBNF.SetBinContent(i,nbnf)
+        #    expROOTNBNF.SetBinError(i,err)
+        #    print(expROOTNBNF.GetBinContent(i))
+        #    i+=1
+        #temp_fit = expROOTNBNF.Fit('pol1','SWN','',0,30)
+        #cof_a = temp_fit.Parameter(0)
+        #cof_b = temp_fit.Parameter(1)
+        #ax.plot(expNF,fit(cof_a,cof_b,expNF),linestyle='--',label='experiment fit')
+
+
+######################## Plot settings #########################################
         fontdict = {'fontsize':27,'weight':'bold'}
         ax.set_ylabel(r'$\langle n_B(n_F)\rangle$',fontdict=fontdict)
         ax.set_xlabel('$n_F$',fontdict=fontdict)
@@ -235,6 +249,7 @@ class Plot:
         self.Close()
 
 if __name__=="__main__":
-    P = Plot(root_file_path="../out/7TeV_4M.root")
+    path ="/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M.root" 
+    P = Plot(root_file_path=path)
     #P.NBNFPicture()
     P.var_NPOMS()
