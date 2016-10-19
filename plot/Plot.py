@@ -25,6 +25,9 @@ class Plot:
 
     def Close(self):
         self.f.Close()
+
+    def Show(self):
+        plt.show()
     
     def plotSetup(self,xlim=None,ylim=None):
 
@@ -34,7 +37,6 @@ class Plot:
         fig, ax = plt.subplots()
         DPI = fig.get_dpi()
         size = 1000
-        print(DPI)
         fig.set_size_inches(size/DPI,size/DPI)
         ax.grid(which='minor',alpha=0.5)
 
@@ -162,7 +164,7 @@ class Plot:
 
         leg.get_frame().set_alpha(0.0)
         plt.savefig('/home/roar/master/qgsm_analysis_tool/ana/analyzed/nbnf_allnpoms_0npomh.pdf')
-        plt.show()
+        #plt.show()
         self.Close()
 
     def var_NPOMS(self):
@@ -172,9 +174,9 @@ class Plot:
         outFitCSV = [['label','a','b']]
 ######################## Experimental data #####################################
         expNF,expNBNF,expXerr,expYerr = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/nbnf_7000_exp',unpack=True)
-        #ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
-        #            marker='o',markersize=10,color='black',\
-        #            label='experiment',zorder=10)
+        ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
+                    marker='o',markersize=10,color='black',\
+                    label='experiment',zorder=10)
 ######################## Experiamental self.fit #####################################
         rulerMeasuredX = [-0.5,30]
         rulerMeasuredY = [0.64,17.57]
@@ -200,9 +202,9 @@ class Plot:
         outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
         ax.plot(simNF[:30],self.fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
                 alpha=1,label=label+' fit')
-        #ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
-        #            marker='s',markersize=10,color='black',label=label,\
-        #            zorder=9)
+        ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+                    marker='s',markersize=10,color='black',label=label,\
+                    zorder=9)
          
 # (sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{B}(n_{F})>)/(sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{F}>) #
         self.ReOpen()
@@ -247,16 +249,65 @@ class Plot:
         leg.get_frame().set_alpha(0.0)
 ####################### Closing remarks ########################################
         #header = 'label,a,b'
-        print(outFitCSV)
+        #print(outFitCSV)
         fmt = '%s,%s,%s'
         np.savetxt('/home/roar/master/qgsm_analysis_tool/ana/analyzed/fits.csv',outFitCSV,fmt=fmt)
         plt.savefig('/home/roar/master/qgsm_analysis_tool/ana/analyzed/nbnf_Nnpoms_allnpomh.pdf')
-        plt.show()
+        #plt.show()
 
         self.Close()
+
+    def fix_S_var_H(self):
+        self.ReOpen()
+        fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,6])
+        NS = 2
+        NH = [0,1,2,3,4]
+
+        for h in NH:
+            tempS      = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,h))
+            tempS_nf   = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,h))
+            tempS.Divide(tempS_nf)
+            Nbins = tempS.GetNbinsX()
+            tempAllS_nf  = np.linspace(0,Nbins,Nbins-1)
+            tempAllS     = np.asarray([tempS.GetBinContent(i) for i in range(1,Nbins)])
+            tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
+            label = '$H = {}$'.format(h)
+            #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
+            ax.plot(tempAllS_nf,tempAllS,label=label)
+
+        self.ReOpen()
+        #print("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS_nf = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
+        for h in range(25):
+            tempS.Add   (ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,h)))
+            tempS_nf.Add(ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,h)))
+        tempS.Divide(tempS_nf)
+        Nbins = tempS.GetNbinsX()
+        tempAll_nf   = np.linspace(0,Nbins,Nbins-1)
+        tempAllS     = np.asarray([tempS.GetBinContent(i) for i in range(1,Nbins)])
+        tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
+        label = '$H = \sum^{{{}}}_{{0}}$'.format(h)
+        #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
+        ax.plot(tempAllS_nf,tempAllS,marker='o',linestyle='-',label=label)
+
+        fontdict = {'fontsize':27,'weight':'bold'}
+        ax.set_ylabel(r'$\langle n_B(n_F)\rangle$',fontdict=fontdict)
+        ax.set_xlabel('$n_F$',fontdict=fontdict)
+        #ax.set_title('$\\sum\\limits^{N}_{NPOMS=0}\\sum\\limits^{24}_{NPOMH=0} \\langle n_{B}(n_{F})\\rangle$',fontdict=fontdict)
+        handles, labels = ax.get_legend_handles_labels()
+        leg = plt.legend(handles,labels,loc='best')
+        leg.get_frame().set_alpha(0.0)
+    
+        plt.savefig('/home/roar/master/qgsm_analysis_tool/ana/analyzed/nbnf_fixed_s_var_h.pdf')
+        #plt.show()
+
+
 
 if __name__=="__main__":
     path ="/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M.root" 
     P = Plot(root_file_path=path)
-    P.NBNFPicture()
+    #P.NBNFPicture()
     P.var_NPOMS()
+    P.fix_S_var_H()
+    P.Show()
