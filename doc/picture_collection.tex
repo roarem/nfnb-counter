@@ -1,10 +1,27 @@
 \documentclass[]{article}
 \usepackage{graphicx}
 \usepackage[margin=1cm]{geometry}
+\usepackage{csvsimple}
+
 \begin{document}
-\begin{figure}
-    \centering
-\includegraphics[scale=0.3]{nbnf_allnpoms_0npomh.pdf}
-\caption{9ke}
+\section*{\centering N NPOMS and all NPOMH}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{../analyzed/nbnf_Nnpoms_allnpomh.pdf}
+\caption{}
 \end{figure}
+
+\begin{center}
+\csvautotabular{../analyzed/fits.csv}
+\end{center}
+
+\newpage
+\section*{\centering All NPOMS and NPOMH=0}
+
+\begin{figure}[h!]
+    \centering
+\includegraphics[scale=0.5]{../analyzed/nbnf_allnpoms_0npomh.pdf}
+\caption{}
+\end{figure}
+
 \end{document}

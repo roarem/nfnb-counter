@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.3.15)  18 OCT 2016 11:25
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.3.15)  19 OCT 2016 13:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -82,35 +82,54 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layoutvoffset=\dimen112
 \Gm@dimlist=\toks15
 )
+(/usr/share/texlive/texmf-dist/tex/latex/csvsimple/csvsimple.sty
+Package: csvsimple 2013/09/25 version 1.07 LaTeX CSV file processing
+
+(/usr/share/texmf/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks16
+\pgfkeys@temptoks=\toks17
+
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks18
+)))
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\csv@file=\read1
+\c@csvinputline=\count91
+\c@csvrow=\count92
+\c@csvcol=\count93
+)
 (./picture_collection.aux)
 \openout1 = `picture_collection.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
-LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count91
+\scratchcounter=\count94
 \scratchdimen=\dimen113
 \scratchbox=\box26
-\nofMPsegments=\count92
-\nofMParguments=\count93
-\everyMPshowfont=\toks16
-\MPscratchCnt=\count94
+\nofMPsegments=\count95
+\nofMParguments=\count96
+\everyMPshowfont=\toks19
+\MPscratchCnt=\count97
 \MPscratchDim=\dimen114
-\MPnumerator=\count95
-\makeMPintoPDFobject=\count96
-\everyMPtoPDFconversion=\toks17
+\MPnumerator=\count98
+\makeMPintoPDFobject=\count99
+\everyMPtoPDFconversion=\toks20
 ) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -189,28 +208,50 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<nbnf_allnpoms_0npomh.pdf, id=1, 806.01125pt x 790.955pt>
-File: nbnf_allnpoms_0npomh.pdf Graphic file (type pdf)
+<../analyzed/nbnf_Nnpoms_allnpomh.pdf, id=1, 867.24pt x 867.24pt>
+File: ../analyzed/nbnf_Nnpoms_allnpomh.pdf Graphic file (type pdf)
 
-<use nbnf_allnpoms_0npomh.pdf>
-Package pdftex.def Info: nbnf_allnpoms_0npomh.pdf used on input line 7.
-(pdftex.def)             Requested size: 241.80524pt x 237.28833pt.
- [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./nbnf_allnpoms_0npomh.
-pdf>] (./picture_collection.aux) ) 
+<use ../analyzed/nbnf_Nnpoms_allnpomh.pdf>
+Package pdftex.def Info: ../analyzed/nbnf_Nnpoms_allnpomh.pdf used on input lin
+e 10.
+(pdftex.def)             Requested size: 433.61894pt x 433.61894pt.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 15.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 15.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <../analyzed/nbnf_Nnpoms_al
+lnpomh.pdf>]
+<../analyzed/nbnf_allnpoms_0npomh.pdf, id=37, 867.24pt x 867.24pt>
+File: ../analyzed/nbnf_allnpoms_0npomh.pdf Graphic file (type pdf)
+
+<use ../analyzed/nbnf_allnpoms_0npomh.pdf>
+Package pdftex.def Info: ../analyzed/nbnf_allnpoms_0npomh.pdf used on input lin
+e 23.
+(pdftex.def)             Requested size: 433.61894pt x 433.61894pt.
+ [2 <../analyzed/nbnf_allnpoms_0npomh.pdf>] (./picture_collection.aux) ) 
 Here is how much of TeX's memory you used:
- 1938 strings out of 495028
- 28076 string characters out of 6181497
- 86888 words of memory out of 5000000
- 5159 multiletter control sequences out of 15000+600000
- 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 2518 strings out of 495028
+ 41471 string characters out of 6181497
+ 101769 words of memory out of 5000000
+ 5715 multiletter control sequences out of 15000+600000
+ 4245 words of font info for 16 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 38i,6n,32p,263b,215s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr10.pfb>
-Output written on picture_collection.pdf (1 page, 257848 bytes).
+ 41i,7n,51p,280b,234s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/h
+elvetic/uhvr8a.pfb>
+Output written on picture_collection.pdf (2 pages, 295626 bytes).
 PDF statistics:
- 314 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
+ 351 PDF objects out of 1000 (max. 8388607)
+ 60 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
