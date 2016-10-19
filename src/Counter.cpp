@@ -243,7 +243,7 @@ void Count::ReadAndCount()
     #endif
     std::cout << std::endl;
     #if bcorr
-	std::ofstream bcorr_file("i/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
+	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     for(int i=0 ; i<8 ; i++)
 		bcorr_file << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<std::endl;
