@@ -9,8 +9,9 @@ int main()
     double number_of_events = 4000000.0;
     Count NBNFandNPOM(datapath=datapath,number_of_events=number_of_events);
     float NBin=4; float start=0; float stop=3;
-    NBNFandNPOM.InitializeNBNF();
+    //NBNFandNPOM.InitializeNBNF();
     NBNFandNPOM.ReadAndCount();
+
     return 0;
 }
     

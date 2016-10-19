@@ -188,6 +188,15 @@ void Count::ReadAndCount()
                         }
                     }
                     #endif
+                #if bcorr
+                if (psrap_abs<1 and p_T>0.05) 
+                {
+                    bcorr_count = 1;
+                    if (p_T>0.3 and p_T<1.5)
+                        BcorrCheck(psrap);
+                }
+
+                #endif
                 }
             }
         }
@@ -215,12 +224,17 @@ void Count::ReadAndCount()
         for(int i=0 ; i<4 ; i++)
             nf_nb[2*i] = nf_nb[2*i+1] = counted[i] = 0;
         #endif
+        #if bcorr
+        if (bcorr_count)
+            bcorr_Nevents += 1;
+        #endif
     }
+    #if NBNF
     ALLTree->Fill();
     DIVTree->Fill();
     NFTree ->Fill();
     NPOMTree->Fill();
-    #if NBNF
+
     for(int i=0 ; i<4 ; i++)
         DIV[i]->Divide(NF[i]);
 
@@ -228,13 +242,36 @@ void Count::ReadAndCount()
     output->Close();
     #endif
     std::cout << std::endl;
+    #if bcorr
+	std::ofstream bcorr_file("i/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
+    bcorr_file << bcorr_Nevents << std::endl;
+    for(int i=0 ; i<8 ; i++)
+		bcorr_file << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<std::endl;
+	bcorr_file.close();
+    #endif
 }
+
+#if bcorr
+void Count::BcorrCheck(int eta)
+{
+    int nfnbi = (eta<0);
+    int eta10 = eta*10;
+    for(int i=7 ; i>-1 ; i--)
+    {
+        if(eta10>i)
+        {
+            bcorr_nfnb[i][nfnbi] += 1;
+            break;
+        }
+    }
+}
+#endif
 
 void Count::Progress(int eventnr)
 {
     timer.stopTimer();
     int *returnTime = new int[3];
     returnTime = timer.elapsedTimeClock();
-    printf("\r %d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
+    printf("\r %3d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
                                        returnTime[0],returnTime[1],returnTime[2]);
 }

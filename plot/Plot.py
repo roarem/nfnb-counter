@@ -67,7 +67,10 @@ class Plot:
     def NBNFPicture(self):
 
         fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])#plt.subplots()
-        
+############################# Larissas points ##################################
+        larNF,larNBNF = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/larissa_anfnb_exp_soft',\
+                unpack=True)
+        ax.plot(larNF,larNBNF,label='Larissa NBNF')
 ############################# Experimental data ################################
         expNF,expNBNF,expXerr,expYerr = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/nbnf_7000_exp',unpack=True)
         ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
@@ -104,10 +107,9 @@ class Plot:
             SxH0.Divide(SxH0_nf)
             temp_hist = [SxH0.GetBinContent(j) for j in range(1,Nbins)]
             NPOMList.append(np.asarray(temp_hist))
-
+        
         nf = np.linspace(0,30,31)
         nfnew = np.linspace(nf.min(),nf.max(),300)
-        graphs = []
         for i,npom in enumerate(NPOMList):
             npom = np.trim_zeros(npom,trim='b')[:11+i]
             smooth = spline(nf[:len(npom)],npom,nfnew)
@@ -115,6 +117,8 @@ class Plot:
             smooth = np.trim_zeros(smooth,trim='b')
             ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=4,\
                     color='grey',label='NPOMS {}'.format(i),zorder=6)
+            #ax.plot(nf,npom[:len(nf)],linestyle='-',linewidth=4,\
+            #        color='grey',label='NPOMS {}'.format(i),zorder=6)
 
 
 ################## All soft pomerons and 0 hard pomerons########################
@@ -135,9 +139,11 @@ class Plot:
         simS_err = simS_err[:simSlen]
         simSNF = np.linspace(0,simSlen,simSlen)
         
-        simSNFnew = np.linspace(simSNF.min(),simSNF.max(),300)
-        smooth = spline(simSNF,simS,simSNFnew)
-        ax.plot(simSNFnew,smooth,linestyle='--',linewidth=4,color='grey',\
+        #simSNFnew = np.linspace(simSNF.min(),simSNF.max(),300)
+        #smooth = spline(simSNF,simS,simSNFnew)
+        #ax.plot(simSNFnew,smooth,linestyle='--',linewidth=4,color='grey',\
+        #        label='all npoms',zorder=7)
+        ax.plot(simSNF,simS,linestyle='--',linewidth=4,color='grey',\
                 label='all npoms',zorder=7)
         #ax.errorbar(simSNF,simS,yerr=simS_err,linestyle='',\
         #            marker='*',markersize=12,color='black',label='all npoms')
@@ -210,7 +216,7 @@ class Plot:
         self.ReOpen()
         NSNH = 25
         Sstart =17 
-        N = [8,7,6]
+        N = [8,7,6,5,4,3,2,1]
         for k,n in enumerate(N):
             for i in range(n+1):
                 for j in range(NSNH):
@@ -307,7 +313,7 @@ class Plot:
 if __name__=="__main__":
     path ="/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M.root" 
     P = Plot(root_file_path=path)
-    #P.NBNFPicture()
-    P.var_NPOMS()
-    P.fix_S_var_H()
+    P.NBNFPicture()
+    #P.var_NPOMS()
+    #P.fix_S_var_H()
     P.Show()
