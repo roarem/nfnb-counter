@@ -49,25 +49,19 @@ class Count
         TFile *output;
 
         #if NPOM
-        std::vector<std::vector<TH1F*>> NPOMS;
-        std::vector<std::vector<TH1F*>> NPOMS_nf;
-        //std::vector<std::vector<TH1F*>> NPOMH;
-        //std::vector<std::vector<TH1F*>> NPOMH_nf;
+        std::vector<std::vector<TH1F*>> NPOMSH;
+        std::vector<std::vector<TH1F*>> NPOMSH_nf;
 
         TTree *NPOMTree;
         #endif
         #endif
         #if bcorr
-        void BcorrCheck(int eta);
+        void BcorrCheck(double eta);
 
         int bcorr_count     = 0;
         int bcorr_Nevents   = 0;
 
         std::vector<std::vector<int>> bcorr_nfnb = std::vector<std::vector<int>>(8,std::vector<int>(2,0));
-        //std::vector<std::vector<int>> bcorr1 = std::vector<std::vector<int>>(1,std::vector<int>(2,0));
-        //std::vector<std::vector<int>> bcorr2 = std::vector<std::vector<int>>(2,std::vector<int>(2,0));
-        //std::vector<std::vector<int>> bcorr3 = std::vector<std::vector<int>>(3,std::vector<int>(2,0));
-        //std::vector<std::vector<int>> bcorr7 = std::vector<std::vector<int>>(7,std::vector<int>(2,0));
         #endif
 };
 

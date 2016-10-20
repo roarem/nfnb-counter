@@ -1,10 +1,12 @@
 import matplotlib as mpl
+mpl.use('Agg')
 mpl.rc('text',usetex=True)
 mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import numpy as np
 import ROOT
+import linecache
 from scipy.interpolate import spline
 
 class Plot:
@@ -68,9 +70,9 @@ class Plot:
 
         fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])#plt.subplots()
 ############################# Larissas points ##################################
-        larNF,larNBNF = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/larissa_anfnb_exp_soft',\
-                unpack=True)
-        ax.plot(larNF,larNBNF,label='Larissa NBNF')
+        #larNF,larNBNF = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/larissa_anfnb_exp_soft',\
+        #        unpack=True)
+        #ax.plot(larNF,larNBNF,label='Larissa NBNF')
 ############################# Experimental data ################################
         expNF,expNBNF,expXerr,expYerr = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/nbnf_7000_exp',unpack=True)
         ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
@@ -137,14 +139,14 @@ class Plot:
         simS = np.trim_zeros(simS,trim='b')[:-3]
         simSlen = len(simS)
         simS_err = simS_err[:simSlen]
-        simSNF = np.linspace(0,simSlen,simSlen)
+        simSNF = np.linspace(0,simSlen-1,simSlen)
         
-        #simSNFnew = np.linspace(simSNF.min(),simSNF.max(),300)
-        #smooth = spline(simSNF,simS,simSNFnew)
-        #ax.plot(simSNFnew,smooth,linestyle='--',linewidth=4,color='grey',\
-        #        label='all npoms',zorder=7)
-        ax.plot(simSNF,simS,linestyle='--',linewidth=4,color='grey',\
+        simSNFnew = np.linspace(simSNF.min(),simSNF.max(),300)
+        smooth = spline(simSNF,simS,simSNFnew)
+        ax.plot(simSNFnew,smooth,linestyle='--',linewidth=4,color='grey',\
                 label='all npoms',zorder=7)
+        #ax.plot(simSNF,simS,linestyle='--',linewidth=4,color='grey',\
+        #        label='all npoms',zorder=7)
         #ax.errorbar(simSNF,simS,yerr=simS_err,linestyle='',\
         #            marker='*',markersize=12,color='black',label='all npoms')
         
@@ -254,12 +256,9 @@ class Plot:
         leg = plt.legend(handles,labels,loc='best')
         leg.get_frame().set_alpha(0.0)
 ####################### Closing remarks ########################################
-        #header = 'label,a,b'
-        #print(outFitCSV)
         fmt = '%s,%s,%s'
         np.savetxt('/home/roar/master/qgsm_analysis_tool/ana/analyzed/fits.csv',outFitCSV,fmt=fmt)
         plt.savefig('/home/roar/master/qgsm_analysis_tool/ana/analyzed/nbnf_Nnpoms_allnpomh.pdf')
-        #plt.show()
 
         self.Close()
 
@@ -282,10 +281,9 @@ class Plot:
             ax.plot(tempAllS_nf,tempAllS,label=label)
 
         self.ReOpen()
-        #print("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
         tempS = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
         tempS_nf = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
-        for h in range(25):
+        for h in range(1,25):
             tempS.Add   (ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,h)))
             tempS_nf.Add(ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,h)))
         tempS.Divide(tempS_nf)
@@ -306,9 +304,26 @@ class Plot:
         leg.get_frame().set_alpha(0.0)
     
         plt.savefig('/home/roar/master/qgsm_analysis_tool/ana/analyzed/nbnf_fixed_s_var_h.pdf')
-        #plt.show()
 
-
+    def bcorr(self):
+        nevents = int(linecache.getline('/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv',\
+                                    1))
+        nf,nb = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv',\
+                            unpack=True,delimiter=',',skiprows=1)
+        
+        Ngaps  = [1,2,3,7]
+        delta_eta_gap = [0.1,0.2,0.2,0.0]
+        delta_eta = [8,6,4,2]
+        indicies = [[[0,7]],[[2,7],[0,5]],[[4,7],[2,5],[0,3]],[[6.7],[5,6],[4,5],[3,4],[2,3],[1,2],[0,1]]]
+        for i in indicies:
+            nF = nB = nBnF = nFnF = 0
+            for j in i:
+                nF += np.sum(nf[j[0]:j[1]])
+                nB += np.sum(nb[j[0]:j[1]])
+                print(nF)
+            
+        
+            #bcorr_numb = (nBnF - nB*nF/nevents)/(nFnF - nF*nF/nevents)
 
 if __name__=="__main__":
     path ="/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M.root" 
@@ -316,4 +331,5 @@ if __name__=="__main__":
     P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    P.Show()
+    #P.bcorr()
+    #P.Show()

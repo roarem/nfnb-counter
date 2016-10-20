@@ -57,8 +57,8 @@ void Count::InitializeNBNF()
     NPOMTree = new TTree("NPOM","npom");
     for (int i=0 ; i<25 ; i++)
     {
-        NPOMS.push_back(std::vector<TH1F*>());
-        NPOMS_nf.push_back(std::vector<TH1F*>());
+        NPOMSH.push_back(std::vector<TH1F*>());
+        NPOMSH_nf.push_back(std::vector<TH1F*>());
 
         for (int j=0 ; j<25 ; j++)
         {
@@ -70,15 +70,15 @@ void Count::InitializeNBNF()
             std::string temp2 = "NPOM_NF"+std::string(number_string);
             std::string temp3 = "npom_nf"+std::string(number_string);
 
-            NPOMS[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
-            NPOMS_nf[i].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
+            NPOMSH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
+            NPOMSH_nf[i].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
 
             // Setting errorbar calculations
-            NPOMS[i][j]->Sumw2(true);
-            NPOMS_nf[i][j]->Sumw2(true);
+            NPOMSH[i][j]->Sumw2(true);
+            NPOMSH_nf[i][j]->Sumw2(true);
 
-            NPOMTree->Branch(temp1.c_str(),NPOMS[i][j]);
-            NPOMTree->Branch(temp3.c_str(),NPOMS_nf[i][j]);
+            NPOMTree->Branch(temp1.c_str(),NPOMSH[i][j]);
+            NPOMTree->Branch(temp3.c_str(),NPOMSH_nf[i][j]);
         }
     }
 #endif
@@ -141,6 +141,8 @@ void Count::ReadAndCount()
         
         if(EVENTNR%100==0)
             Progress(EVENTNR);
+        //if (EVENTNR%100!=0) 
+        //    continue;
         
         for (int i=0 ; i<PARTNR ; i++)
         {
@@ -216,8 +218,8 @@ void Count::ReadAndCount()
         // Counts if abs(eta) < 1
         if (counted[3])
         {
-            NPOMS[npoms][npomh]->Fill(nf_nb[6],nf_nb[7]);
-            NPOMS_nf[npoms][npomh]->Fill(nf_nb[6]);
+            NPOMSH[npoms][npomh]->Fill(nf_nb[6],nf_nb[7]);
+            NPOMSH_nf[npoms][npomh]->Fill(nf_nb[6]);
         }
         #endif
         // Resets nf and nb counters
@@ -226,7 +228,10 @@ void Count::ReadAndCount()
         #endif
         #if bcorr
         if (bcorr_count)
+        {
+            bcorr_count = 0;
             bcorr_Nevents += 1;
+        }
         #endif
     }
     #if NBNF
@@ -246,16 +251,16 @@ void Count::ReadAndCount()
 	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     for(int i=0 ; i<8 ; i++)
-		bcorr_file << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<std::endl;
+		bcorr_file << (float)i/10 << "," << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<std::endl;
 	bcorr_file.close();
     #endif
 }
 
 #if bcorr
-void Count::BcorrCheck(int eta)
+void Count::BcorrCheck(double eta)
 {
     int nfnbi = (eta<0);
-    int eta10 = eta*10;
+    double eta10 = std::abs(eta)*10;
     for(int i=7 ; i>-1 ; i--)
     {
         if(eta10>i)
