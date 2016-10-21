@@ -368,8 +368,8 @@ if __name__=="__main__":
     #name = 'out/7TeV_4M.root' 
     name = 'out/7TeV_4M_nsd.root' 
     P = Plot(root_file_path=path,filename=name)
-    P.NBNFPicture(nsd=True)
-    #P.var_NPOMS()
+    #P.NBNFPicture(nsd=True)
+    P.var_NPOMS()
     #P.fix_S_var_H()
     #P.bcorr()
     P.Show()
