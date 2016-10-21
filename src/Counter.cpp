@@ -131,7 +131,8 @@ void Count::ReadAndCount()
     std::string finalprLine, B_MULTLine, NPOMLine;
     std::ifstream finalprFile(finalpr_loc.c_str());
     std::ifstream B_MULTFile(B_MULT_loc.c_str());
-
+    //testfil.open("testfil.out");
+    
     while (std::getline(B_MULTFile,B_MULTLine))
     {
         std::istringstream aa(B_MULTLine);
@@ -198,7 +199,7 @@ void Count::ReadAndCount()
                 {
                     bcorr_count = 1;
                     if (p_T > 0.3 and p_T < 1.5)
-                        BcorrCheck(psrap);
+                        BcorrCheck(EVENTNR,psrap);
                 }
 
                 #endif
@@ -241,14 +242,13 @@ void Count::ReadAndCount()
         #if bcorr
         if (bcorr_count)
         {
-            std::cout << EVENTNR << std::endl;
-            for(int i=0 ; i<8 ; i++)
+            for(int i=0 ; i<9 ; i++)
             {
                 bcorr_nfnb[i][0] += bcorr_nfnb_event[i][0];
                 bcorr_nfnb[i][1] += bcorr_nfnb_event[i][1];
                 bcorr_nfnb[i][2] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][1];
                 bcorr_nfnb[i][3] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][0];
-                std::cout << bcorr_nfnb_event[i][0] << "  " << bcorr_nfnb_event[i][1] <<std::endl;
+
                 std::fill(bcorr_nfnb_event[i].begin(),bcorr_nfnb_event[i].end(),0);
             }
             bcorr_count = 0;
@@ -283,8 +283,10 @@ void Count::ReadAndCount()
 }
 
 #if bcorr
-void Count::BcorrCheck(double eta)
+void Count::BcorrCheck(int EVENTNR,double eta)
 {
+    //testfil << EVENTNR << "," << eta<< std::endl;
+    
     int nfnbi = (eta<0);
     double eta10 = std::abs(eta)*10;
     for(int i=8 ; i>-1 ; i--)
@@ -295,6 +297,7 @@ void Count::BcorrCheck(double eta)
             break;
         }
     }
+    
 }
 #endif
 

@@ -201,48 +201,71 @@ class Plot:
         #                  loc='best',fontsize=24)
 
         leg.get_frame().set_alpha(0.0)
-        plt.savefig(self.filepath+'analyzed/nbnf_allnpoms_0npomh.pdf')
+        if nsd:
+            plt.savefig(self.filepath+'analyzed/nsd_nbnf_allnpoms_0npomh.pdf')
+        else:
+            plt.savefig(self.filepath+'analyzed/nbnf_allnpoms_0npomh.pdf')
         #plt.show()
         self.Close()
 
-    def var_NPOMS(self):
-        
-        fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,15])
+    def var_NPOMS(self,nsd=False):
+        if nsd:
+            fig,ax = self.plotSetup(xlim=[-1,239],ylim=[0,250],nsd=nsd)
+            xsize = ax.get_xlim()[1]
+        else:
+            fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])
+            xsize = ax.get_xlim()[1]+5
+        #fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,15])
         #fig1, ax1 = self.plotSetup(xlim=[-1,25],ylim=[0,15])
         outFitCSV = [['label','a','b']]
 ######################## Experimental data #####################################
-        expNF,expNBNF,expXerr,expYerr = np.loadtxt(self.filepath+'out/nbnf_7000_exp',unpack=True)
-        ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
-                    marker='o',markersize=10,color='black',\
-                    label='experiment',zorder=10)
+        if not nsd:
+            expNF,expNBNF,expXerr,expYerr = np.loadtxt(self.filepath+'out/nbnf_7000_exp',unpack=True)
+            ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
+                        marker='o',markersize=10,color='black',\
+                        label='experiment',zorder=10)
 ######################## Experiamental self.fit #####################################
-        rulerMeasuredX = [-0.5,30]
-        rulerMeasuredY = [0.64,17.57]
-        cof_b = (rulerMeasuredY[1]-rulerMeasuredY[0])/(rulerMeasuredX[1]-rulerMeasuredX[0])
-        cof_a = rulerMeasuredY[0] + cof_b*0.5
-        label = 'experiment fit'
-        #outFitCSV.append([label,cof_a,cof_b])
-        outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
-        ax.plot(expNF,self.fit(cof_a,cof_b,expNF),linestyle='--',linewidth=2,alpha=1,label='experiment fit')
+            rulerMeasuredX = [-0.5,30]
+            rulerMeasuredY = [0.64,17.57]
+            cof_b = (rulerMeasuredY[1]-rulerMeasuredY[0])/(rulerMeasuredX[1]-rulerMeasuredX[0])
+            cof_a = rulerMeasuredY[0] + cof_b*0.5
+            label = 'experiment fit'
+            #outFitCSV.append([label,cof_a,cof_b])
+            outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
+            ax.plot(expNF,self.fit(cof_a,cof_b,expNF),linestyle='--',linewidth=2,alpha=1,label='experiment fit')
 
 ######################### Simulated for all npom ###############################
         self.ReOpen()
-        simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
+        if nsd:
+            simNBNF_in  = ROOT.gROOT.FindObject("nsd_div")
+        else:
+            simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
+
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,Nbins-1)
         simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
         simNBNF_err = np.asarray([simNBNF_in.GetBinError(i) for i in range(1,Nbins)])
-        temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
+        if nsd:
+            temp_fit = simNBNF_in.Fit('pol1','SQN','',0,239)
+        else:
+            temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
         cof_a = temp_fit.Parameter(0)
         cof_b = temp_fit.Parameter(1)
         label='all npoms'
         #outFitCSV.append([label,cof_a,cof_b])
         outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
-        ax.plot(simNF[:30],self.fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
-                alpha=1,label=label+' fit')
-        ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
-                    marker='s',markersize=10,color='black',label=label,\
-                    zorder=9)
+        if nsd:
+            ax.plot(simNF,self.fit(cof_a,cof_b,simNF),linestyle='--',linewidth=2,\
+                    alpha=1,label=label+' fit')
+            ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+                        marker='s',markersize=10,color='black',label=label,\
+                        zorder=9)
+        else:
+            ax.plot(simNF[:30],self.fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
+                    alpha=1,label=label+' fit')
+            ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+                        marker='s',markersize=10,color='black',label=label,\
+                        zorder=9)
          
 # (sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{B}(n_{F})>)/(sum_{npoms=0}^N sum_{npomh=0}^{all} <n_{F}>) #
         self.ReOpen()
@@ -267,12 +290,18 @@ class Plot:
             label = '$N = {}$'.format(n)
             #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
             #ax.plot(tempAllS_nf,tempAllS,label=label)
+            if nsd:
+                temp_fit = tempS.Fit('pol1','SQN','',0,239)
+            else:
+                temp_fit = tempS.Fit('pol1','SQN','',0,30)
 
-            temp_fit = tempS.Fit('pol1','SQN','',0,30)
             cof_a = temp_fit.Parameter(0)
             cof_b = temp_fit.Parameter(1)
             outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
-            ax.plot(tempAllS_nf[:30],self.fit(cof_a,cof_b,tempAllS_nf[:30]),label=label)
+            if nsd:
+                ax.plot(tempAllS_nf,self.fit(cof_a,cof_b,tempAllS_nf),label=label)
+            else:
+                ax.plot(tempAllS_nf[:30],self.fit(cof_a,cof_b,tempAllS_nf[:30]),label=label)
 
 
             self.ReOpen()
@@ -289,11 +318,14 @@ class Plot:
 ####################### Closing remarks ########################################
         fmt = '%s,%s,%s'
         np.savetxt(self.filepath+'analyzed/fits.csv',outFitCSV,fmt=fmt)
-        plt.savefig(self.filepath+'analyzed/nbnf_Nnpoms_allnpomh.pdf')
+        if nsd:
+            plt.savefig(self.filepath+'analyzed/nsd_nbnf_Nnpoms_allnpomh.pdf')
+        else:
+            plt.savefig(self.filepath+'analyzed/nbnf_Nnpoms_allnpomh.pdf')
 
         self.Close()
 
-    def fix_S_var_H(self):
+    def fix_S_var_H(self,nsd=False):
         self.ReOpen()
         fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,6])
         xsize = ax.get_xlim()[1] + 5
@@ -335,8 +367,10 @@ class Plot:
         handles, labels = ax.get_legend_handles_labels()
         leg = plt.legend(handles,labels,loc='best')
         leg.get_frame().set_alpha(0.0)
-    
-        plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
+        if nsd: 
+            plt.savefig(self.filepath+'analyzed/nsd_nbnf_fixed_s_var_h.pdf')
+        else:
+            plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
 
     def bcorr(self):
         nevents = float(linecache.getline(self.filepath+'out/bcorrtest.csv',\
@@ -365,11 +399,20 @@ class Plot:
 
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
-    #name = 'out/7TeV_4M.root' 
-    name = 'out/7TeV_4M_nsd.root' 
+    def nsd():
+        name = 'out/7TeV_4M_nsd.root' 
+        nsd = 1
+        return name,nsd
+    def ptcut():
+        name = 'out/7TeV_4M.root' 
+        nsd  = 0
+        return name,nsd
+    options = {0: nsd, 1:ptcut}
+    name,nsd = options[0]()
+
     P = Plot(root_file_path=path,filename=name)
-    #P.NBNFPicture(nsd=True)
-    P.var_NPOMS()
-    #P.fix_S_var_H()
-    #P.bcorr()
-    P.Show()
+    #P.NBNFPicture(nsd=nsd)
+    #P.var_NPOMS(nsd=nsd)
+    #P.fix_S_var_H(nsd=nsd)
+    P.bcorr()
+    #P.Show()

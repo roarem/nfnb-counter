@@ -60,15 +60,16 @@ class Count
         #endif
 
         #if bcorr
-        void BcorrCheck(double eta);
+        void BcorrCheck(int EVENTNR, double eta);
 
         int bcorr_count     = 0;
         int bcorr_Nevents   = 0;
+        //std::ofstream testfil;
 
         std::vector<std::vector<int>> bcorr_nfnb_event =
             std::vector<std::vector<int>>(9,std::vector<int>(2,0));
         std::vector<std::vector<int>> bcorr_nfnb = 
-            std::vector<std::vector<int>>(8,std::vector<int>(4,0));
+            std::vector<std::vector<int>>(9,std::vector<int>(4,0));
         #endif
 };
 
