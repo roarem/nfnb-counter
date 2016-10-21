@@ -13,6 +13,8 @@
 
 #define NBNF 0 
 #define NPOM 0  
+#define ptcut 0
+#define nsd 0
 #define bcorr 1
 
 class Count 
@@ -36,7 +38,8 @@ class Count
         float stop  = NBins + start;
         void InitializeNBNF();
 
-        const char* NBNFFilename = "7TeV_4M.root";
+        //const char* NBNFFilename = "7TeV_4M.root";
+        const char* NBNFFilename = "7TeV_4M_nsd.root";
         std::vector<const char*> HistNames;
         std::vector<TH1F*> ALL;
         std::vector<TH1F*> DIV;
@@ -55,13 +58,17 @@ class Count
         TTree *NPOMTree;
         #endif
         #endif
+
         #if bcorr
         void BcorrCheck(double eta);
 
         int bcorr_count     = 0;
         int bcorr_Nevents   = 0;
 
-        std::vector<std::vector<int>> bcorr_nfnb = std::vector<std::vector<int>>(8,std::vector<int>(2,0));
+        std::vector<std::vector<int>> bcorr_nfnb_event =
+            std::vector<std::vector<int>>(9,std::vector<int>(2,0));
+        std::vector<std::vector<int>> bcorr_nfnb = 
+            std::vector<std::vector<int>>(8,std::vector<int>(4,0));
         #endif
 };
 

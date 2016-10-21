@@ -7,6 +7,9 @@ Count::Count(std::string datapath,double numberofevents)
     B_MULT_loc  = datapath + "B_MULT";
     NPOM_loc    = datapath + "NPOM.dat";
     number_of_events = numberofevents;
+    #if NBNF
+    InitializeNBNF();
+    #endif
 }
 
 #if NBNF
@@ -191,10 +194,10 @@ void Count::ReadAndCount()
                     }
                     #endif
                 #if bcorr
-                if (psrap_abs<1 and p_T>0.05) 
+                if (psrap_abs < 1 and p_T > 0.05) 
                 {
                     bcorr_count = 1;
-                    if (p_T>0.3 and p_T<1.5)
+                    if (p_T > 0.3 and p_T < 1.5)
                         BcorrCheck(psrap);
                 }
 
@@ -216,11 +219,20 @@ void Count::ReadAndCount()
         }
         #if NPOM
         // Counts if abs(eta) < 1
+        #if ptcut
         if (counted[3])
         {
             NPOMSH[npoms][npomh]->Fill(nf_nb[6],nf_nb[7]);
             NPOMSH_nf[npoms][npomh]->Fill(nf_nb[6]);
         }
+        #elif nsd
+        if (counted[1])
+        {
+            NPOMSH[npoms][npomh]->Fill(nf_nb[2],nf_nb[3]);
+            NPOMSH_nf[npoms][npomh]->Fill(nf_nb[2]);
+        }
+        #endif
+        
         #endif
         // Resets nf and nb counters
         for(int i=0 ; i<4 ; i++)
@@ -229,6 +241,16 @@ void Count::ReadAndCount()
         #if bcorr
         if (bcorr_count)
         {
+            std::cout << EVENTNR << std::endl;
+            for(int i=0 ; i<8 ; i++)
+            {
+                bcorr_nfnb[i][0] += bcorr_nfnb_event[i][0];
+                bcorr_nfnb[i][1] += bcorr_nfnb_event[i][1];
+                bcorr_nfnb[i][2] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][1];
+                bcorr_nfnb[i][3] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][0];
+                std::cout << bcorr_nfnb_event[i][0] << "  " << bcorr_nfnb_event[i][1] <<std::endl;
+                std::fill(bcorr_nfnb_event[i].begin(),bcorr_nfnb_event[i].end(),0);
+            }
             bcorr_count = 0;
             bcorr_Nevents += 1;
         }
@@ -250,8 +272,12 @@ void Count::ReadAndCount()
     #if bcorr
 	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
+    bcorr_file << "nf,nb,nbnf,nfnf" << std::endl;
     for(int i=0 ; i<8 ; i++)
-		bcorr_file << (float)i/10 << "," << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<std::endl;
+    {
+		bcorr_file << (float)i/10 << "," << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<
+                      ","<<bcorr_nfnb[i][2] << "," << bcorr_nfnb[i][3] << std::endl;
+    }
 	bcorr_file.close();
     #endif
 }
@@ -261,11 +287,11 @@ void Count::BcorrCheck(double eta)
 {
     int nfnbi = (eta<0);
     double eta10 = std::abs(eta)*10;
-    for(int i=7 ; i>-1 ; i--)
+    for(int i=8 ; i>-1 ; i--)
     {
         if(eta10>i)
         {
-            bcorr_nfnb[i][nfnbi] += 1;
+            bcorr_nfnb_event[i][nfnbi] += 1;
             break;
         }
     }
