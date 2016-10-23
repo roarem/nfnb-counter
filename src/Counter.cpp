@@ -131,7 +131,7 @@ void Count::ReadAndCount()
     std::string finalprLine, B_MULTLine, NPOMLine;
     std::ifstream finalprFile(finalpr_loc.c_str());
     std::ifstream B_MULTFile(B_MULT_loc.c_str());
-    //testfil.open("testfil.out");
+    //testfil.open("900_bcorr.out");
     
     while (std::getline(B_MULTFile,B_MULTLine))
     {
@@ -242,6 +242,7 @@ void Count::ReadAndCount()
         #if bcorr
         if (bcorr_count)
         {
+			/*
             for(int i=0 ; i<9 ; i++)
             {
                 bcorr_nfnb[i][0] += bcorr_nfnb_event[i][0];
@@ -251,6 +252,7 @@ void Count::ReadAndCount()
 
                 std::fill(bcorr_nfnb_event[i].begin(),bcorr_nfnb_event[i].end(),0);
             }
+			*/
             bcorr_count = 0;
             bcorr_Nevents += 1;
         }
@@ -270,6 +272,7 @@ void Count::ReadAndCount()
     #endif
     std::cout << std::endl;
     #if bcorr
+	/*
 	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     bcorr_file << "nf,nb,nbnf,nfnf" << std::endl;
@@ -279,14 +282,15 @@ void Count::ReadAndCount()
                       ","<<bcorr_nfnb[i][2] << "," << bcorr_nfnb[i][3] << std::endl;
     }
 	bcorr_file.close();
+	*/
     #endif
 }
 
 #if bcorr
 void Count::BcorrCheck(int EVENTNR,double eta)
 {
-    //testfil << EVENTNR << "," << eta<< std::endl;
-    
+    testfil << EVENTNR << "," << eta<< std::endl;
+    /*
     int nfnbi = (eta<0);
     double eta10 = std::abs(eta)*10;
     for(int i=8 ; i>-1 ; i--)
@@ -297,6 +301,7 @@ void Count::BcorrCheck(int EVENTNR,double eta)
             break;
         }
     }
+*/
     
 }
 #endif

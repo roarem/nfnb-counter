@@ -11,11 +11,11 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define NBNF 0 
-#define NPOM 0  
-#define ptcut 0
+#define NBNF 1 
+#define NPOM 1  
+#define ptcut 1
 #define nsd 0
-#define bcorr 1
+#define bcorr 0
 
 class Count 
 {
@@ -39,7 +39,11 @@ class Count
         void InitializeNBNF();
 
         //const char* NBNFFilename = "7TeV_4M.root";
-        const char* NBNFFilename = "7TeV_4M_nsd.root";
+        //const char* NBNFFilename = "7TeV_4M_nsd.root";
+        //const char* NBNFFilename = "900GeV_1M.root";
+        //const char* NBNFFilename = "900GeV_1M_nsd.root";
+        const char* NBNFFilename = "13TeV_1M.root";
+        //const char* NBNFFilename = "13TeV_1M_nsd.root";
         std::vector<const char*> HistNames;
         std::vector<TH1F*> ALL;
         std::vector<TH1F*> DIV;
@@ -64,7 +68,7 @@ class Count
 
         int bcorr_count     = 0;
         int bcorr_Nevents   = 0;
-        //std::ofstream testfil;
+        std::ofstream testfil;
 
         std::vector<std::vector<int>> bcorr_nfnb_event =
             std::vector<std::vector<int>>(9,std::vector<int>(2,0));
