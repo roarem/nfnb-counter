@@ -40,15 +40,13 @@ class Plot:
             majorLocator = MultipleLocator(20)
             minorLocator = MultipleLocator(10)
         else:
-            majorLocator = MultipleLocator(10)
+            majorLocator = MultipleLocator(5)
             minorLocator = MultipleLocator(1)
 
-        majorFormatter = FormatStrFormatter('%d')
         fig, ax = plt.subplots()
         DPI = fig.get_dpi()
         size = 1000
         fig.set_size_inches(size/DPI,size/DPI)
-        ax.grid(which='minor',alpha=0.5)
 
         ax.set_xlim(xlim[0],xlim[1])
         ax.set_ylim(ylim[0],ylim[1])
@@ -56,10 +54,16 @@ class Plot:
         y0,y1 = ax.get_ylim()
         ax.set_aspect((x1-x0)/(y1-y0))
 
+        ax.grid(which='minor',alpha=0.5)
+
+        majorFormatter = FormatStrFormatter('%d')
+        minorFormatter = FormatStrFormatter('%d')
         ax.yaxis.set_minor_locator(minorLocator)
+        ax.xaxis.set_minor_locator(minorLocator)
+        ax.yaxis.set_major_locator(majorLocator)
         ax.xaxis.set_major_locator(majorLocator)
         ax.xaxis.set_major_formatter(majorFormatter)
-        ax.xaxis.set_minor_locator(minorLocator)
+        #ax.xaxis.set_minor_formatter(minorFormatter)
 
         [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
         [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
@@ -77,7 +81,7 @@ class Plot:
     def NBNFPicture(self,nsd=False):
         
         if nsd:
-            fig,ax = self.plotSetup(xlim=[-1,239],ylim=[0,250],nsd=nsd)
+            fig,ax = self.plotSetup(xlim=[-1,130],ylim=[0,140],nsd=nsd)
             xsize = ax.get_xlim()[1]
         else:
             fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])#plt.subplots()
@@ -87,10 +91,11 @@ class Plot:
         #        unpack=True)
         #ax.plot(larNF,larNBNF,label='Larissa NBNF')
 ############################# Experimental data ################################
-        #expNF,expNBNF,expXerr,expYerr = np.loadtxt(self.filepath+'out/nbnf_7000_exp',unpack=True)
-        #ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
-        #            marker='o',markersize=10,color='black',\
-        #            label='experimental',zorder=10)
+        if not nsd:
+            expNF,expNBNF,expXerr,expYerr = np.loadtxt(self.filepath+'out/nbnf_7000_exp',unpack=True)
+            ax.errorbar(expNF,expNBNF,yerr=expYerr,linestyle='',\
+                        marker='o',markersize=10,color='black',\
+                        label='experimental',zorder=10)
 
 ############################# Simulated data ###################################
         if nsd:
@@ -106,10 +111,13 @@ class Plot:
         fit_a = simNBNF_fit.Parameter(0)
         fit_b = simNBNF_fit.Parameter(1)
 
-        
-        ax.errorbar(simNF[:xsize],simNBNF[:xsize],yerr=simNBNF_err[:xsize],linestyle='',\
-                    marker='s',markersize=10,color='black',label='simulation'),\
-                    #zorder=9)
+        if nsd:        
+            ax.plot(simNF[:xsize],simNBNF[:xsize],linestyle='',marker='o',markersize=8,color='black',\
+                    label='simulation')
+        else:
+            ax.errorbar(simNF[:xsize],simNBNF[:xsize],yerr=simNBNF_err[:xsize],linestyle='',\
+                        marker='s',markersize=10,color='black',label='simulation'),\
+                        #zorder=9)
 
        # nf = np.linspace(0,30,31)
        # ax.plot(nf,self.fit(nf),linestyle='-',marker='',markersize=8,color='black',\
@@ -129,24 +137,41 @@ class Plot:
         if nsd:
             nf = np.linspace(0,239,240)
             nfnew = np.linspace(nf.min(),nf.max(),900)
-            npom_indicies = [[0,28],[0,50],[0,70],[10,85],[15,95],[26,110],[35,120]]
+            npom_indicies = [[0,28],[0,50],[5,70],[13,85],[15,95],[26,110],[35,120]]
         else:
             nf = np.linspace(0,30,31)
             nfnew = np.linspace(nf.min(),nf.max(),300)
         
         for i,npom in enumerate(NPOMList):
             if nsd:
-                npom = np.trim_zeros(npom,trim='b')[npom_indicies[i][0]:npom_indicies[i][1]]
+                npom = np.trim_zeros(npom,trim='b')
             else:
                 npom = np.trim_zeros(npom,trim='b')[:11+i]
             smooth = spline(nf[:len(npom)],npom,nfnew)
             #ax.plot(nf[:len(npom)],npom,marker='',linestyle='-',label='NPOMS {}'.format(i))
             smooth = np.trim_zeros(smooth,trim='b')
-            ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=4,\
-                    color='grey',label='NPOMS {}'.format(i),zorder=6)
+            if nsd:
+                npom = np.ma.masked_equal(npom,0)
+                j = npom_indicies[i][0]
+                k = npom_indicies[i][1]
+                ax.plot(nf[j:k],npom[j:k],linestyle='',marker='${}$'.format(i),\
+                        color='{}'.format(0.20+i*0.1),\
+                        markersize=8,label='NPOMS {}'.format(i),zorder=6)
+                #j = npom_indicies[i][0]*900/240
+                #k = npom_indicies[i][1]*900/240
+                #ax.plot(nfnew[j:k],smooth[j:k],linestyle='-',linewidth=4,\
+                #        color='grey',label='NPOMS {}'.format(i),zorder=6)
+            else:
+                ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=4,\
+                        color='grey',label='NPOMS {}'.format(i),zorder=6)
+
             #ax.plot(nf,npom[:len(nf)],linestyle='-',linewidth=4,\
             #        color='grey',label='NPOMS {}'.format(i),zorder=6)
-
+        if nsd:
+            pass
+            #[ax.text(-0.4,npom[npom_indicies[i][0]]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
+        else:
+            [ax.text(-0.4,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
 
 ################## All soft pomerons and 0 hard pomerons########################
         self.ReOpen()
@@ -166,9 +191,9 @@ class Plot:
         simSNF = np.linspace(0,simSlen-1,simSlen)
         
         if nsd:
-            simSNFnew = np.linspace(simSNF[:126].min(),simSNF[:126].max(),900)
+            simSNFnew = np.linspace(simSNF[:210].min(),simSNF[:210].max(),900)
             smooth = spline(simSNF,simS,simSNFnew)
-            ax.plot(simSNFnew,smooth,linestyle='--',linewidth=4,color='grey',\
+            ax.plot(simSNFnew,smooth,linestyle='-',linewidth=4,color='grey',\
                     label='all npoms',zorder=7)
         else:
             simSNFnew = np.linspace(simSNF.min(),simSNF.max(),300)
@@ -182,30 +207,33 @@ class Plot:
         
 
 ######################### Plot settings ################################################
-        [ax.text(-0.4,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
 
         fontdict = {'fontsize':27,'weight':'bold'}
         ax.set_ylabel(r'$\langle n_B(n_F)\rangle$',fontdict=fontdict)
         ax.set_xlabel('$n_F$',fontdict=fontdict)
 
         handles, labels = ax.get_legend_handles_labels()    
-        leg = plt.legend(handles,labels,loc='best')
-        #leg = plt.legend((handles[8],handles[9],handles[0],handles[7]),#handles[10]),\
-        #                 (\
-        #                  'ALICE pp, $\sqrt{s}$=7 TeV',\
-        #                  r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
-        #                  'NPOMH = 0 and for NPOMS = \{0,...,6\}',\
-        #                  'All NPOMS and NPOMH = 0'\
-        #                  ),\
-        #                  #'{:.3f}+{:.3f}x self.fit of simulated data'.format(self.fit_a,self.fit_b),\
-        #                  loc='best',fontsize=24)
 
-        leg.get_frame().set_alpha(0.0)
         if nsd:
+            leg = plt.legend((handles[0],handles[8],handles[7]),\
+                    (\
+                     'QGSM all Non-single diffraction',\
+                     'All NPMOS and NPOMH = 0',\
+                     'NPOMH = 0 and for NPOMS = \{0,...,6\}'\
+                    ), loc='upper left',fontsize=24)
             plt.savefig(self.filepath+'analyzed/nsd_nbnf_allnpoms_0npomh.pdf')
         else:
+            leg = plt.legend((handles[8],handles[9],handles[0],handles[7]),#handles[10]),\
+                             (\
+                              'ALICE pp, $\sqrt{s}$=7 TeV',\
+                              r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
+                              'NPOMH = 0 and for NPOMS = \{0,...,6\}',\
+                              'All NPOMS and NPOMH = 0'\
+                              ),\
+                              #'{:.3f}+{:.3f}x self.fit of simulated data'.format(self.fit_a,self.fit_b),\
+                              loc='best',fontsize=24)
             plt.savefig(self.filepath+'analyzed/nbnf_allnpoms_0npomh.pdf')
-        #plt.show()
+        leg.get_frame().set_alpha(0.0)
         self.Close()
 
     def var_NPOMS(self,nsd=False):
@@ -252,14 +280,17 @@ class Plot:
         cof_a = temp_fit.Parameter(0)
         cof_b = temp_fit.Parameter(1)
         label='all npoms'
-        #outFitCSV.append([label,cof_a,cof_b])
         outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
+
         if nsd:
+            simNBNF = np.ma.masked_equal(simNBNF,0)
             ax.plot(simNF,self.fit(cof_a,cof_b,simNF),linestyle='--',linewidth=2,\
                     alpha=1,label=label+' fit')
-            ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
-                        marker='s',markersize=10,color='black',label=label,\
-                        zorder=9)
+            ax.plot(simNF,simNBNF,linestyle='',marker='o',markersize=7,color='black',\
+                    label=label,zorder=9)
+            #ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+            #            marker='o',markersize=7,color='black',label=label,\
+            #            zorder=9)
         else:
             ax.plot(simNF[:30],self.fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
                     alpha=1,label=label+' fit')
@@ -299,7 +330,9 @@ class Plot:
             cof_b = temp_fit.Parameter(1)
             outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
             if nsd:
-                ax.plot(tempAllS_nf,self.fit(cof_a,cof_b,tempAllS_nf),label=label)
+                tempAllS = np.ma.masked_equal(tempAllS,0)
+                ax.plot(tempAllS_nf,tempAllS,label=label)
+                #ax.plot(tempAllS_nf,self.fit(cof_a,cof_b,tempAllS_nf),label=label)
             else:
                 ax.plot(tempAllS_nf[:30],self.fit(cof_a,cof_b,tempAllS_nf[:30]),label=label)
 
@@ -327,8 +360,12 @@ class Plot:
 
     def fix_S_var_H(self,nsd=False):
         self.ReOpen()
-        fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,6])
-        xsize = ax.get_xlim()[1] + 5
+        if nsd:
+            fig,ax = self.plotSetup(xlim=[-1,140],ylim=[0,120],nsd=nsd)
+            xsize = ax.get_xlim()[1]
+        else:
+            fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,6])
+            xsize = ax.get_xlim()[1] + 5
         NS = 2
         NH = [0,1,2,3,4]
 
@@ -342,6 +379,8 @@ class Plot:
             tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
             label = '$H = {}$'.format(h)
             #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
+            tempAllS = np.ma.masked_equal(tempAllS,0)
+            
             ax.plot(tempAllS_nf[:xsize],tempAllS[:xsize],label=label)
 
         self.ReOpen()
@@ -358,6 +397,7 @@ class Plot:
         tempAllS_err = np.asarray([tempS.GetBinError(i) for i in range(1,Nbins)])
         label = '$H = \sum^{{{}}}_{{0}}$'.format(h)
         #ax.errorbar(tempAllS_nf,tempAllS,yerr=tempAllS_err,linewidth=1,label=label)
+        tempAllS = np.ma.masked_equal(tempAllS,0)
         ax.plot(tempAllS_nf[:xsize],tempAllS[:xsize],marker='o',linestyle='-',label=label)
 
         fontdict = {'fontsize':27,'weight':'bold'}
@@ -408,11 +448,11 @@ if __name__=="__main__":
         nsd  = 0
         return name,nsd
     options = {0: nsd, 1:ptcut}
-    name,nsd = options[0]()
+    name,nsd = options[1]()
 
     P = Plot(root_file_path=path,filename=name)
-    #P.NBNFPicture(nsd=nsd)
-    #P.var_NPOMS(nsd=nsd)
-    #P.fix_S_var_H(nsd=nsd)
-    P.bcorr()
+    P.NBNFPicture(nsd=nsd)
+    P.var_NPOMS(nsd=nsd)
+    P.fix_S_var_H(nsd=nsd)
+    #P.bcorr()
     #P.Show()
