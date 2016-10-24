@@ -416,29 +416,11 @@ class Plot:
                 plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
 
     def bcorr(self):
-        nevents = float(linecache.getline(self.filepath+'out/bcorrtest.csv',\
-                                    1))
-        interval,nf,nb,nfnb,nfnf = np.loadtxt(self.filepath+'out/bcorrtest.csv',\
-                            unpack=True,delimiter=',',skiprows=2)
+        nevents = float(linecache.getline(self.filepath+'out/bcorr.csv',1))
+        bcorr = np.loadtxt(self.filepath+'out/bcorr.csv',skiprows=1)
+        plt.plot(bcorr)
+            
         
-        #Ngaps  = [1,2,3,7]
-        #delta_eta_gap = [0,2,2,1]
-        #delta_eta = [7,5,3,1]
-        Ngaps  = [7,3,2,1]
-        delta_eta_gap = [1,2,2,0]
-        delta_eta = [1,3,5,7]
-        
-        for i,gaps in enumerate(Ngaps):
-            for j in range(gaps):
-                start   = j*delta_eta_gap[i]
-                stop    = j*delta_eta_gap[i]+delta_eta[i]+1
-                nF      = np.sum(nf[start:stop])
-                nB      = np.sum(nb[start:stop])
-                nBnF    = np.sum(nfnb[start:stop])
-                nFnF    = np.sum(nfnf[start:stop])
-                bcorr_numb = (nBnF - nB*nF/nevents)/(nFnF - nF*nF/nevents)
-                print("{},{}::nB: {}, nF: {}, nFnF: {}, nBnF: {}".format(start,stop,nB,nF,nFnF,nBnF))
-                #print(bcorr_numb)
 
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
@@ -465,5 +447,5 @@ if __name__=="__main__":
     #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    #P.bcorr()
-    #P.Show()
+    P.bcorr()
+    P.Show()

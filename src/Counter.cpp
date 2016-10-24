@@ -242,17 +242,9 @@ void Count::ReadAndCount()
         #if bcorr
         if (bcorr_count)
         {
-			/*
+            Bcorrgap();
             for(int i=0 ; i<9 ; i++)
-            {
-                bcorr_nfnb[i][0] += bcorr_nfnb_event[i][0];
-                bcorr_nfnb[i][1] += bcorr_nfnb_event[i][1];
-                bcorr_nfnb[i][2] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][1];
-                bcorr_nfnb[i][3] += bcorr_nfnb_event[i][0]*bcorr_nfnb_event[i][0];
-
-                std::fill(bcorr_nfnb_event[i].begin(),bcorr_nfnb_event[i].end(),0);
-            }
-			*/
+                std::fill(bne[i].begin(),bne[i].end(),0);
             bcorr_count = 0;
             bcorr_Nevents += 1;
         }
@@ -272,36 +264,78 @@ void Count::ReadAndCount()
     #endif
     std::cout << std::endl;
     #if bcorr
-	/*
-	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
-    bcorr_file << bcorr_Nevents << std::endl;
-    bcorr_file << "nf,nb,nbnf,nfnf" << std::endl;
-    for(int i=0 ; i<8 ; i++)
+	//std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
+    //bcorr_file << bcorr_Nevents << std::endl;
+    double b_corr = 0;
+    for (int i=0 ; i<13 ; i++)
     {
-		bcorr_file << (float)i/10 << "," << bcorr_nfnb[i][0] << "," << bcorr_nfnb[i][1]<<
-                      ","<<bcorr_nfnb[i][2] << "," << bcorr_nfnb[i][3] << std::endl;
+        b_corr = (eta_gaps[i][3] - eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents)/
+                 (eta_gaps[i][2] - eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents);
+        //bcorr_file << b_corr << std::endl;
+        std::cout << eta_gaps[i][0] << "  " << eta_gaps[i][1] << "  " << eta_gaps[i][2] << 
+                     "  " << eta_gaps[i][3] << std::endl;
+        std::cout << b_corr << std::endl<<std::endl;
+
     }
-	bcorr_file.close();
-	*/
+	//bcorr_file.close();
     #endif
 }
 
 #if bcorr
+void Count::Bcorrgap()
+{
+
+    for(int i=0 ; i<7 ; i++)
+    {
+        temp_eta_gaps[i][0] = bne[i][0]+bne[i+1][0];
+        temp_eta_gaps[i][1] = bne[i][1]+bne[i+1][1];
+    }
+    int j = 0;
+    for(int i=7 ; i<10 ; i++)
+    {
+        temp_eta_gaps[i][0]  = bne[j][0]+bne[j+1][0]+bne[j+2][0]+bne[j+3][0];
+        temp_eta_gaps[i][1]  = bne[j][1]+bne[j+1][1]+bne[j+2][1]+bne[j+3][1];
+        j+=2;
+    }
+    j = 0;
+    for(int i=10 ; i<12 ; i++)
+    {
+        temp_eta_gaps[i][0] = bne[j][0]+bne[j+1][0]+bne[j+2][0]+bne[j+3][0]+
+                              bne[j+4][0]+bne[j+5][0];
+        temp_eta_gaps[i][1] = bne[j][1]+bne[j+1][1]+bne[j+2][1]+bne[j+3][1]+
+                              bne[j+4][1]+bne[j+5][1];
+        j+=2;
+
+    }
+
+    temp_eta_gaps[12][0] = bne[0][0]+bne[1][0]+bne[2][0]+bne[3][0]+
+                           bne[4][0]+bne[5][0]+bne[6][0]+bne[7][0];
+    temp_eta_gaps[12][1] = bne[0][1]+bne[1][1]+bne[2][1]+bne[3][1]+
+                           bne[4][1]+bne[5][1]+bne[6][1]+bne[7][1];
+
+    for (int k=0 ; k<13 ; k++)
+    {
+        eta_gaps[k][0] += temp_eta_gaps[k][0];
+        eta_gaps[k][1] += temp_eta_gaps[k][1];
+        eta_gaps[k][2] += temp_eta_gaps[k][0]*temp_eta_gaps[k][0];
+        eta_gaps[k][3] += temp_eta_gaps[k][0]*temp_eta_gaps[k][1];
+    }
+} 
 void Count::BcorrCheck(int EVENTNR,double eta)
 {
-    testfil << EVENTNR << "," << eta<< std::endl;
-    /*
+    //testfil << EVENTNR << "," << eta<< std::endl;
+    
     int nfnbi = (eta<0);
     double eta10 = std::abs(eta)*10;
     for(int i=8 ; i>-1 ; i--)
     {
         if(eta10>i)
         {
-            bcorr_nfnb_event[i][nfnbi] += 1;
+            bne[i][nfnbi] += 1;
             break;
         }
     }
-*/
+
     
 }
 #endif

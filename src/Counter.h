@@ -11,11 +11,11 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define NBNF 1 
-#define NPOM 1  
-#define ptcut 1
+#define NBNF 0 
+#define NPOM 0  
+#define ptcut 0
 #define nsd 0
-#define bcorr 0
+#define bcorr 1
 
 class Count 
 {
@@ -64,16 +64,19 @@ class Count
         #endif
 
         #if bcorr
+
         void BcorrCheck(int EVENTNR, double eta);
+        void Bcorrgap();
 
         int bcorr_count     = 0;
         int bcorr_Nevents   = 0;
-        std::ofstream testfil;
 
-        std::vector<std::vector<int>> bcorr_nfnb_event =
+        std::vector<std::vector<int>> eta_gaps = 
+            std::vector<std::vector<int>>(13,std::vector<int>(4,0));
+        std::vector<std::vector<int>> temp_eta_gaps = 
+            std::vector<std::vector<int>>(13,std::vector<int>(2,0));
+        std::vector<std::vector<int>> bne =
             std::vector<std::vector<int>>(9,std::vector<int>(2,0));
-        std::vector<std::vector<int>> bcorr_nfnb = 
-            std::vector<std::vector<int>>(9,std::vector<int>(4,0));
         #endif
 };
 
