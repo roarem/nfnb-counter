@@ -112,7 +112,6 @@ class Plot:
         simNBNF_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
         fit_a = simNBNF_fit.Parameter(0)
         fit_b = simNBNF_fit.Parameter(1)
-
         if self.nsd:        
             ax.plot(simNF[:xsize],simNBNF[:xsize],linestyle='',marker='o',markersize=8,color='black',\
                     label='simulation')
@@ -416,10 +415,95 @@ class Plot:
                 plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
 
     def bcorr(self):
-        nevents = float(linecache.getline(self.filepath+'out/bcorr.csv',1))
-        bcorr = np.loadtxt(self.filepath+'out/bcorr.csv',skiprows=1)
-        plt.plot(bcorr)
-            
+        #fig900, ax900 = plt.subplots()
+        #fig2760, ax2760 = plt.subplots()
+        #fig7000, ax7000 = plt.subplots()
+
+        x900 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
+        exp900 = np.asarray([0.212, 0.203, 0.193, 0.182, 0.172, 0.163, 0.159, 0.335, 0.3, 0.274,\
+                             0.406, 0.368, 0.452])
+        exp900err = np.asarray([0.008935882720806042, 0.007034912934784624, 0.00795110055275369,\
+                                0.00751065909225016, 0.007930952023559342, 0.007516648189186454,\
+                                0.007256031973468695, 0.008836288813749808, 0.008945389874119518,\
+                                0.008628441342444185, 0.009135097153287424, 0.008845903006477066,\
+                                0.009334345183246651])
+
+        x2760 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
+        exp2760 = np.asarray([0.302, 0.294, 0.285, 0.269, 0.259, 0.253, 0.247, 0.447, 0.413, 0.386,\
+                              0.525, 0.488, 0.572])
+        exp2760err = np.asarray([0.011016351483136328, 0.011029052543169788, 0.008009993757800314,\
+                                 0.007011419257183242, 0.010007996802557442, 0.011022250223978767,\
+                                 0.011004090148667448, 0.014012851244482689, 0.015005332385522154,\
+                                 0.01700264685276972, 0.017007351351694948, 0.021002142747824568,\
+                                 0.022005681084665385])
+
+        x7000 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
+        exp7000 = np.asarray([0.366, 0.358, 0.345, 0.334, 0.327, 0.316, 0.311, 0.521,\
+                             0.487, 0.463, 0.598, 0.564, 0.643])
+        exp7000err = np.asarray([0.00852877482408816, 0.007910120100226039, 0.00840535543567314,\
+                                0.008514693182963202, 0.007134423592694788, 0.006007495318350236,\
+                                0.00920869154657707, 0.008728115489611717, 0.011901680553602505,\
+                                0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
+                                0.010117806086301516])
+
+        nevents900 = float(linecache.getline(self.filepath+'out/900GeV_1M_bcorr.csv',1))
+        bcorr900 = np.loadtxt(self.filepath+'out/900GeV_1M_bcorr.csv',skiprows=1)
+
+        nevents7000 = float(linecache.getline(self.filepath+'out/7TeV_4M_bcorr.csv',1))
+        bcorr7000 = np.loadtxt(self.filepath+'out/7TeV_4M_bcorr.csv',skiprows=1)
+
+        fig7000,ax7000 = self.bcorrPlotSetup()
+
+        ax7000.errorbar(x7000,exp7000,exp7000err,marker='o',linestyle='')
+        ax7000.plot(x7000,bcorr7000,marker='o',linestyle='--')
+
+        fig900, ax900 = self.bcorrPlotSetup()
+
+        ax900.errorbar(x900,exp900,exp900err,marker='o',linestyle='')
+        ax900.plot(x900,bcorr900,marker='o',linestyle='--')
+
+    def bcorrPlotSetup(self):
+
+        fig, ax = plt.subplots()
+
+        ax.set_xlim(-0.1,1.3)
+        ax.set_ylim(0.1,0.9)
+
+        majorLocator = MultipleLocator(0.1)
+        minorLocator = MultipleLocator(0.1)
+
+        DPI = fig.get_dpi()
+        size = 1000
+        fig.set_size_inches(size/DPI,size/DPI)
+
+        x0,x1 = ax.get_xlim()
+        y0,y1 = ax.get_ylim()
+        ax.set_aspect((x1-x0)/(y1-y0))
+
+        ax.grid(which='minor',alpha=1)
+
+        majorFormatter = FormatStrFormatter('%.1f')
+        minorFormatter = FormatStrFormatter('%.1f')
+        ax.yaxis.set_minor_locator(minorLocator)
+        ax.xaxis.set_minor_locator(minorLocator)
+        ax.yaxis.set_major_locator(majorLocator)
+        ax.xaxis.set_major_locator(majorLocator)
+        ax.xaxis.set_major_formatter(majorFormatter)
+        #ax.xaxis.set_minor_formatter(minorFormatter)
+
+        [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
+        [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
+        #[tick.label.set_fontsize(20) for tick in ax.xaxis.get_minor_ticks()]
+        #[tick.label.set_fontsize(20) for tick in ax.yaxis.get_minor_ticks()]
+
+        ax.xaxis.set_tick_params(which='major',length=12,width=2)
+        ax.yaxis.set_tick_params(which='major',length=12,width=2)
+        ax.xaxis.set_tick_params(which='minor',length=8 ,width=2)
+        ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
+        #ax.tick_params(labeltop=1,labelright=1)
+
+        return fig, ax
+
         
 
 if __name__=="__main__":

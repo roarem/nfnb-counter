@@ -264,20 +264,22 @@ void Count::ReadAndCount()
     #endif
     std::cout << std::endl;
     #if bcorr
-	//std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
-    //bcorr_file << bcorr_Nevents << std::endl;
+	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
+    bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
+    //std::cout << bcorr_Nevents << std::endl;
     for (int i=0 ; i<13 ; i++)
     {
         b_corr = (eta_gaps[i][3] - eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents)/
                  (eta_gaps[i][2] - eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents);
-        //bcorr_file << b_corr << std::endl;
-        std::cout << eta_gaps[i][0] << "  " << eta_gaps[i][1] << "  " << eta_gaps[i][2] << 
-                     "  " << eta_gaps[i][3] << std::endl;
-        std::cout << b_corr << std::endl<<std::endl;
-
+        bcorr_file << b_corr << std::endl;
+        //std::cout << "("<<eta_gaps[i][3] << " - " <<eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents <<
+        //    ")/("<<eta_gaps[i][2] << " - " <<eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents<<")"<<std::endl;
+        //std::cout << eta_gaps[i][0] << "  " << eta_gaps[i][1] << "  " << eta_gaps[i][2] << 
+        //             "  " << eta_gaps[i][3] << std::endl;
+        //std::cout << "="<<b_corr << std::endl<<std::endl;
     }
-	//bcorr_file.close();
+	bcorr_file.close();
     #endif
 }
 
@@ -329,7 +331,7 @@ void Count::BcorrCheck(int EVENTNR,double eta)
     double eta10 = std::abs(eta)*10;
     for(int i=8 ; i>-1 ; i--)
     {
-        if(eta10>i)
+        if(eta10>=i)
         {
             bne[i][nfnbi] += 1;
             break;

@@ -69,14 +69,14 @@ class Count
         void Bcorrgap();
 
         int bcorr_count     = 0;
-        int bcorr_Nevents   = 0;
+        double bcorr_Nevents   = 0;
 
-        std::vector<std::vector<int>> eta_gaps = 
-            std::vector<std::vector<int>>(13,std::vector<int>(4,0));
-        std::vector<std::vector<int>> temp_eta_gaps = 
-            std::vector<std::vector<int>>(13,std::vector<int>(2,0));
-        std::vector<std::vector<int>> bne =
-            std::vector<std::vector<int>>(9,std::vector<int>(2,0));
+        std::vector<std::vector<double>> eta_gaps = 
+            std::vector<std::vector<double>>(13,std::vector<double>(4,0));
+        std::vector<std::vector<double>> temp_eta_gaps = 
+            std::vector<std::vector<double>>(13,std::vector<double>(2,0));
+        std::vector<std::vector<double>> bne =
+            std::vector<std::vector<double>>(9,std::vector<double>(2,0));
         #endif
 };
 

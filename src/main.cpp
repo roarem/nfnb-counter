@@ -5,11 +5,11 @@
 int main() 
 {
 
-    std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/7000/data/";
-    double number_of_events = 4000000.0;
+    //std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/7000/data/";
+    //double number_of_events = 4000000.0;
 
-    //std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/900/data/";
-    //double number_of_events = 1000000.0;
+    std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/900/data/";
+    double number_of_events = 1000000.0;
     
     //std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/13000/data/";
     //double number_of_events = 1000000.0;
