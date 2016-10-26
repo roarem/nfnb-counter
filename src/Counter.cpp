@@ -1,6 +1,7 @@
 #include "Counter.h"
 
-Count::Count(std::string datapath,double numberofevents)
+Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
+    : NBNFFilename(nbnfout)
 {
     data_loc    = datapath;
     finalpr_loc = datapath + "finalpr.data";
@@ -8,6 +9,7 @@ Count::Count(std::string datapath,double numberofevents)
     NPOM_loc    = datapath + "NPOM.dat";
     number_of_events = numberofevents;
     #if NBNF
+    std::cout << NBNFFilename << std::endl;
     InitializeNBNF();
     #endif
 }
@@ -220,13 +222,13 @@ void Count::ReadAndCount()
         }
         #if NPOM
         // Counts if abs(eta) < 1
-        #if ptcut
+        #if NPOMptcut
         if (counted[3])
         {
             NPOMSH[npoms][npomh]->Fill(nf_nb[6],nf_nb[7]);
             NPOMSH_nf[npoms][npomh]->Fill(nf_nb[6]);
         }
-        #elif nsd
+        #elif NPOMnsd
         if (counted[1])
         {
             NPOMSH[npoms][npomh]->Fill(nf_nb[2],nf_nb[3]);
@@ -254,8 +256,9 @@ void Count::ReadAndCount()
     ALLTree->Fill();
     DIVTree->Fill();
     NFTree ->Fill();
+    #if NPOM
     NPOMTree->Fill();
-
+    #endif
     for(int i=0 ; i<4 ; i++)
         DIV[i]->Divide(NF[i]);
 

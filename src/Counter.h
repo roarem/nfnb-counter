@@ -11,16 +11,16 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define NBNF 0 
+#define NBNF 1 
 #define NPOM 0  
-#define ptcut 0
-#define nsd 0
-#define bcorr 1
+#define NPOMptcut 0
+#define NPOMnsd 0
+#define bcorr 0
 
 class Count 
 {
     public:
-        Count (std::string datapath,double numberofevents);
+        Count (const char* nbnfout, std::string datapath,double numberofevents);
         void ReadAndCount();
         void Progress(int eventnr);
 
@@ -38,12 +38,7 @@ class Count
         float stop  = NBins + start;
         void InitializeNBNF();
 
-        //const char* NBNFFilename = "7TeV_4M.root";
-        //const char* NBNFFilename = "7TeV_4M_nsd.root";
-        //const char* NBNFFilename = "900GeV_1M.root";
-        //const char* NBNFFilename = "900GeV_1M_nsd.root";
-        const char* NBNFFilename = "13TeV_1M.root";
-        //const char* NBNFFilename = "13TeV_1M_nsd.root";
+        const char* NBNFFilename;
         std::vector<const char*> HistNames;
         std::vector<TH1F*> ALL;
         std::vector<TH1F*> DIV;
