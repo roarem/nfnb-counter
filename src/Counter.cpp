@@ -3,60 +3,143 @@
 Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
     : NBNFFilename(nbnfout)
 {
-    data_loc    = datapath;
-    finalpr_loc = datapath + "finalpr.data";
-    B_MULT_loc  = datapath + "B_MULT";
-    NPOM_loc    = datapath + "NPOM.dat";
-    number_of_events = numberofevents;
+    data_loc            = datapath;
+    finalpr_loc         = datapath + "finalpr.data";
+    B_MULT_loc          = datapath + "B_MULT";
+    NPOM_loc            = datapath + "NPOM.dat";
+    number_of_events    = numberofevents;
+
     #if NBNF
-    std::cout << NBNFFilename << std::endl;
     InitializeNBNF();
-    #endif
+    #endif//NBNF
 }
 
 #if NBNF
 void Count::InitializeNBNF()
 {
-
     output = new TFile(NBNFFilename,"recreate");
-
+#if NBNFRegular
     // Creates NFNB trees and histograms
-    std::vector<const char*> branchNamesALL = {"all","nsd","etalim","ptcut"}; 
-    std::vector<const char*> branchNamesDIV = {"all_div","nsd_div","etalim_div","ptcut_div"}; 
-    std::vector<const char*> branchNamesNF  = {"all_nf","nsd_nf","etalim_nf","ptcut_nf"}; 
-    HistNames.push_back("ALL");
-    HistNames.push_back("Non-single diffraction");
-    HistNames.push_back("|\\eta|<1");
-    HistNames.push_back("0.3<p_{T}<1.5");
+    std::vector<const char*> bNamesRegALL = {"allReg","nsdReg","etalimReg","ptcutReg"}; 
+    std::vector<const char*> bNamesRegDIV = {"allReg_div","nsdReg_div","etalimReg_div","ptcutReg_div"}; 
+    std::vector<const char*> bNamesRegNF  = {"allReg_nf","nsdReg_nf","etalimReg_nf","ptcutReg_nf"}; 
+    HistNamesReg.push_back("ALL Regular");
+    HistNamesReg.push_back("Non-single diffraction Regular");
+    HistNamesReg.push_back("|\\eta|<1 Regular");
+    HistNamesReg.push_back("0.3<p_{T}<1.5 Regular");
 
-    ALL.push_back(new TH1F("all",HistNames[0],NBins,start,stop));
-    ALL.push_back(new TH1F("nsd",HistNames[1],NBins,start,stop));
-    ALL.push_back(new TH1F("etalim",HistNames[2],NBins,start,stop));
-    ALL.push_back(new TH1F("ptcut",HistNames[3],NBins,start,stop));
-    DIV.push_back(new TH1F("all_div",HistNames[0],NBins,start,stop));
-    DIV.push_back(new TH1F("nsd_div",HistNames[1],NBins,start,stop));
-    DIV.push_back(new TH1F("etalim_div",HistNames[2],NBins,start,stop));
-    DIV.push_back(new TH1F("ptcut_div",HistNames[3],NBins,start,stop));
-    NF. push_back(new TH1F("nf",HistNames[0],NBins,start,stop));
-    NF. push_back(new TH1F("nsd_nf",HistNames[1],NBins,start,stop));
-    NF. push_back(new TH1F("etalim_nf",HistNames[2],NBins,start,stop));
-    NF. push_back(new TH1F("ptcut_nf",HistNames[3],NBins,start,stop));
+    ALLREG.push_back(new TH1F("allReg",HistNamesReg[0],NBins,start,stop));
+    ALLREG.push_back(new TH1F("nsdReg",HistNamesReg[1],NBins,start,stop));
+    ALLREG.push_back(new TH1F("etalimReg",HistNamesReg[2],NBins,start,stop));
+    ALLREG.push_back(new TH1F("ptcutReg",HistNamesReg[3],NBins,start,stop));
+    DIVREG.push_back(new TH1F("allReg_div",HistNamesReg[0],NBins,start,stop));
+    DIVREG.push_back(new TH1F("nsdReg_div",HistNamesReg[1],NBins,start,stop));
+    DIVREG.push_back(new TH1F("etalimReg_div",HistNamesReg[2],NBins,start,stop));
+    DIVREG.push_back(new TH1F("ptcutReg_div",HistNamesReg[3],NBins,start,stop));
+    NFREG. push_back(new TH1F("nfReg",HistNamesReg[0],NBins,start,stop));
+    NFREG. push_back(new TH1F("nsdReg_nf",HistNamesReg[1],NBins,start,stop));
+    NFREG. push_back(new TH1F("etalimReg_nf",HistNamesReg[2],NBins,start,stop));
+    NFREG. push_back(new TH1F("ptcutReg_nf",HistNamesReg[3],NBins,start,stop));
 
-    ALLTree = new TTree("H_all","all");
-    DIVTree = new TTree("H_nsd","nsd");
-    NFTree  = new TTree("H_nf","nf");
+    ALLREGTree = new TTree("H_allReg","allReg");
+    DIVREGTree = new TTree("H_divReg","divReg");
+    NFREGTree  = new TTree("H_nfReg","nfReg");
     
     for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
-        ALL[i]->Sumw2(true);
-        DIV[i]->Sumw2(true);
-        NF [i]->Sumw2(true);
+        ALLREG[i]->Sumw2(true);
+        DIVREG[i]->Sumw2(true);
+        NFREG [i]->Sumw2(true);
 
-        ALLTree->Branch(branchNamesALL[i],ALL[i]);
-        DIVTree->Branch(branchNamesDIV[i],DIV[i]);
-        NFTree-> Branch(branchNamesNF [i],NF [i]);
+        ALLREGTree->Branch(bNamesRegALL[i],ALLREG[i]);
+        DIVREGTree->Branch(bNamesRegDIV[i],DIVREG[i]);
+        NFREGTree-> Branch(bNamesRegNF [i],NFREG [i]);
     }
+#endif//NBNFRegular
+
+#if NBNFSingle
+    std::vector<const char*> bNamesSinALL = {"allSin","nsdSin","etalimSin","ptcutSin"}; 
+    std::vector<const char*> bNamesSinDIV = {"allSin_div","nsdSin_div","etalimSin_div","ptcutSin_div"}; 
+    std::vector<const char*> bNamesSinNF  = {"allSin_nf","nsdSin_nf","etalimSin_nf","ptcutSin_nf"}; 
+    std::vector<const char*> bNamesSinNB  = {"allSin_nb","nsdSin_nb","etalimSin_nb","ptcutSin_nb"}; 
+    HistNamesSin.push_back("ALL Single");
+    HistNamesSin.push_back("|\\eta|<1 Single");
+    HistNamesSin.push_back("0.3<p_{T}<1.5 Single");
+
+    //ALLSIN.push_back(new TH1F("etalimSin",HistNamesSin[2],NBins,start,stop));
+    //ALLSIN.push_back(new TH1F("ptcutSin",HistNamesSin[3],NBins,start,stop));
+    //DIVSIN.push_back(new TH1F("etalimSin_div",HistNamesSin[2],NBins,start,stop));
+    //DIVSIN.push_back(new TH1F("ptcutSin_div",HistNamesSin[3],NBins,start,stop));
+    //NFSIN. push_back(new TH1F("etalimSin_nf",HistNamesSin[2],NBins,start,stop));
+    //NFSIN. push_back(new TH1F("ptcutSin_nf",HistNamesSin[3],NBins,start,stop));
+
+    ALLSIN.push_back(new TH1F("allSin",HistNamesSin[0],NBins,start,stop));
+    DIVSIN.push_back(new TH1F("allSin_div",HistNamesSin[0],NBins,start,stop));
+    NFSIN. push_back(new TH1F("nfSin",HistNamesSin[0],NBins,start,stop));
+    NBSIN. push_back(new TH1F("nbSin",HistNamesSin[0],NBins,start,stop));
+
+    ALLSINTree = new TTree("H_allSin","allSin");
+    DIVSINTree = new TTree("H_divSin","divSin");
+    NFSINTree  = new TTree("H_nfSin","nfSin");
+    NBSINTree  = new TTree("H_nbSin","nbSin");
+    
+    for(int i=0 ; i<1 ; i++)
+    {
+        // Setting errorbar calculations
+        ALLSIN[i]->Sumw2(true);
+        DIVSIN[i]->Sumw2(true);
+        NFSIN[i]->Sumw2(true);
+        NBSIN[i]->Sumw2(true);
+
+        ALLSINTree->Branch(bNamesSinALL[i],ALLSIN[i]);
+        DIVSINTree->Branch(bNamesSinDIV[i],DIVSIN[i]);
+        NFSINTree-> Branch(bNamesSinNF [i],NFSIN [i]);
+        NBSINTree-> Branch(bNamesSinNB [i],NBSIN [i]);
+    }
+#endif//NBNFSingle
+
+#if NBNFDouble
+    std::vector<const char*> bNamesDouALL = {"allDoub","nsdDoub","etalimDoub","ptcutDoub"}; 
+    std::vector<const char*> bNamesDouDIV = {"allDoub_div","nsdDoub_div","etalimDoub_div","ptcutDoub_div"}; 
+    std::vector<const char*> bNamesDouNF  = {"allDoub_nf","nsdDoub_nf","etalimDoub_nf","ptcutDoub_nf"}; 
+    std::vector<const char*> bNamesDouNB  = {"allDoub_nb","nsdDoub_nb","etalimDoub_nb","ptcutDoub_nb"}; 
+    HistNamesDou.push_back("ALL Double");
+    HistNamesDou.push_back("|\\eta|<1 Double");
+    HistNamesDou.push_back("0.3<p_{T}<1.5 Double");
+
+    //ALLDOU.push_back(new TH1F("etalimDou",HistNamesDou[2],NBins,start,stop));
+    //ALLDOU.push_back(new TH1F("ptcutDou",HistNamesDou[3],NBins,start,stop));
+    //DIVDOU.push_back(new TH1F("etalimDou_div",HistNamesDou[2],NBins,start,stop));
+    //DIVDOU.push_back(new TH1F("ptcutDou_div",HistNamesDou[3],NBins,start,stop));
+    //NFDOU. push_back(new TH1F("etalimDou_nf",HistNamesDou[2],NBins,start,stop));
+    //NFDOU. push_back(new TH1F("ptcutDou_nf",HistNamesDou[3],NBins,start,stop));
+    
+    ALLDOU.push_back(new TH1F("allDou",HistNamesDou[0],NBins,start,stop));
+    DIVDOU.push_back(new TH1F("allDou_div",HistNamesDou[0],NBins,start,stop));
+    NFDOU. push_back(new TH1F("nfDou",HistNamesDou[0],NBins,start,stop));
+    NBDOU. push_back(new TH1F("nbDou",HistNamesDou[0],NBins,start,stop));
+
+    ALLDOUTree = new TTree("H_allDou","allDou");
+    DIVDOUTree = new TTree("H_divDou","divDou");
+    NFDOUTree  = new TTree("H_nfDou","nfDou");
+    NBDOUTree  = new TTree("H_nbDou","nbDou");
+    
+    for(int i=0 ; i<1 ; i++)
+    {
+        // Setting errorbar calculations
+        ALLDOU[i]->Sumw2(true);
+        DIVDOU[i]->Sumw2(true);
+        NFDOU[i]->Sumw2(true);
+        NBDOU[i]->Sumw2(true);
+
+        ALLDOUTree->Branch(bNamesDouALL[i],ALLDOU[i]);
+        DIVDOUTree->Branch(bNamesDouDIV[i],DIVDOU[i]);
+        NFDOUTree-> Branch(bNamesDouNF [i],NFDOU [i]);
+        NBDOUTree-> Branch(bNamesDouNB [i],NBDOU [i]);
+    }
+#endif//NBNFDouble
+
 #if NPOM
     // Creates NPOM tree and histograms
     NPOMTree = new TTree("NPOM","npom");
@@ -86,9 +169,9 @@ void Count::InitializeNBNF()
             NPOMTree->Branch(temp3.c_str(),NPOMSH_nf[i][j]);
         }
     }
-#endif
+#endif//NPOM
 }
-#endif
+#endif//NBNF
 
 
 void Count::ReadAndCount()
@@ -96,13 +179,27 @@ void Count::ReadAndCount()
     timer.startTimer();
 
     #if NBNF
-    int nf_nb [8] = {0,0,0,0,0,0,0,0};
-    int counted [4] = {0,0,0,0};
-    #endif
+    #if NBNFRegular
+    int nf_nb_reg [8] = {0,0,0,0,0,0,0,0};
+    int counted_reg [4] = {0,0,0,0};
+    #endif//NBNFRegular
+
+    #if NBNFSingle
+    int nf_nb_sin [2] = {0,0};
+    int counted_sin [1] = {0};
+    #endif//NBNFSingle
+
+    #if NBNFDouble
+    int nf_nb_dou [2] = {0,0};
+    int counted_dou [1] = {0};
+    #endif//NBNFDouble
+    #endif//NBNF
+
     #if NPOM
     int npoms, npomh;
     std::ifstream NPOMFile(NPOM_loc.c_str());
-    #endif
+    #endif//NPOM
+
     //B_MULT columns
     int   EVENTNR;  // Event number
     int   PARTNR;   // Particles in event
@@ -133,17 +230,17 @@ void Count::ReadAndCount()
     std::string finalprLine, B_MULTLine, NPOMLine;
     std::ifstream finalprFile(finalpr_loc.c_str());
     std::ifstream B_MULTFile(B_MULT_loc.c_str());
-    //testfil.open("900_bcorr.out");
     
     while (std::getline(B_MULTFile,B_MULTLine))
     {
         std::istringstream aa(B_MULTLine);
         aa >> EVENTNR >> temp >> PARTNR;
+
         #if NPOM
         std::getline(NPOMFile,NPOMLine);
         std::istringstream cc(NPOMLine);
         cc >> npoms >> npomh;
-        #endif
+        #endif//NPOM
         
         if(EVENTNR%100==0)
             Progress(EVENTNR);
@@ -174,28 +271,47 @@ void Count::ReadAndCount()
                     const double psrap      = 0.5*std::log((p_abs+PZJ)/(p_abs-PZJ));
                     const double psrap_abs  = std::abs(psrap);
 
-                    #if NBNF
-                    int nbnf_index = (psrap < 0);
-                    nf_nb[nbnf_index] += 1;
-                    counted[0] = 1;
+                    #if NBNFSingle
+                    if (IDIAG==1 or IDIAG==6 or IDIAG==10)
+                    {
+                        int nbnf_index_sin = (psrap<0);
+                        nf_nb_sin[nbnf_index_sin] += 1;
+                        counted_sin[0] = 1;
+                    }
+                    #endif//NBNFSingle
+
+                    #if NBNFDouble
+                    if(IDIAG==11)
+                    {
+                        int nbnf_index_dou = (psrap<0);
+                        nf_nb_dou[nbnf_index_dou] += 1;
+                        counted_dou[0] = 1;
+                    }
+                    #endif//NBNFDouble
+
+                    #if NBNFRegular
+                    int nbnf_index_reg = (psrap < 0);
+                    nf_nb_reg[nbnf_index_reg] += 1;
+                    counted_reg[0] = 1;
 
                     // Non-single diffraction
                     if (IDIAG !=1 and IDIAG !=6 and IDIAG != 10)
                     {
-                        nf_nb[nbnf_index+2] += 1;
-                        counted[1] = 1;
+                        nf_nb_reg[nbnf_index_reg+2] += 1;
+                        counted_reg[1] = 1;
                     }
                     if (psrap_abs < 1)
                     {
-                        nf_nb[nbnf_index+4] += 1;
-                        counted[2] = counted[3] = 1;
+                        nf_nb_reg[nbnf_index_reg+4] += 1;
+                        counted_reg[2] = counted_reg[3] = 1;
                         if (psrap_abs > 0.2 and psrap_abs < 0.8)
                         {
                             if (p_T > 0.3 and p_T < 1.5)
-                                nf_nb[nbnf_index+6] += 1;
+                                nf_nb_reg[nbnf_index_reg+6] += 1;
                         }
                     }
-                    #endif
+                    #endif//NBNFRegular
+
                 #if bcorr
                 if (psrap_abs < 1 and p_T > 0.05) 
                 {
@@ -203,44 +319,87 @@ void Count::ReadAndCount()
                     if (p_T > 0.3 and p_T < 1.5)
                         BcorrCheck(EVENTNR,psrap);
                 }
-
-                #endif
+                #endif//bcorr
                 }
             }
         }
 
         #if NBNF
+        #if NBNFRegular
         // Counts for different conditions
         for(int i=0 ; i<4 ; i++)
         {
-            if (counted[i])
+            if (counted_reg[i])
             {
-                ALL[i]->Fill(nf_nb[2*i],nf_nb[2*i+1]);
-                DIV[i]->Fill(nf_nb[2*i],nf_nb[2*i+1]);
-                NF [i]->Fill(nf_nb[2*i]);
+                ALLREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
+                DIVREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
+                NFREG[i]->Fill(nf_nb_reg[2*i]);
             }
         }
+        #endif//NBNFRegular
+
+        #if NBNFSingle
+        // Counts for different conditions
+        for(int i=0 ; i<1 ; i++)
+        {
+            if (counted_sin[i])
+            {
+                ALLSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
+                DIVSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
+                NFSIN[i]->Fill(nf_nb_sin[2*i]);
+                NBSIN[i]->Fill(nf_nb_sin[2*i+1]);
+            }
+        }
+        #endif//NBNFSingle
+
+        #if NBNFDouble
+        // Counts for different conditions
+        for(int i=0 ; i<1 ; i++)
+        {
+            if (counted_dou[i])
+            {
+                ALLDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
+                DIVDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
+                NFDOU[i]->Fill(nf_nb_dou[2*i]);
+                NBDOU[i]->Fill(nf_nb_dou[2*i+1]);
+            }
+        }
+        #endif//NBNFDouble
+
         #if NPOM
         // Counts if abs(eta) < 1
         #if NPOMptcut
-        if (counted[3])
+        if (counted_reg[3])
         {
-            NPOMSH[npoms][npomh]->Fill(nf_nb[6],nf_nb[7]);
-            NPOMSH_nf[npoms][npomh]->Fill(nf_nb[6]);
+            NPOMSH[npoms][npomh]->Fill(nf_nb_reg[6],nf_nb_reg[7]);
+            NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[6]);
         }
         #elif NPOMnsd
-        if (counted[1])
+        if (counted_reg[1])
         {
-            NPOMSH[npoms][npomh]->Fill(nf_nb[2],nf_nb[3]);
-            NPOMSH_nf[npoms][npomh]->Fill(nf_nb[2]);
+            NPOMSH[npoms][npomh]->Fill(nf_nb_reg[2],nf_nb_reg[3]);
+            NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[2]);
         }
-        #endif
-        
-        #endif
+        #endif//NPOMptcut
+        #endif//NPOM
+
         // Resets nf and nb counters
+        #if NBNFRegular
         for(int i=0 ; i<4 ; i++)
-            nf_nb[2*i] = nf_nb[2*i+1] = counted[i] = 0;
-        #endif
+            nf_nb_reg[2*i] = nf_nb_reg[2*i+1] = counted_reg[i] = 0;
+        #endif//NBNFRegular
+
+        #if NBNFSingle
+        for(int i=0 ; i<1 ; i++)
+            nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
+        #endif//NBNFSingle
+
+        #if NBNFDouble
+        for(int i=0 ; i<1 ; i++)
+            nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
+        #endif//NBNFDouble
+        #endif//NBNF
+
         #if bcorr
         if (bcorr_count)
         {
@@ -250,40 +409,55 @@ void Count::ReadAndCount()
             bcorr_count = 0;
             bcorr_Nevents += 1;
         }
-        #endif
+        #endif//bcorr
     }
     #if NBNF
-    ALLTree->Fill();
-    DIVTree->Fill();
-    NFTree ->Fill();
+    #if NBNFRegular
+    ALLREGTree->Fill();
+    DIVREGTree->Fill();
+    NFREGTree ->Fill();
+    for(int i=0 ; i<4 ; i++)
+        DIVREG[i]->Divide(NFREG[i]);
+    #endif//NBNFRegular
+
+    #if NBNFSingle
+    ALLSINTree->Fill();
+    DIVSINTree->Fill();
+    NFSINTree ->Fill();
+    NBSINTree ->Fill();
+    for(int i=0 ; i<1 ; i++)
+        DIVSIN[i]->Divide(NFSIN[i]);
+    #endif//NBNFSingle
+
+    #if NBNFDouble
+    ALLDOUTree->Fill();
+    DIVDOUTree->Fill();
+    NFDOUTree ->Fill();
+    NBDOUTree ->Fill();
+    for(int i=0 ; i<1 ; i++)
+        DIVDOU[i]->Divide(NFDOU[i]);
+    #endif//NBNFDouble
+
     #if NPOM
     NPOMTree->Fill();
-    #endif
-    for(int i=0 ; i<4 ; i++)
-        DIV[i]->Divide(NF[i]);
+    #endif//NPOM
 
     output->Write();
     output->Close();
-    #endif
+    #endif//NBNF
     std::cout << std::endl;
     #if bcorr
 	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
-    //std::cout << bcorr_Nevents << std::endl;
     for (int i=0 ; i<13 ; i++)
     {
         b_corr = (eta_gaps[i][3] - eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents)/
                  (eta_gaps[i][2] - eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents);
         bcorr_file << b_corr << std::endl;
-        //std::cout << "("<<eta_gaps[i][3] << " - " <<eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents <<
-        //    ")/("<<eta_gaps[i][2] << " - " <<eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents<<")"<<std::endl;
-        //std::cout << eta_gaps[i][0] << "  " << eta_gaps[i][1] << "  " << eta_gaps[i][2] << 
-        //             "  " << eta_gaps[i][3] << std::endl;
-        //std::cout << "="<<b_corr << std::endl<<std::endl;
     }
 	bcorr_file.close();
-    #endif
+    #endif//bcorr
 }
 
 #if bcorr
@@ -326,10 +500,9 @@ void Count::Bcorrgap()
         eta_gaps[k][3] += temp_eta_gaps[k][0]*temp_eta_gaps[k][1];
     }
 } 
+
 void Count::BcorrCheck(int EVENTNR,double eta)
 {
-    //testfil << EVENTNR << "," << eta<< std::endl;
-    
     int nfnbi = (eta<0);
     double eta10 = std::abs(eta)*10;
     for(int i=8 ; i>-1 ; i--)
@@ -340,10 +513,8 @@ void Count::BcorrCheck(int EVENTNR,double eta)
             break;
         }
     }
-
-    
 }
-#endif
+#endif//bcorr
 
 void Count::Progress(int eventnr)
 {

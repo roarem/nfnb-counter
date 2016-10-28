@@ -101,9 +101,9 @@ class Plot:
 
 ############################# Simulated data ###################################
         if self.nsd:
-            simNBNF_in  = ROOT.gROOT.FindObject("nsd_div")
+            simNBNF_in  = ROOT.gROOT.FindObject("nsdReg_div")
         else:
-            simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
+            simNBNF_in  = ROOT.gROOT.FindObject("ptcutReg_div")
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,(Nbins+1))
         simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
@@ -246,7 +246,7 @@ class Plot:
         else:
             fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])
             xsize = ax.get_xlim()[1]+5
-        outFitCSV = [['label','a','b']]
+        outFitCSV = [['label','a','a_err','b','b_err']]
 ######################## Experimental data #####################################
         if not self.nsd:
             expNF,expNBNF,expXerr,expYerr = np.loadtxt(self.filepath+'out/nbnf_7000_exp',unpack=True)
@@ -258,16 +258,18 @@ class Plot:
             rulerMeasuredY = [0.64,17.57]
             cof_b = (rulerMeasuredY[1]-rulerMeasuredY[0])/(rulerMeasuredX[1]-rulerMeasuredX[0])
             cof_a = rulerMeasuredY[0] + cof_b*0.5
+            cof_a_err = '{:.4}'.format(0.0) 
+            cof_b_err = '{:.4}'.format(0.0)
             label = 'experiment fit'
-            outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
+            outFitCSV.append([label,'{:.4}'.format(cof_a),cof_a_err,'{:.4}'.format(cof_b),cof_b_err,])
             ax.plot(expNF,self.fit(cof_a,cof_b,expNF),linestyle='--',linewidth=2,alpha=1,label='experiment fit')
 
 ######################### Simulated for all npom ###############################
         self.ReOpen()
         if self.nsd:
-            simNBNF_in  = ROOT.gROOT.FindObject("nsd_div")
+            simNBNF_in  = ROOT.gROOT.FindObject("nsdReg_div")
         else:
-            simNBNF_in  = ROOT.gROOT.FindObject("ptcut_div")
+            simNBNF_in  = ROOT.gROOT.FindObject("ptcutReg_div")
 
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,Nbins-1)
@@ -279,8 +281,11 @@ class Plot:
             temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
         cof_a = temp_fit.Parameter(0)
         cof_b = temp_fit.Parameter(1)
+        cof_a_err = '{:.4}'.format(temp_fit.ParError(0))
+        cof_b_err = '{:.4}'.format(temp_fit.ParError(1))
+        
         label='all npoms'
-        outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
+        outFitCSV.append([label,'{:.4}'.format(cof_a),cof_a_err,'{:.4}'.format(cof_b),cof_b_err])
 
         if self.nsd:
             simNBNF = np.ma.masked_equal(simNBNF,0)
@@ -328,7 +333,9 @@ class Plot:
 
             cof_a = temp_fit.Parameter(0)
             cof_b = temp_fit.Parameter(1)
-            outFitCSV.append([label,'{:.4}'.format(cof_a),'{:.4}'.format(cof_b)])
+            cof_a_err = '{:.4}'.format(temp_fit.ParError(0))
+            cof_b_err = '{:.4}'.format(temp_fit.ParError(1))
+            outFitCSV.append([label,'{:.4}'.format(cof_a),cof_a_err,'{:.4}'.format(cof_b),cof_b_err])
             if self.nsd:
                 tempAllS = np.ma.masked_equal(tempAllS,0)
                 ax.plot(tempAllS_nf,tempAllS,label=label)
@@ -349,7 +356,7 @@ class Plot:
         leg = plt.legend(handles,labels,loc='best')
         leg.get_frame().set_alpha(0.0)
 ####################### Closing remarks ########################################
-        fmt = '%s,%s,%s'
+        fmt = '%s,%s,%s,%s,%s'
         np.savetxt(self.filepath+'analyzed/fits.csv',outFitCSV,fmt=fmt)
         if self.save:
             if self.nsd:
@@ -446,27 +453,55 @@ class Plot:
                                 0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
                                 0.010117806086301516])
 
+        fig900, ax900 = self.bcorrPlotSetup()
+        fig7000,ax7000 = self.bcorrPlotSetup()
+
         nevents900 = float(linecache.getline(self.filepath+'out/900GeV_1M_bcorr.csv',1))
         bcorr900 = np.loadtxt(self.filepath+'out/900GeV_1M_bcorr.csv',skiprows=1)
-
         nevents7000 = float(linecache.getline(self.filepath+'out/7TeV_4M_bcorr.csv',1))
         bcorr7000 = np.loadtxt(self.filepath+'out/7TeV_4M_bcorr.csv',skiprows=1)
 
-        fig7000,ax7000 = self.bcorrPlotSetup()
+        delta = 0; fontsize=27; markersize=10
+        fontdict = {'fontsize':27,'weight':'bold'}
 
-        ax7000.errorbar(x7000,exp7000,exp7000err,marker='o',linestyle='')
-        ax7000.plot(x7000,bcorr7000,marker='o',linestyle='--')
+        for i,j in zip([0,7,10,12],[7,10,12,13]):
+            ax900.errorbar(x900[i:j],exp900[i:j],exp900err[i:j],marker='s',markersize=markersize,\
+                    linestyle='',color='grey',label='ALICE')
+            ax900.plot(x900[i:j],bcorr900[i:j],marker='o',markersize=markersize,\
+                    linestyle='--',color='black',label='QGSM')
+            ax900.text(-0.1,exp900[i],'0.{}'.format(delta),fontsize=fontsize)
 
-        fig900, ax900 = self.bcorrPlotSetup()
+            ax7000.errorbar(x7000[i:j],exp7000[i:j],exp7000err[i:j],marker='s',markersize=markersize,\
+                    linestyle='',color='grey',label='ALICE')
+            ax7000.plot(x7000[i:j],bcorr7000[i:j],marker='o',markersize=markersize,\
+                    linestyle='--',color='black',label='QGSM')
+            ax7000.text(-0.1,exp7000[i],'0.{}'.format(delta),fontsize=fontsize)
 
-        ax900.errorbar(x900,exp900,exp900err,marker='o',linestyle='')
-        ax900.plot(x900,bcorr900,marker='o',linestyle='--')
+            delta +=2
+        
+        ax900.text(-0.1,bcorr900[12]+0.03,'$\delta\eta$',fontsize=fontsize)
+        ax7000.text(-0.1,bcorr7000[12]+0.03,'$\delta\eta$',fontsize=fontsize)
+
+        ax900.set_title('$900 GeV$',fontdict=fontdict)
+        ax7000.set_title('$7000 GeV$',fontdict=fontdict)
+        ax900.set_xlabel('$\eta$',fontdict=fontdict)
+        ax900.set_ylabel('$b_{corr}$',fontdict=fontdict)
+        ax7000.set_xlabel('$\eta$',fontdict=fontdict)
+        ax7000.set_ylabel('$b_{corr}$',fontdict=fontdict)
+
+        handles, labels = ax900.get_legend_handles_labels()
+        leg900 = ax900.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
+        leg900.get_frame().set_alpha(0.0)
+        handles, labels = ax7000.get_legend_handles_labels()
+        leg7000 = ax7000.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
+        leg7000.get_frame().set_alpha(0.0)
+
 
     def bcorrPlotSetup(self):
 
         fig, ax = plt.subplots()
 
-        ax.set_xlim(-0.1,1.3)
+        ax.set_xlim(-0.2,1.3)
         ax.set_ylim(0.1,0.9)
 
         majorLocator = MultipleLocator(0.1)
@@ -502,6 +537,7 @@ class Plot:
         ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
         #ax.tick_params(labeltop=1,labelright=1)
 
+
         return fig, ax
 
         
@@ -529,7 +565,7 @@ if __name__=="__main__":
     P = options[1](save=0)
 
     #P.NBNFPicture()
-    #P.var_NPOMS()
+    P.var_NPOMS()
     #P.fix_S_var_H()
-    P.bcorr()
+    #P.bcorr()
     P.Show()

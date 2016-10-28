@@ -11,11 +11,16 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define NBNF 1 
-#define NPOM 0  
-#define NPOMptcut 0
-#define NPOMnsd 0
 #define bcorr 0
+#define NBNF 1 
+    ///Dependent on NBNF///
+    #define NBNFRegular 1
+    #define NBNFSingle 1
+    #define NBNFDouble 1
+    #define NPOM 1  
+        //Dependent on NPOM//
+        #define NPOMptcut 1
+        #define NPOMnsd 0
 
 class Count 
 {
@@ -33,22 +38,50 @@ class Count
         Timer timer;
 
         #if NBNF
+        void InitializeNBNF();
+
         float NBins = 240;
         float start = -0.5;
         float stop  = NBins + start;
-        void InitializeNBNF();
-
-        const char* NBNFFilename;
-        std::vector<const char*> HistNames;
-        std::vector<TH1F*> ALL;
-        std::vector<TH1F*> DIV;
-        std::vector<TH1F*> NF;
-
-        TTree *ALLTree; 
-        TTree *DIVTree; 
-        TTree *NFTree; 
-
         TFile *output;
+        const char* NBNFFilename;
+
+        #if NBNFRegular
+        std::vector<const char*> HistNamesReg;
+        std::vector<TH1F*> ALLREG;
+        std::vector<TH1F*> DIVREG;
+        std::vector<TH1F*> NFREG;
+
+        TTree *ALLREGTree; 
+        TTree *DIVREGTree; 
+        TTree *NFREGTree; 
+        #endif
+
+        #if NBNFSingle
+        std::vector<const char*> HistNamesSin;
+        std::vector<TH1F*> ALLSIN;
+        std::vector<TH1F*> DIVSIN;
+        std::vector<TH1F*> NFSIN;
+        std::vector<TH1F*> NBSIN;
+
+        TTree *ALLSINTree; 
+        TTree *DIVSINTree; 
+        TTree *NFSINTree; 
+        TTree *NBSINTree; 
+        #endif
+
+        #if NBNFDouble
+        std::vector<const char*> HistNamesDou;
+        std::vector<TH1F*> ALLDOU;
+        std::vector<TH1F*> DIVDOU;
+        std::vector<TH1F*> NFDOU;
+        std::vector<TH1F*> NBDOU;
+
+        TTree *ALLDOUTree; 
+        TTree *DIVDOUTree; 
+        TTree *NFDOUTree; 
+        TTree *NBDOUTree; 
+        #endif
 
         #if NPOM
         std::vector<std::vector<TH1F*>> NPOMSH;
@@ -59,7 +92,6 @@ class Count
         #endif
 
         #if bcorr
-
         void BcorrCheck(int EVENTNR, double eta);
         void Bcorrgap();
 
@@ -74,5 +106,3 @@ class Count
             std::vector<std::vector<double>>(9,std::vector<double>(2,0));
         #endif
 };
-
-
