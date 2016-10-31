@@ -4,8 +4,7 @@
 
 int main() 
 {
-
-    //std::string datapath = "/home/roar/DISKS/BIG1/19-31_oct/4mln/7TeV/build/data/";
+    //std::string datapath = "/home/roar/DISKS/BIG1/19-31_oct/4mln/no_DD/7TeV/build/data/";
     std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/7000/data/";
     const char* nbnfout = "7TeV_4M.root";
     //const char* nbnfout = "7TeV_4M_nsd.root";

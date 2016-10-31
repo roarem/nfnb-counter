@@ -38,26 +38,6 @@ class Timer
         returnTime[2] = seconds%60;
         returnTime[1] = seconds/60%60;
         returnTime[0] = seconds/60/60%60;
-        /*
-        if (seconds<60)
-        {
-            returnTime[2] = seconds;
-            returnTime[1] = 0;
-            returnTime[0] = 0;
-        }
-        else if (seconds>60 and seconds<3600)
-        {
-            returnTime[2] = int(seconds%60);
-            returnTime[1] = int(seconds/60%60);
-            returnTime[0] = 0;
-        }
-        else if (seconds<3600)
-        {
-            returnTime[2] = int(seconds%60);
-            returnTime[1] = int(seconds/60%60);
-            returnTime[0] = int(seconds/60/60%60);
-        }
-        */
         return returnTime; 
     }
 
