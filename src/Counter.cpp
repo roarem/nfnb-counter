@@ -20,9 +20,9 @@ void Count::InitializeNBNF()
     output = new TFile(NBNFFilename,"recreate");
 #if NBNFRegular
     // Creates NFNB trees and histograms
-    std::vector<const char*> bNamesRegALL = {"allReg","nsdReg","etalimReg","ptcutReg"}; 
-    std::vector<const char*> bNamesRegDIV = {"allReg_div","nsdReg_div","etalimReg_div","ptcutReg_div"}; 
-    std::vector<const char*> bNamesRegNF  = {"allReg_nf","nsdReg_nf","etalimReg_nf","ptcutReg_nf"}; 
+    
+    output->mkdir(NBNFREG,NBNFREG);
+
     HistNamesReg.push_back("ALL Regular");
     HistNamesReg.push_back("Non-single diffraction Regular");
     HistNamesReg.push_back("|\\eta|<1 Regular");
@@ -40,49 +40,32 @@ void Count::InitializeNBNF()
     NFREG. push_back(new TH1F("nsdReg_nf",HistNamesReg[1],NBins,start,stop));
     NFREG. push_back(new TH1F("etalimReg_nf",HistNamesReg[2],NBins,start,stop));
     NFREG. push_back(new TH1F("ptcutReg_nf",HistNamesReg[3],NBins,start,stop));
+    NBREG. push_back(new TH1F("nbReg",HistNamesReg[0],NBins,start,stop));
+    NBREG. push_back(new TH1F("nsdReg_nb",HistNamesReg[1],NBins,start,stop));
+    NBREG. push_back(new TH1F("etalimReg_nb",HistNamesReg[2],NBins,start,stop));
+    NBREG. push_back(new TH1F("ptcutReg_nb",HistNamesReg[3],NBins,start,stop));
 
-    ALLREGTree = new TTree("H_allReg","allReg");
-    DIVREGTree = new TTree("H_divReg","divReg");
-    NFREGTree  = new TTree("H_nfReg","nfReg");
-    
     for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
         ALLREG[i]->Sumw2(true);
         DIVREG[i]->Sumw2(true);
         NFREG [i]->Sumw2(true);
-
-        ALLREGTree->Branch(bNamesRegALL[i],ALLREG[i]);
-        DIVREGTree->Branch(bNamesRegDIV[i],DIVREG[i]);
-        NFREGTree-> Branch(bNamesRegNF [i],NFREG [i]);
+        NBREG [i]->Sumw2(true);
     }
 #endif//NBNFRegular
 
 #if NBNFSingle
-    std::vector<const char*> bNamesSinALL = {"allSin","nsdSin","etalimSin","ptcutSin"}; 
-    std::vector<const char*> bNamesSinDIV = {"allSin_div","nsdSin_div","etalimSin_div","ptcutSin_div"}; 
-    std::vector<const char*> bNamesSinNF  = {"allSin_nf","nsdSin_nf","etalimSin_nf","ptcutSin_nf"}; 
-    std::vector<const char*> bNamesSinNB  = {"allSin_nb","nsdSin_nb","etalimSin_nb","ptcutSin_nb"}; 
+    output->mkdir(NBNFSIN,NBNFSIN);
+
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
     HistNamesSin.push_back("0.3<p_{T}<1.5 Single");
-
-    //ALLSIN.push_back(new TH1F("etalimSin",HistNamesSin[2],NBins,start,stop));
-    //ALLSIN.push_back(new TH1F("ptcutSin",HistNamesSin[3],NBins,start,stop));
-    //DIVSIN.push_back(new TH1F("etalimSin_div",HistNamesSin[2],NBins,start,stop));
-    //DIVSIN.push_back(new TH1F("ptcutSin_div",HistNamesSin[3],NBins,start,stop));
-    //NFSIN. push_back(new TH1F("etalimSin_nf",HistNamesSin[2],NBins,start,stop));
-    //NFSIN. push_back(new TH1F("ptcutSin_nf",HistNamesSin[3],NBins,start,stop));
 
     ALLSIN.push_back(new TH1F("allSin",HistNamesSin[0],NBins,start,stop));
     DIVSIN.push_back(new TH1F("allSin_div",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfSin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbSin",HistNamesSin[0],NBins,start,stop));
-
-    ALLSINTree = new TTree("H_allSin","allSin");
-    DIVSINTree = new TTree("H_divSin","divSin");
-    NFSINTree  = new TTree("H_nfSin","nfSin");
-    NBSINTree  = new TTree("H_nbSin","nbSin");
     
     for(int i=0 ; i<1 ; i++)
     {
@@ -91,39 +74,20 @@ void Count::InitializeNBNF()
         DIVSIN[i]->Sumw2(true);
         NFSIN[i]->Sumw2(true);
         NBSIN[i]->Sumw2(true);
-
-        ALLSINTree->Branch(bNamesSinALL[i],ALLSIN[i]);
-        DIVSINTree->Branch(bNamesSinDIV[i],DIVSIN[i]);
-        NFSINTree-> Branch(bNamesSinNF [i],NFSIN [i]);
-        NBSINTree-> Branch(bNamesSinNB [i],NBSIN [i]);
     }
 #endif//NBNFSingle
 
 #if NBNFDouble
-    std::vector<const char*> bNamesDouALL = {"allDoub","nsdDoub","etalimDoub","ptcutDoub"}; 
-    std::vector<const char*> bNamesDouDIV = {"allDoub_div","nsdDoub_div","etalimDoub_div","ptcutDoub_div"}; 
-    std::vector<const char*> bNamesDouNF  = {"allDoub_nf","nsdDoub_nf","etalimDoub_nf","ptcutDoub_nf"}; 
-    std::vector<const char*> bNamesDouNB  = {"allDoub_nb","nsdDoub_nb","etalimDoub_nb","ptcutDoub_nb"}; 
+    output->mkdir(NBNFDOU,NBNFDOU);
+
     HistNamesDou.push_back("ALL Double");
     HistNamesDou.push_back("|\\eta|<1 Double");
     HistNamesDou.push_back("0.3<p_{T}<1.5 Double");
-
-    //ALLDOU.push_back(new TH1F("etalimDou",HistNamesDou[2],NBins,start,stop));
-    //ALLDOU.push_back(new TH1F("ptcutDou",HistNamesDou[3],NBins,start,stop));
-    //DIVDOU.push_back(new TH1F("etalimDou_div",HistNamesDou[2],NBins,start,stop));
-    //DIVDOU.push_back(new TH1F("ptcutDou_div",HistNamesDou[3],NBins,start,stop));
-    //NFDOU. push_back(new TH1F("etalimDou_nf",HistNamesDou[2],NBins,start,stop));
-    //NFDOU. push_back(new TH1F("ptcutDou_nf",HistNamesDou[3],NBins,start,stop));
     
     ALLDOU.push_back(new TH1F("allDou",HistNamesDou[0],NBins,start,stop));
     DIVDOU.push_back(new TH1F("allDou_div",HistNamesDou[0],NBins,start,stop));
     NFDOU. push_back(new TH1F("nfDou",HistNamesDou[0],NBins,start,stop));
     NBDOU. push_back(new TH1F("nbDou",HistNamesDou[0],NBins,start,stop));
-
-    ALLDOUTree = new TTree("H_allDou","allDou");
-    DIVDOUTree = new TTree("H_divDou","divDou");
-    NFDOUTree  = new TTree("H_nfDou","nfDou");
-    NBDOUTree  = new TTree("H_nbDou","nbDou");
     
     for(int i=0 ; i<1 ; i++)
     {
@@ -132,21 +96,18 @@ void Count::InitializeNBNF()
         DIVDOU[i]->Sumw2(true);
         NFDOU[i]->Sumw2(true);
         NBDOU[i]->Sumw2(true);
-
-        ALLDOUTree->Branch(bNamesDouALL[i],ALLDOU[i]);
-        DIVDOUTree->Branch(bNamesDouDIV[i],DIVDOU[i]);
-        NFDOUTree-> Branch(bNamesDouNF [i],NFDOU [i]);
-        NBDOUTree-> Branch(bNamesDouNB [i],NBDOU [i]);
     }
 #endif//NBNFDouble
 
 #if NPOM
     // Creates NPOM tree and histograms
-    NPOMTree = new TTree("NPOM","npom");
+
+    output->mkdir(NPOMDIR);
     for (int i=0 ; i<25 ; i++)
     {
         NPOMSH.push_back(std::vector<TH1F*>());
         NPOMSH_nf.push_back(std::vector<TH1F*>());
+        NPOMSH_nb.push_back(std::vector<TH1F*>());
 
         for (int j=0 ; j<25 ; j++)
         {
@@ -157,16 +118,17 @@ void Count::InitializeNBNF()
             std::string temp1 = "npom"+std::string(number_string);
             std::string temp2 = "NPOM_NF"+std::string(number_string);
             std::string temp3 = "npom_nf"+std::string(number_string);
+            std::string temp4 = "NPOM_NB"+std::string(number_string);
+            std::string temp5 = "npom_nb"+std::string(number_string);
 
             NPOMSH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
             NPOMSH_nf[i].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
+            NPOMSH_nb[i].push_back(new TH1F(temp4.c_str(),temp5.c_str(),NBins,start,stop));
 
             // Setting errorbar calculations
             NPOMSH[i][j]->Sumw2(true);
             NPOMSH_nf[i][j]->Sumw2(true);
-
-            NPOMTree->Branch(temp1.c_str(),NPOMSH[i][j]);
-            NPOMTree->Branch(temp3.c_str(),NPOMSH_nf[i][j]);
+            NPOMSH_nb[i][j]->Sumw2(true);
         }
     }
 #endif//NPOM
@@ -244,8 +206,8 @@ void Count::ReadAndCount()
         
         if(EVENTNR%100==0)
             Progress(EVENTNR);
-        //if (EVENTNR%100!=0) 
-        //    continue;
+        if (EVENTNR%100!=0) 
+            continue;
         
         for (int i=0 ; i<PARTNR ; i++)
         {
@@ -334,6 +296,7 @@ void Count::ReadAndCount()
                 ALLREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
                 DIVREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
                 NFREG[i]->Fill(nf_nb_reg[2*i]);
+                NBREG[i]->Fill(nf_nb_reg[2*i+1]);
             }
         }
         #endif//NBNFRegular
@@ -373,12 +336,14 @@ void Count::ReadAndCount()
         {
             NPOMSH[npoms][npomh]->Fill(nf_nb_reg[6],nf_nb_reg[7]);
             NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[6]);
+            NPOMSH_nb[npoms][npomh]->Fill(nf_nb_reg[7]);
         }
         #elif NPOMnsd
         if (counted_reg[1])
         {
             NPOMSH[npoms][npomh]->Fill(nf_nb_reg[2],nf_nb_reg[3]);
             NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[2]);
+            NPOMSH_nb[npoms][npomh]->Fill(nf_nb_reg[3]);
         }
         #endif//NPOMptcut
         #endif//NPOM
@@ -413,36 +378,60 @@ void Count::ReadAndCount()
     }
     #if NBNF
     #if NBNFRegular
-    ALLREGTree->Fill();
-    DIVREGTree->Fill();
-    NFREGTree ->Fill();
     for(int i=0 ; i<4 ; i++)
         DIVREG[i]->Divide(NFREG[i]);
+
+    output->cd(NBNFREG);
+    for(int i=0 ; i<4 ; i++)
+    {
+        ALLREG[i]->Write();
+        DIVREG[i]->Write();
+        NFREG [i]->Write();
+        NBREG [i]->Write();
+    }
     #endif//NBNFRegular
 
     #if NBNFSingle
-    ALLSINTree->Fill();
-    DIVSINTree->Fill();
-    NFSINTree ->Fill();
-    NBSINTree ->Fill();
     for(int i=0 ; i<1 ; i++)
         DIVSIN[i]->Divide(NFSIN[i]);
+
+    output->cd(NBNFSIN);
+    for(int i=0 ; i<1 ; i++)
+    {
+        ALLSIN[i]->Write();
+        DIVSIN[i]->Write();
+        NFSIN [i]->Write();
+        NBSIN [i]->Write();
+    }
     #endif//NBNFSingle
 
     #if NBNFDouble
-    ALLDOUTree->Fill();
-    DIVDOUTree->Fill();
-    NFDOUTree ->Fill();
-    NBDOUTree ->Fill();
     for(int i=0 ; i<1 ; i++)
         DIVDOU[i]->Divide(NFDOU[i]);
+
+    output->cd(NBNFDOU);
+    for(int i=0 ; i<1 ; i++)
+    {
+        ALLDOU[i]->Write();
+        DIVDOU[i]->Write();
+        NFDOU [i]->Write();
+        NBDOU [i]->Write();
+    }
     #endif//NBNFDouble
 
     #if NPOM
-    NPOMTree->Fill();
+    output->cd(NPOMDIR);
+    for(int i=0 ; i<25 ; i++)
+    {
+        for(int j=0 ; j<25 ; j++)
+        {
+            NPOMSH[i][j]->Write();
+            NPOMSH_nf[i][j]->Write();
+            NPOMSH_nb[i][j]->Write();
+        }
+    }
     #endif//NPOM
 
-    output->Write();
     output->Close();
     #endif//NBNF
     std::cout << std::endl;
@@ -521,6 +510,6 @@ void Count::Progress(int eventnr)
     timer.stopTimer();
     int *returnTime = new int[3];
     returnTime = timer.elapsedTimeClock();
-    printf("\r %3d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
-                                       returnTime[0],returnTime[1],returnTime[2]);
+    printf("\r %3d%% %02dh %02dm %02ds  Event#: %6d ",(int)(eventnr/number_of_events*100),
+                                       returnTime[0],returnTime[1],returnTime[2],eventnr);
 }

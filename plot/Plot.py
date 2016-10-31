@@ -564,8 +564,8 @@ if __name__=="__main__":
     options = {0: nsd7, 1:ptcut7,2:ptcut9,3:ptcut13}
     P = options[1](save=0)
 
-    #P.NBNFPicture()
-    P.var_NPOMS()
+    P.NBNFPicture()
+    #P.var_NPOMS()
     #P.fix_S_var_H()
     #P.bcorr()
     P.Show()
