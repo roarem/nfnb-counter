@@ -100,10 +100,19 @@ class Plot:
                         label='experimental',zorder=10)
 
 ############################# Simulated data ###################################
+        self.ReOpen()
+
         if self.nsd:
-            simNBNF_in  = ROOT.gROOT.FindObject("nsdReg_div")
+            simNBNF_in  = self.f.FindObjectAnyAny("nsdReg")
+            simNF_in    = self.f.FindObjectAnyAny("nsdReg_nf")
+            simNBNF_in.Divide(simNF_in) 
         else:
-            simNBNF_in  = ROOT.gROOT.FindObject("ptcutReg_div")
+            #simNBNF_in  = self.f.FindObjectAny("ptcutReg")
+            #simNF_in    = self.f.FindObjectAny("ptcutReg_nf")
+            simNBNF_in  = self.f.FindObjectAny("ptcutReg")
+            simNF_in    = self.f.FindObjectAny("ptcutReg_nf")
+            simNBNF_in.Divide(simNF_in)
+
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,(Nbins+1))
         simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
@@ -130,8 +139,10 @@ class Plot:
         for i in range(7):
             SxH0_name = "NPOM_{:02d}_00".format(i)
             SxH0_nf_name = "NPOM_NF_{:02d}_00".format(i)
-            SxH0 = ROOT.gROOT.FindObject(SxH0_name)
-            SxH0_nf = ROOT.gROOT.FindObject(SxH0_nf_name)
+            #SxH0 = self.f.FindObjectAny(SxH0_name)
+            #SxH0_nf = self.f.FindObjectAny(SxH0_nf_name)
+            SxH0 =    self.f.FindObjectAny(SxH0_name)
+            SxH0_nf = self.f.FindObjectAny(SxH0_nf_name)
             SxH0.Divide(SxH0_nf)
             temp_hist = [SxH0.GetBinContent(j) for j in range(1,Nbins)]
             NPOMList.append(np.asarray(temp_hist))
@@ -177,13 +188,13 @@ class Plot:
 
 ################## All soft pomerons and 0 hard pomerons########################
         self.ReOpen()
-        S = ROOT.gROOT.FindObject("NPOM_00_00")
-        S_nf = ROOT.gROOT.FindObject("NPOM_NF_00_00")
+        S    = self.f.FindObjectAny("NPOM_00_00")
+        S_nf = self.f.FindObjectAny("NPOM_NF_00_00")
         for i in range(1,25):
             S_name = "NPOM_{:02d}_00".format(i)
             S_nf_name = "NPOM_NF_{:02d}_00".format(i)
-            S.Add(ROOT.gROOT.FindObject(S_name))
-            S_nf.Add(ROOT.gROOT.FindObject(S_nf_name))
+            S.Add(self.f.FindObjectAny(S_name))
+            S_nf.Add(self.f.FindObjectAny(S_nf_name))
         S.Divide(S_nf)
         simS_err = np.asarray([S.GetBinError(i) for i in range(1,Nbins)])
         simS = np.asarray([S.GetBinContent(i) for i in range(1,Nbins)])
@@ -267,9 +278,13 @@ class Plot:
 ######################### Simulated for all npom ###############################
         self.ReOpen()
         if self.nsd:
-            simNBNF_in  = ROOT.gROOT.FindObject("nsdReg_div")
+            simNBNF_in  = self.f.FindObjectAny("nsdReg")
+            simNF_in    = self.f.FindObjectAny("nsdReg_nf")
+            simNBNF_in.Divide(simNF_in) 
         else:
-            simNBNF_in  = ROOT.gROOT.FindObject("ptcutReg_div")
+            simNBNF_in  = self.f.FindObjectAny("ptcutReg")
+            simNF_in    = self.f.FindObjectAny("ptcutReg_nf")
+            simNBNF_in.Divide(simNF_in)
 
         Nbins       = simNBNF_in.GetNbinsX()
         simNF       = np.linspace(0,Nbins,Nbins-1)
@@ -312,11 +327,11 @@ class Plot:
             for i in range(n+1):
                 for j in range(NSNH):
                     if i or j:
-                        tempS.Add   (ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j)))
-                        tempS_nf.Add(ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                        tempS.Add   (self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(i,j)))
+                        tempS_nf.Add(self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(i,j)))
                     else:
-                        tempS      = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(i,j))
-                        tempS_nf   = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(i,j))
+                        tempS      = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(i,j))
+                        tempS_nf   = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(i,j))
 
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
@@ -378,8 +393,8 @@ class Plot:
         NH = [0,1,2,3,4]
 
         for h in NH:
-            tempS      = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,h))
-            tempS_nf   = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,h))
+            tempS      = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,h))
+            tempS_nf   = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,h))
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
             tempAllS_nf  = np.linspace(0,Nbins,Nbins+1)
@@ -393,11 +408,11 @@ class Plot:
 
         self.ReOpen()
 
-        tempS = ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
-        tempS_nf = ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS_nf = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
         for h in range(1,25):
-            tempS.Add   (ROOT.gROOT.FindObject("NPOM_{:02d}_{:02d}".format(NS,h)))
-            tempS_nf.Add(ROOT.gROOT.FindObject("NPOM_NF_{:02d}_{:02d}".format(NS,h)))
+            tempS.Add   (self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,h)))
+            tempS_nf.Add(self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,h)))
         tempS.Divide(tempS_nf)
         Nbins = tempS.GetNbinsX()
         tempAll_nf   = np.linspace(0,Nbins,Nbins+1)
@@ -422,9 +437,6 @@ class Plot:
                 plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
 
     def bcorr(self):
-        #fig900, ax900 = plt.subplots()
-        #fig2760, ax2760 = plt.subplots()
-        #fig7000, ax7000 = plt.subplots()
 
         x900 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
         exp900 = np.asarray([0.212, 0.203, 0.193, 0.182, 0.172, 0.163, 0.159, 0.335, 0.3, 0.274,\
@@ -435,14 +447,14 @@ class Plot:
                                 0.008628441342444185, 0.009135097153287424, 0.008845903006477066,\
                                 0.009334345183246651])
 
-        x2760 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
-        exp2760 = np.asarray([0.302, 0.294, 0.285, 0.269, 0.259, 0.253, 0.247, 0.447, 0.413, 0.386,\
-                              0.525, 0.488, 0.572])
-        exp2760err = np.asarray([0.011016351483136328, 0.011029052543169788, 0.008009993757800314,\
-                                 0.007011419257183242, 0.010007996802557442, 0.011022250223978767,\
-                                 0.011004090148667448, 0.014012851244482689, 0.015005332385522154,\
-                                 0.01700264685276972, 0.017007351351694948, 0.021002142747824568,\
-                                 0.022005681084665385])
+        #x2760 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
+        #exp2760 = np.asarray([0.302, 0.294, 0.285, 0.269, 0.259, 0.253, 0.247, 0.447, 0.413, 0.386,\
+        #                      0.525, 0.488, 0.572])
+        #exp2760err = np.asarray([0.011016351483136328, 0.011029052543169788, 0.008009993757800314,\
+        #                         0.007011419257183242, 0.010007996802557442, 0.011022250223978767,\
+        #                         0.011004090148667448, 0.014012851244482689, 0.015005332385522154,\
+        #                         0.01700264685276972, 0.017007351351694948, 0.021002142747824568,\
+        #                         0.022005681084665385])
 
         x7000 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
         exp7000 = np.asarray([0.366, 0.358, 0.345, 0.334, 0.327, 0.316, 0.311, 0.521,\
@@ -453,11 +465,15 @@ class Plot:
                                 0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
                                 0.010117806086301516])
 
-        fig900, ax900 = self.bcorrPlotSetup()
+        fig900, ax900  = self.bcorrPlotSetup()
+        #fig2760,ax2760 = self.bcorrPlotSetup()
         fig7000,ax7000 = self.bcorrPlotSetup()
+
 
         nevents900 = float(linecache.getline(self.filepath+'out/900GeV_1M_bcorr.csv',1))
         bcorr900 = np.loadtxt(self.filepath+'out/900GeV_1M_bcorr.csv',skiprows=1)
+        #nevents2760 = float(linecache.getline(self.filepath+'out/2760GeV_4M_bcorr.csv',1))
+        #bcorr2760 = np.loadtxt(self.filepath+'out/2760GeV_4M_bcorr.csv',skiprows=1)
         nevents7000 = float(linecache.getline(self.filepath+'out/7TeV_4M_bcorr.csv',1))
         bcorr7000 = np.loadtxt(self.filepath+'out/7TeV_4M_bcorr.csv',skiprows=1)
 
@@ -471,6 +487,12 @@ class Plot:
                     linestyle='--',color='black',label='QGSM')
             ax900.text(-0.1,exp900[i],'0.{}'.format(delta),fontsize=fontsize)
 
+            #ax2760.errorbar(x2760[i:j],exp2760[i:j],exp2760err[i:j],marker='s',markersize=markersize,\
+            #                linestyle='',color='grey',label='ALICE')
+            #ax2760.plot(x2760[i:j],bcorr2760[i:j],marker='o',markersize=markersize,\
+            #            linestyle='--',color='black',label='QGSM')
+            #ax2760.text(-0.1,exp2760[i],'0.{}'.format(delta),fontsize=fontsize)
+
             ax7000.errorbar(x7000[i:j],exp7000[i:j],exp7000err[i:j],marker='s',markersize=markersize,\
                     linestyle='',color='grey',label='ALICE')
             ax7000.plot(x7000[i:j],bcorr7000[i:j],marker='o',markersize=markersize,\
@@ -480,18 +502,28 @@ class Plot:
             delta +=2
         
         ax900.text(-0.1,bcorr900[12]+0.03,'$\delta\eta$',fontsize=fontsize)
-        ax7000.text(-0.1,bcorr7000[12]+0.03,'$\delta\eta$',fontsize=fontsize)
-
         ax900.set_title('$900 GeV$',fontdict=fontdict)
-        ax7000.set_title('$7000 GeV$',fontdict=fontdict)
         ax900.set_xlabel('$\eta$',fontdict=fontdict)
         ax900.set_ylabel('$b_{corr}$',fontdict=fontdict)
+
+        #ax2760.text(-0.1,bcorr2760[12]+0.03,'$\delta\eta$',fontsize=fontsize)
+        #ax2760.set_title('$2760 GeV$',fontdict=fontdict)
+        #ax2760.set_xlabel('$\eta$',fontdict=fontdict)
+        #ax2760.set_ylabel('$b_{corr}$',fontdict=fontdict)
+
+        ax7000.text(-0.1,bcorr7000[12]+0.03,'$\delta\eta$',fontsize=fontsize)
+        ax7000.set_title('$7000 GeV$',fontdict=fontdict)
         ax7000.set_xlabel('$\eta$',fontdict=fontdict)
         ax7000.set_ylabel('$b_{corr}$',fontdict=fontdict)
 
         handles, labels = ax900.get_legend_handles_labels()
         leg900 = ax900.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
         leg900.get_frame().set_alpha(0.0)
+
+        #handles, labels = ax2760.get_legend_handles_labels()
+        #leg2760 = ax2760.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
+        #leg2760.get_frame().set_alpha(0.0)
+
         handles, labels = ax7000.get_legend_handles_labels()
         leg7000 = ax7000.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
         leg7000.get_frame().set_alpha(0.0)
@@ -562,10 +594,10 @@ if __name__=="__main__":
         return P
 
     options = {0: nsd7, 1:ptcut7,2:ptcut9,3:ptcut13}
-    P = options[1](save=0)
+    P = options[2](save=0)
 
-    P.NBNFPicture()
+    #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
     #P.bcorr()
-    P.Show()
+    #P.Show()

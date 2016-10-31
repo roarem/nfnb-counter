@@ -23,6 +23,7 @@ void Count::InitializeNBNF()
     
     output->mkdir(NBNFREG,NBNFREG);
 
+    std::vector<const char*> HistNamesReg;
     HistNamesReg.push_back("ALL Regular");
     HistNamesReg.push_back("Non-single diffraction Regular");
     HistNamesReg.push_back("|\\eta|<1 Regular");
@@ -32,10 +33,6 @@ void Count::InitializeNBNF()
     ALLREG.push_back(new TH1F("nsdReg",HistNamesReg[1],NBins,start,stop));
     ALLREG.push_back(new TH1F("etalimReg",HistNamesReg[2],NBins,start,stop));
     ALLREG.push_back(new TH1F("ptcutReg",HistNamesReg[3],NBins,start,stop));
-    DIVREG.push_back(new TH1F("allReg_div",HistNamesReg[0],NBins,start,stop));
-    DIVREG.push_back(new TH1F("nsdReg_div",HistNamesReg[1],NBins,start,stop));
-    DIVREG.push_back(new TH1F("etalimReg_div",HistNamesReg[2],NBins,start,stop));
-    DIVREG.push_back(new TH1F("ptcutReg_div",HistNamesReg[3],NBins,start,stop));
     NFREG. push_back(new TH1F("nfReg",HistNamesReg[0],NBins,start,stop));
     NFREG. push_back(new TH1F("nsdReg_nf",HistNamesReg[1],NBins,start,stop));
     NFREG. push_back(new TH1F("etalimReg_nf",HistNamesReg[2],NBins,start,stop));
@@ -49,7 +46,6 @@ void Count::InitializeNBNF()
     {
         // Setting errorbar calculations
         ALLREG[i]->Sumw2(true);
-        DIVREG[i]->Sumw2(true);
         NFREG [i]->Sumw2(true);
         NBREG [i]->Sumw2(true);
     }
@@ -58,20 +54,28 @@ void Count::InitializeNBNF()
 #if NBNFSingle
     output->mkdir(NBNFSIN,NBNFSIN);
 
+    std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
     HistNamesSin.push_back("0.3<p_{T}<1.5 Single");
 
-    ALLSIN.push_back(new TH1F("allSin",HistNamesSin[0],NBins,start,stop));
-    DIVSIN.push_back(new TH1F("allSin_div",HistNamesSin[0],NBins,start,stop));
-    NFSIN. push_back(new TH1F("nfSin",HistNamesSin[0],NBins,start,stop));
-    NBSIN. push_back(new TH1F("nbSin",HistNamesSin[0],NBins,start,stop));
+    ALLSIN.push_back(new TH1F("allSinFull",HistNamesSin[0],NBins,start,stop));
+    NFSIN. push_back(new TH1F("nfFullSin",HistNamesSin[0],NBins,start,stop));
+    NBSIN. push_back(new TH1F("nbFullSin",HistNamesSin[0],NBins,start,stop));
+    ALLSIN.push_back(new TH1F("allEta2Sin",HistNamesSin[0],NBins,start,stop));
+    NFSIN. push_back(new TH1F("nfEta2Sin",HistNamesSin[0],NBins,start,stop));
+    NBSIN. push_back(new TH1F("nbEta2Sin",HistNamesSin[0],NBins,start,stop));
+    ALLSIN.push_back(new TH1F("allEta1Sin",HistNamesSin[0],NBins,start,stop));
+    NFSIN. push_back(new TH1F("nfEta1Sin",HistNamesSin[0],NBins,start,stop));
+    NBSIN. push_back(new TH1F("nbEta1Sin",HistNamesSin[0],NBins,start,stop));
+    ALLSIN.push_back(new TH1F("allEta05Sin",HistNamesSin[0],NBins,start,stop));
+    NFSIN. push_back(new TH1F("nfEta05Sin",HistNamesSin[0],NBins,start,stop));
+    NBSIN. push_back(new TH1F("nbEta05Sin",HistNamesSin[0],NBins,start,stop));
     
-    for(int i=0 ; i<1 ; i++)
+    for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
         ALLSIN[i]->Sumw2(true);
-        DIVSIN[i]->Sumw2(true);
         NFSIN[i]->Sumw2(true);
         NBSIN[i]->Sumw2(true);
     }
@@ -80,20 +84,28 @@ void Count::InitializeNBNF()
 #if NBNFDouble
     output->mkdir(NBNFDOU,NBNFDOU);
 
+    std::vector<const char*> HistNamesDou;
     HistNamesDou.push_back("ALL Double");
     HistNamesDou.push_back("|\\eta|<1 Double");
     HistNamesDou.push_back("0.3<p_{T}<1.5 Double");
     
-    ALLDOU.push_back(new TH1F("allDou",HistNamesDou[0],NBins,start,stop));
-    DIVDOU.push_back(new TH1F("allDou_div",HistNamesDou[0],NBins,start,stop));
-    NFDOU. push_back(new TH1F("nfDou",HistNamesDou[0],NBins,start,stop));
-    NBDOU. push_back(new TH1F("nbDou",HistNamesDou[0],NBins,start,stop));
+    ALLDOU.push_back(new TH1F("allDouFull",HistNamesDou[0],NBins,start,stop));
+    NFDOU. push_back(new TH1F("nfFullDou",HistNamesDou[0],NBins,start,stop));
+    NBDOU. push_back(new TH1F("nbFullDou",HistNamesDou[0],NBins,start,stop));
+    ALLDOU.push_back(new TH1F("allEta2Dou",HistNamesDou[0],NBins,start,stop));
+    NFDOU. push_back(new TH1F("nfEta2Dou",HistNamesDou[0],NBins,start,stop));
+    NBDOU. push_back(new TH1F("nbEta2Dou",HistNamesDou[0],NBins,start,stop));
+    ALLDOU.push_back(new TH1F("allEta1Dou",HistNamesDou[0],NBins,start,stop));
+    NFDOU. push_back(new TH1F("nfEta1Dou",HistNamesDou[0],NBins,start,stop));
+    NBDOU. push_back(new TH1F("nbEta1Dou",HistNamesDou[0],NBins,start,stop));
+    ALLDOU.push_back(new TH1F("allEta05Dou",HistNamesDou[0],NBins,start,stop));
+    NFDOU. push_back(new TH1F("nfEta05Dou",HistNamesDou[0],NBins,start,stop));
+    NBDOU. push_back(new TH1F("nbEta05Dou",HistNamesDou[0],NBins,start,stop));
     
-    for(int i=0 ; i<1 ; i++)
+    for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
         ALLDOU[i]->Sumw2(true);
-        DIVDOU[i]->Sumw2(true);
         NFDOU[i]->Sumw2(true);
         NBDOU[i]->Sumw2(true);
     }
@@ -147,13 +159,13 @@ void Count::ReadAndCount()
     #endif//NBNFRegular
 
     #if NBNFSingle
-    int nf_nb_sin [2] = {0,0};
-    int counted_sin [1] = {0};
+    int nf_nb_sin [8] = {0,0,0,0,0,0,0,0};
+    int counted_sin [4] = {0,0,0,0};
     #endif//NBNFSingle
 
     #if NBNFDouble
-    int nf_nb_dou [2] = {0,0};
-    int counted_dou [1] = {0};
+    int nf_nb_dou [8] = {0,0,0,0,0,0,0,0};
+    int counted_dou [4] = {0,0,0,0};
     #endif//NBNFDouble
     #endif//NBNF
 
@@ -206,8 +218,8 @@ void Count::ReadAndCount()
         
         if(EVENTNR%100==0)
             Progress(EVENTNR);
-        if (EVENTNR%100!=0) 
-            continue;
+        //if (EVENTNR%100!=0) 
+        //    continue;
         
         for (int i=0 ; i<PARTNR ; i++)
         {
@@ -217,7 +229,7 @@ void Count::ReadAndCount()
                >> IDENT >> IDIAG >> IBJ >> ISJ >> ICHJ >> TFORMJ >> XXJI >> YYJI 
                >> ZZJI >> IORIGJ >> TFORMRJUK;
 
-            // Checks if there is nothing happening
+            // Checks if there is anything happening
             if (i==0 and IDIAG==4)
             {
                 std::getline(finalprFile,finalprLine);
@@ -233,46 +245,63 @@ void Count::ReadAndCount()
                     const double psrap      = 0.5*std::log((p_abs+PZJ)/(p_abs-PZJ));
                     const double psrap_abs  = std::abs(psrap);
 
+                    #if NBNF
+                    int nbnf_index = (psrap<0);
+                    #if NBNFSingle || NBNFDouble
+                    int i_start = 0;
+                    if(psrap_abs<0.5)
+                        i_start = 0;
+                    else if(psrap_abs<1)
+                        i_start = 1;
+                    else if(psrap_abs<2)
+                        i_start = 2;
+                    else
+                        i_start = 3;
+                    #endif
                     #if NBNFSingle
                     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
                     {
-                        int nbnf_index_sin = (psrap<0);
-                        nf_nb_sin[nbnf_index_sin] += 1;
-                        counted_sin[0] = 1;
+                        for(int i=i_start ; i<4 ; i++)
+                        {
+                            nf_nb_sin[2*i+nbnf_index] += 1;
+                            counted_sin[i] = 1;
+                        }
                     }
                     #endif//NBNFSingle
 
                     #if NBNFDouble
                     if(IDIAG==11)
                     {
-                        int nbnf_index_dou = (psrap<0);
-                        nf_nb_dou[nbnf_index_dou] += 1;
-                        counted_dou[0] = 1;
+                        for(int i=i_start ; i<4 ; i++)
+                        {
+                            nf_nb_dou[2*i+nbnf_index] += 1;
+                            counted_dou[i] = 1;
+                        }
                     }
                     #endif//NBNFDouble
 
                     #if NBNFRegular
-                    int nbnf_index_reg = (psrap < 0);
-                    nf_nb_reg[nbnf_index_reg] += 1;
+                    nf_nb_reg[nbnf_index] += 1;
                     counted_reg[0] = 1;
 
                     // Non-single diffraction
                     if (IDIAG !=1 and IDIAG !=6 and IDIAG != 10)
                     {
-                        nf_nb_reg[nbnf_index_reg+2] += 1;
+                        nf_nb_reg[nbnf_index+2] += 1;
                         counted_reg[1] = 1;
                     }
                     if (psrap_abs < 1)
                     {
-                        nf_nb_reg[nbnf_index_reg+4] += 1;
+                        nf_nb_reg[nbnf_index+4] += 1;
                         counted_reg[2] = counted_reg[3] = 1;
                         if (psrap_abs > 0.2 and psrap_abs < 0.8)
                         {
                             if (p_T > 0.3 and p_T < 1.5)
-                                nf_nb_reg[nbnf_index_reg+6] += 1;
+                                nf_nb_reg[nbnf_index+6] += 1;
                         }
                     }
                     #endif//NBNFRegular
+                    #endif//NBNF
 
                 #if bcorr
                 if (psrap_abs < 1 and p_T > 0.05) 
@@ -294,7 +323,6 @@ void Count::ReadAndCount()
             if (counted_reg[i])
             {
                 ALLREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
-                DIVREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
                 NFREG[i]->Fill(nf_nb_reg[2*i]);
                 NBREG[i]->Fill(nf_nb_reg[2*i+1]);
             }
@@ -303,12 +331,11 @@ void Count::ReadAndCount()
 
         #if NBNFSingle
         // Counts for different conditions
-        for(int i=0 ; i<1 ; i++)
+        for(int i=0 ; i<4 ; i++)
         {
             if (counted_sin[i])
             {
                 ALLSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
-                DIVSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
                 NFSIN[i]->Fill(nf_nb_sin[2*i]);
                 NBSIN[i]->Fill(nf_nb_sin[2*i+1]);
             }
@@ -317,12 +344,11 @@ void Count::ReadAndCount()
 
         #if NBNFDouble
         // Counts for different conditions
-        for(int i=0 ; i<1 ; i++)
+        for(int i=0 ; i<4 ; i++)
         {
             if (counted_dou[i])
             {
                 ALLDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
-                DIVDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
                 NFDOU[i]->Fill(nf_nb_dou[2*i]);
                 NBDOU[i]->Fill(nf_nb_dou[2*i+1]);
             }
@@ -355,12 +381,12 @@ void Count::ReadAndCount()
         #endif//NBNFRegular
 
         #if NBNFSingle
-        for(int i=0 ; i<1 ; i++)
+        for(int i=0 ; i<4 ; i++)
             nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
         #endif//NBNFSingle
 
         #if NBNFDouble
-        for(int i=0 ; i<1 ; i++)
+        for(int i=0 ; i<4 ; i++)
             nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
         #endif//NBNFDouble
         #endif//NBNF
@@ -378,42 +404,30 @@ void Count::ReadAndCount()
     }
     #if NBNF
     #if NBNFRegular
-    for(int i=0 ; i<4 ; i++)
-        DIVREG[i]->Divide(NFREG[i]);
-
     output->cd(NBNFREG);
     for(int i=0 ; i<4 ; i++)
     {
         ALLREG[i]->Write();
-        DIVREG[i]->Write();
         NFREG [i]->Write();
         NBREG [i]->Write();
     }
     #endif//NBNFRegular
 
     #if NBNFSingle
-    for(int i=0 ; i<1 ; i++)
-        DIVSIN[i]->Divide(NFSIN[i]);
-
     output->cd(NBNFSIN);
-    for(int i=0 ; i<1 ; i++)
+    for(int i=0 ; i<4 ; i++)
     {
         ALLSIN[i]->Write();
-        DIVSIN[i]->Write();
         NFSIN [i]->Write();
         NBSIN [i]->Write();
     }
     #endif//NBNFSingle
 
     #if NBNFDouble
-    for(int i=0 ; i<1 ; i++)
-        DIVDOU[i]->Divide(NFDOU[i]);
-
     output->cd(NBNFDOU);
-    for(int i=0 ; i<1 ; i++)
+    for(int i=0 ; i<4 ; i++)
     {
         ALLDOU[i]->Write();
-        DIVDOU[i]->Write();
         NFDOU [i]->Write();
         NBDOU [i]->Write();
     }
@@ -510,6 +524,6 @@ void Count::Progress(int eventnr)
     timer.stopTimer();
     int *returnTime = new int[3];
     returnTime = timer.elapsedTimeClock();
-    printf("\r %3d%% %02dh %02dm %02ds  Event#: %6d ",(int)(eventnr/number_of_events*100),
-                                       returnTime[0],returnTime[1],returnTime[2],eventnr);
+    printf("\r %3d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
+                                       returnTime[0],returnTime[1],returnTime[2]);
 }

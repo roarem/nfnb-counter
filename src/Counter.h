@@ -48,27 +48,21 @@ class Count
 
         #if NBNFRegular
         const char* NBNFREG = "NBNFRegular";
-        std::vector<const char*> HistNamesReg;
         std::vector<TH1F*> ALLREG;
-        std::vector<TH1F*> DIVREG;
         std::vector<TH1F*> NFREG;
         std::vector<TH1F*> NBREG;
         #endif
 
         #if NBNFSingle
         const char* NBNFSIN = "NBNFSingle";
-        std::vector<const char*> HistNamesSin;
         std::vector<TH1F*> ALLSIN;
-        std::vector<TH1F*> DIVSIN;
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
         #endif
 
         #if NBNFDouble
         const char* NBNFDOU = "NBNFDouble";
-        std::vector<const char*> HistNamesDou;
         std::vector<TH1F*> ALLDOU;
-        std::vector<TH1F*> DIVDOU;
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
         #endif
