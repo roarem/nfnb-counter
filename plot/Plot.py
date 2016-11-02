@@ -137,8 +137,8 @@ class Plot:
         self.ReOpen()
         NPOMList = []
         for i in range(7):
-            SxH0_name = "NPOM_{:02d}_00".format(i)
-            SxH0_nf_name = "NPOM_NF_{:02d}_00".format(i)
+            SxH0_name = "ptcut_NPOM_{:02d}_00".format(i)
+            SxH0_nf_name = "ptcut_NPOM_NF_{:02d}_00".format(i)
             #SxH0 = self.f.FindObjectAny(SxH0_name)
             #SxH0_nf = self.f.FindObjectAny(SxH0_nf_name)
             SxH0 =    self.f.FindObjectAny(SxH0_name)
@@ -188,11 +188,11 @@ class Plot:
 
 ################## All soft pomerons and 0 hard pomerons########################
         self.ReOpen()
-        S    = self.f.FindObjectAny("NPOM_00_00")
-        S_nf = self.f.FindObjectAny("NPOM_NF_00_00")
+        S    = self.f.FindObjectAny("ptcut_NPOM_00_00")
+        S_nf = self.f.FindObjectAny("ptcut_NPOM_NF_00_00")
         for i in range(1,25):
-            S_name = "NPOM_{:02d}_00".format(i)
-            S_nf_name = "NPOM_NF_{:02d}_00".format(i)
+            S_name = "ptcut_NPOM_{:02d}_00".format(i)
+            S_nf_name = "ptcut_NPOM_NF_{:02d}_00".format(i)
             S.Add(self.f.FindObjectAny(S_name))
             S_nf.Add(self.f.FindObjectAny(S_nf_name))
         S.Divide(S_nf)
@@ -327,11 +327,11 @@ class Plot:
             for i in range(n+1):
                 for j in range(NSNH):
                     if i or j:
-                        tempS.Add   (self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(i,j)))
-                        tempS_nf.Add(self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                        tempS.Add   (self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(i,j)))
+                        tempS_nf.Add(self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(i,j)))
                     else:
-                        tempS      = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(i,j))
-                        tempS_nf   = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(i,j))
+                        tempS      = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(i,j))
+                        tempS_nf   = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(i,j))
 
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
@@ -393,8 +393,8 @@ class Plot:
         NH = [0,1,2,3,4]
 
         for h in NH:
-            tempS      = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,h))
-            tempS_nf   = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,h))
+            tempS      = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,h))
+            tempS_nf   = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,h))
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
             tempAllS_nf  = np.linspace(0,Nbins,Nbins+1)
@@ -408,11 +408,11 @@ class Plot:
 
         self.ReOpen()
 
-        tempS = self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,NH[0]))
-        tempS_nf = self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS_nf = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
         for h in range(1,25):
-            tempS.Add   (self.f.FindObjectAny("NPOM_{:02d}_{:02d}".format(NS,h)))
-            tempS_nf.Add(self.f.FindObjectAny("NPOM_NF_{:02d}_{:02d}".format(NS,h)))
+            tempS.Add   (self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,h)))
+            tempS_nf.Add(self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,h)))
         tempS.Divide(tempS_nf)
         Nbins = tempS.GetNbinsX()
         tempAll_nf   = np.linspace(0,Nbins,Nbins+1)
@@ -572,7 +572,42 @@ class Plot:
 
         return fig, ax
 
+    def nch_dist(self):
         
+        self.ReOpen()
+        fig, ax = plt.subplots()
+
+        for i in range(25):
+            for j in range(25):
+                if i or j:
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
+
+        Nbins  = tempS_nf.GetNbinsX()
+        All_nf = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
+        All_nf_sum = np.sum(All_nf)
+        All_nf = All_nf/All_nf_sum
+        ax.set_yscale('log')
+        ax.plot(All_nf,marker='o',linestyle='-')
+         
+
+        self.ReOpen()
+        for i in range(12):
+            for j in range(25):
+                if j:
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
+        
+            Nbins   = tempS_nf.GetNbinsX()
+            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
+            All_nf = All_nf/All_nf_sum
+            ax.set_yscale('log')
+            ax.plot(All_nf,marker='',linestyle='-')
+
 
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
@@ -582,6 +617,7 @@ if __name__=="__main__":
         return P
     def ptcut7(save=0):
         name = 'out/7TeV_4M.root' 
+        #name = 'out/7TeV_4M.root.pre2810' 
         P = Plot(root_file_path=path,filename=name,save=save)
         return P
     def ptcut9(save=0):
@@ -594,10 +630,11 @@ if __name__=="__main__":
         return P
 
     options = {0: nsd7, 1:ptcut7,2:ptcut9,3:ptcut13}
-    P = options[2](save=0)
+    P = options[1](save=0)
 
     #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
     #P.bcorr()
-    #P.Show()
+    P.nch_dist()
+    P.Show()

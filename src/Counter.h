@@ -18,9 +18,6 @@
     #define NBNFSingle 1
     #define NBNFDouble 1
     #define NPOM 1  
-        //Dependent on NPOM//
-        #define NPOMptcut 1
-        #define NPOMnsd 0
 
 class Count 
 {
@@ -47,31 +44,32 @@ class Count
         const char* NBNFFilename;
 
         #if NBNFRegular
-        const char* NBNFREG = "NBNFRegular";
-        std::vector<TH1F*> ALLREG;
+        const char* REGFolder = "NBNFRegular";
+        std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
         std::vector<TH1F*> NBREG;
         #endif
 
         #if NBNFSingle
-        const char* NBNFSIN = "NBNFSingle";
-        std::vector<TH1F*> ALLSIN;
+        const char* SINFolder = "NBNFSingle";
+        std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
         #endif
 
         #if NBNFDouble
-        const char* NBNFDOU = "NBNFDouble";
-        std::vector<TH1F*> ALLDOU;
+        const char* DOUFolder = "NBNFDouble";
+        std::vector<TH1F*> NBNFDOU;
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
         #endif
 
         #if NPOM
-        const char* NPOMDIR = "NPOMDIR";
-        std::vector<std::vector<TH1F*>> NPOMSH;
-        std::vector<std::vector<TH1F*>> NPOMSH_nf;
-        std::vector<std::vector<TH1F*>> NPOMSH_nb;
+        std::vector<const char*> NPOMFolders = 
+            std::vector<const char*>{"NPOMptcut","NPOMall","NPOMnsd","NPOMdou","NPOMsin"};
+        std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
+        std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
+        std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;
         #endif
         #endif
 
@@ -79,8 +77,8 @@ class Count
         void BcorrCheck(int EVENTNR, double eta);
         void Bcorrgap();
 
-        int bcorr_count     = 0;
-        double bcorr_Nevents   = 0;
+        int bcorr_count         = 0;
+        double bcorr_Nevents    = 0;
 
         std::vector<std::vector<double>> eta_gaps = 
             std::vector<std::vector<double>>(13,std::vector<double>(4,0));

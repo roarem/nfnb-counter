@@ -21,7 +21,7 @@ void Count::InitializeNBNF()
 #if NBNFRegular
     // Creates NFNB trees and histograms
     
-    output->mkdir(NBNFREG,NBNFREG);
+    output->mkdir(REGFolder,REGFolder);
 
     std::vector<const char*> HistNamesReg;
     HistNamesReg.push_back("ALL Regular");
@@ -29,10 +29,10 @@ void Count::InitializeNBNF()
     HistNamesReg.push_back("|\\eta|<1 Regular");
     HistNamesReg.push_back("0.3<p_{T}<1.5 Regular");
 
-    ALLREG.push_back(new TH1F("allReg",HistNamesReg[0],NBins,start,stop));
-    ALLREG.push_back(new TH1F("nsdReg",HistNamesReg[1],NBins,start,stop));
-    ALLREG.push_back(new TH1F("etalimReg",HistNamesReg[2],NBins,start,stop));
-    ALLREG.push_back(new TH1F("ptcutReg",HistNamesReg[3],NBins,start,stop));
+    NBNFREG.push_back(new TH1F("allReg",HistNamesReg[0],NBins,start,stop));
+    NBNFREG.push_back(new TH1F("nsdReg",HistNamesReg[1],NBins,start,stop));
+    NBNFREG.push_back(new TH1F("etalimReg",HistNamesReg[2],NBins,start,stop));
+    NBNFREG.push_back(new TH1F("ptcutReg",HistNamesReg[3],NBins,start,stop));
     NFREG. push_back(new TH1F("nfReg",HistNamesReg[0],NBins,start,stop));
     NFREG. push_back(new TH1F("nsdReg_nf",HistNamesReg[1],NBins,start,stop));
     NFREG. push_back(new TH1F("etalimReg_nf",HistNamesReg[2],NBins,start,stop));
@@ -45,67 +45,67 @@ void Count::InitializeNBNF()
     for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
-        ALLREG[i]->Sumw2(true);
+        NBNFREG[i]->Sumw2(true);
         NFREG [i]->Sumw2(true);
         NBREG [i]->Sumw2(true);
     }
 #endif//NBNFRegular
 
 #if NBNFSingle
-    output->mkdir(NBNFSIN,NBNFSIN);
+    output->mkdir(SINFolder,SINFolder);
 
     std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
     HistNamesSin.push_back("0.3<p_{T}<1.5 Single");
 
-    ALLSIN.push_back(new TH1F("allSinFull",HistNamesSin[0],NBins,start,stop));
+    NBNFSIN.push_back(new TH1F("allSinFull",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfFullSin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbFullSin",HistNamesSin[0],NBins,start,stop));
-    ALLSIN.push_back(new TH1F("allEta2Sin",HistNamesSin[0],NBins,start,stop));
+    NBNFSIN.push_back(new TH1F("allEta2Sin",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfEta2Sin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbEta2Sin",HistNamesSin[0],NBins,start,stop));
-    ALLSIN.push_back(new TH1F("allEta1Sin",HistNamesSin[0],NBins,start,stop));
+    NBNFSIN.push_back(new TH1F("allEta1Sin",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfEta1Sin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbEta1Sin",HistNamesSin[0],NBins,start,stop));
-    ALLSIN.push_back(new TH1F("allEta05Sin",HistNamesSin[0],NBins,start,stop));
+    NBNFSIN.push_back(new TH1F("allEta05Sin",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfEta05Sin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbEta05Sin",HistNamesSin[0],NBins,start,stop));
     
     for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
-        ALLSIN[i]->Sumw2(true);
+        NBNFSIN[i]->Sumw2(true);
         NFSIN[i]->Sumw2(true);
         NBSIN[i]->Sumw2(true);
     }
 #endif//NBNFSingle
 
 #if NBNFDouble
-    output->mkdir(NBNFDOU,NBNFDOU);
+    output->mkdir(DOUFolder,DOUFolder);
 
     std::vector<const char*> HistNamesDou;
     HistNamesDou.push_back("ALL Double");
     HistNamesDou.push_back("|\\eta|<1 Double");
     HistNamesDou.push_back("0.3<p_{T}<1.5 Double");
     
-    ALLDOU.push_back(new TH1F("allDouFull",HistNamesDou[0],NBins,start,stop));
+    NBNFDOU.push_back(new TH1F("allDouFull",HistNamesDou[0],NBins,start,stop));
     NFDOU. push_back(new TH1F("nfFullDou",HistNamesDou[0],NBins,start,stop));
     NBDOU. push_back(new TH1F("nbFullDou",HistNamesDou[0],NBins,start,stop));
-    ALLDOU.push_back(new TH1F("allEta2Dou",HistNamesDou[0],NBins,start,stop));
+    NBNFDOU.push_back(new TH1F("allEta2Dou",HistNamesDou[0],NBins,start,stop));
     NFDOU. push_back(new TH1F("nfEta2Dou",HistNamesDou[0],NBins,start,stop));
     NBDOU. push_back(new TH1F("nbEta2Dou",HistNamesDou[0],NBins,start,stop));
-    ALLDOU.push_back(new TH1F("allEta1Dou",HistNamesDou[0],NBins,start,stop));
+    NBNFDOU.push_back(new TH1F("allEta1Dou",HistNamesDou[0],NBins,start,stop));
     NFDOU. push_back(new TH1F("nfEta1Dou",HistNamesDou[0],NBins,start,stop));
     NBDOU. push_back(new TH1F("nbEta1Dou",HistNamesDou[0],NBins,start,stop));
-    ALLDOU.push_back(new TH1F("allEta05Dou",HistNamesDou[0],NBins,start,stop));
+    NBNFDOU.push_back(new TH1F("allEta05Dou",HistNamesDou[0],NBins,start,stop));
     NFDOU. push_back(new TH1F("nfEta05Dou",HistNamesDou[0],NBins,start,stop));
     NBDOU. push_back(new TH1F("nbEta05Dou",HistNamesDou[0],NBins,start,stop));
     
     for(int i=0 ; i<4 ; i++)
     {
         // Setting errorbar calculations
-        ALLDOU[i]->Sumw2(true);
+        NBNFDOU[i]->Sumw2(true);
         NFDOU[i]->Sumw2(true);
         NBDOU[i]->Sumw2(true);
     }
@@ -114,39 +114,45 @@ void Count::InitializeNBNF()
 #if NPOM
     // Creates NPOM tree and histograms
 
-    output->mkdir(NPOMDIR);
-    for (int i=0 ; i<25 ; i++)
+    std::vector<std::string> prefix = {"ptcut_","all_","nsd_","dou_","sin_"};
+    for (int i=0 ; i<5 ; i++)
     {
-        NPOMSH.push_back(std::vector<TH1F*>());
-        NPOMSH_nf.push_back(std::vector<TH1F*>());
-        NPOMSH_nb.push_back(std::vector<TH1F*>());
-
+        output->mkdir(NPOMFolders[i]);
+        NPOMSH.push_back(std::vector<std::vector<TH1F*>>());
+        NPOMSH_nf.push_back(std::vector<std::vector<TH1F*>>());
+        NPOMSH_nb.push_back(std::vector<std::vector<TH1F*>>());
         for (int j=0 ; j<25 ; j++)
         {
-            char number_string [7];
-            sprintf(number_string,"_%02d_%02d",i,j);
-            number_string[6] = '\0';
-            std::string temp  = "NPOM"+std::string(number_string);
-            std::string temp1 = "npom"+std::string(number_string);
-            std::string temp2 = "NPOM_NF"+std::string(number_string);
-            std::string temp3 = "npom_nf"+std::string(number_string);
-            std::string temp4 = "NPOM_NB"+std::string(number_string);
-            std::string temp5 = "npom_nb"+std::string(number_string);
+            NPOMSH[i].push_back(std::vector<TH1F*>());
+            NPOMSH_nf[i].push_back(std::vector<TH1F*>());
+            NPOMSH_nb[i].push_back(std::vector<TH1F*>());
 
-            NPOMSH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
-            NPOMSH_nf[i].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
-            NPOMSH_nb[i].push_back(new TH1F(temp4.c_str(),temp5.c_str(),NBins,start,stop));
+            for (int k=0 ; k<25 ; k++)
+            {
+                char number_string [7];
+                sprintf(number_string,"_%02d_%02d",j,k);
+                number_string[6] = '\0';
+                std::string temp  = prefix[i]+"NPOM"+std::string(number_string);
+                std::string temp1 = prefix[i]+"npom"+std::string(number_string);
+                std::string temp2 = prefix[i]+"NPOM_NF"+std::string(number_string);
+                std::string temp3 = prefix[i]+"npom_nf"+std::string(number_string);
+                std::string temp4 = prefix[i]+"NPOM_NB"+std::string(number_string);
+                std::string temp5 = prefix[i]+"npom_nb"+std::string(number_string);
 
-            // Setting errorbar calculations
-            NPOMSH[i][j]->Sumw2(true);
-            NPOMSH_nf[i][j]->Sumw2(true);
-            NPOMSH_nb[i][j]->Sumw2(true);
+                NPOMSH[i][j].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
+                NPOMSH_nf[i][j].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
+                NPOMSH_nb[i][j].push_back(new TH1F(temp4.c_str(),temp5.c_str(),NBins,start,stop));
+
+                // Setting errorbar calculations
+                NPOMSH[i][j][k]->Sumw2(true);
+                NPOMSH_nf[i][j][k]->Sumw2(true);
+                NPOMSH_nb[i][j][k]->Sumw2(true);
+            }
         }
     }
 #endif//NPOM
 }
 #endif//NBNF
-
 
 void Count::ReadAndCount()
 {
@@ -247,6 +253,7 @@ void Count::ReadAndCount()
 
                     #if NBNF
                     int nbnf_index = (psrap<0);
+
                     #if NBNFSingle || NBNFDouble
                     int i_start = 0;
                     if(psrap_abs<0.5)
@@ -257,7 +264,8 @@ void Count::ReadAndCount()
                         i_start = 2;
                     else
                         i_start = 3;
-                    #endif
+                    #endif//NBNFSingle||NBNFDouble
+
                     #if NBNFSingle
                     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
                     {
@@ -322,7 +330,7 @@ void Count::ReadAndCount()
         {
             if (counted_reg[i])
             {
-                ALLREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
+                NBNFREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
                 NFREG[i]->Fill(nf_nb_reg[2*i]);
                 NBREG[i]->Fill(nf_nb_reg[2*i+1]);
             }
@@ -335,7 +343,7 @@ void Count::ReadAndCount()
         {
             if (counted_sin[i])
             {
-                ALLSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
+                NBNFSIN[i]->Fill(nf_nb_sin[2*i],nf_nb_sin[2*i+1]);
                 NFSIN[i]->Fill(nf_nb_sin[2*i]);
                 NBSIN[i]->Fill(nf_nb_sin[2*i+1]);
             }
@@ -348,7 +356,7 @@ void Count::ReadAndCount()
         {
             if (counted_dou[i])
             {
-                ALLDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
+                NBNFDOU[i]->Fill(nf_nb_dou[2*i],nf_nb_dou[2*i+1]);
                 NFDOU[i]->Fill(nf_nb_dou[2*i]);
                 NBDOU[i]->Fill(nf_nb_dou[2*i+1]);
             }
@@ -357,21 +365,40 @@ void Count::ReadAndCount()
 
         #if NPOM
         // Counts if abs(eta) < 1
-        #if NPOMptcut
         if (counted_reg[3])
         {
-            NPOMSH[npoms][npomh]->Fill(nf_nb_reg[6],nf_nb_reg[7]);
-            NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[6]);
-            NPOMSH_nb[npoms][npomh]->Fill(nf_nb_reg[7]);
+            NPOMSH[0][npoms][npomh]->Fill(nf_nb_reg[6],nf_nb_reg[7]);
+            NPOMSH_nf[0][npoms][npomh]->Fill(nf_nb_reg[6]);
+            NPOMSH_nb[0][npoms][npomh]->Fill(nf_nb_reg[7]);
         }
-        #elif NPOMnsd
+        if (counted_reg[0])
+        {
+            NPOMSH[1][npoms][npomh]->Fill(nf_nb_reg[0],nf_nb_reg[1]);
+            NPOMSH_nf[1][npoms][npomh]->Fill(nf_nb_reg[0]);
+            NPOMSH_nb[1][npoms][npomh]->Fill(nf_nb_reg[1]);
+        }
         if (counted_reg[1])
         {
-            NPOMSH[npoms][npomh]->Fill(nf_nb_reg[2],nf_nb_reg[3]);
-            NPOMSH_nf[npoms][npomh]->Fill(nf_nb_reg[2]);
-            NPOMSH_nb[npoms][npomh]->Fill(nf_nb_reg[3]);
+            NPOMSH[2][npoms][npomh]->Fill(nf_nb_reg[2],nf_nb_reg[3]);
+            NPOMSH_nf[2][npoms][npomh]->Fill(nf_nb_reg[2]);
+            NPOMSH_nb[2][npoms][npomh]->Fill(nf_nb_reg[3]);
         }
-        #endif//NPOMptcut
+        #if NBNFDouble
+        if (counted_sin[3])
+        {
+            NPOMSH[3][npoms][npomh]->Fill(nf_nb_dou[5],nf_nb_dou[6]);
+            NPOMSH_nf[3][npoms][npomh]->Fill(nf_nb_dou[5]);
+            NPOMSH_nb[3][npoms][npomh]->Fill(nf_nb_dou[6]);
+        }
+        #endif//NBNFDouble
+        #if NBNFSingle
+        if (counted_sin[3])
+        {
+            NPOMSH[4][npoms][npomh]->Fill(nf_nb_sin[5],nf_nb_sin[6]);
+            NPOMSH_nf[4][npoms][npomh]->Fill(nf_nb_sin[5]);
+            NPOMSH_nb[4][npoms][npomh]->Fill(nf_nb_sin[6]);
+        }
+        #endif//NBNFSingle
         #endif//NPOM
 
         // Resets nf and nb counters
@@ -404,44 +431,47 @@ void Count::ReadAndCount()
     }
     #if NBNF
     #if NBNFRegular
-    output->cd(NBNFREG);
+    output->cd(REGFolder);
     for(int i=0 ; i<4 ; i++)
     {
-        ALLREG[i]->Write();
+        NBNFREG[i]->Write();
         NFREG [i]->Write();
         NBREG [i]->Write();
     }
     #endif//NBNFRegular
 
     #if NBNFSingle
-    output->cd(NBNFSIN);
+    output->cd(SINFolder);
     for(int i=0 ; i<4 ; i++)
     {
-        ALLSIN[i]->Write();
+        NBNFSIN[i]->Write();
         NFSIN [i]->Write();
         NBSIN [i]->Write();
     }
     #endif//NBNFSingle
 
     #if NBNFDouble
-    output->cd(NBNFDOU);
+    output->cd(DOUFolder);
     for(int i=0 ; i<4 ; i++)
     {
-        ALLDOU[i]->Write();
+        NBNFDOU[i]->Write();
         NFDOU [i]->Write();
         NBDOU [i]->Write();
     }
     #endif//NBNFDouble
 
     #if NPOM
-    output->cd(NPOMDIR);
-    for(int i=0 ; i<25 ; i++)
+    for(int k=0 ; k<5 ; k++)
     {
-        for(int j=0 ; j<25 ; j++)
+        output->cd(NPOMFolders[k]);
+        for(int i=0 ; i<25 ; i++)
         {
-            NPOMSH[i][j]->Write();
-            NPOMSH_nf[i][j]->Write();
-            NPOMSH_nb[i][j]->Write();
+            for(int j=0 ; j<25 ; j++)
+            {
+                NPOMSH[k][i][j]->Write();
+                NPOMSH_nf[k][i][j]->Write();
+                NPOMSH_nb[k][i][j]->Write();
+            }
         }
     }
     #endif//NPOM
