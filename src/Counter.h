@@ -37,7 +37,7 @@ class Count
         #if NBNF
         void InitializeNBNF();
 
-        float NBins = 240;
+        float NBins = 600;
         float start = -0.5;
         float stop  = NBins + start;
         TFile *output;

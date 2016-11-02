@@ -1,6 +1,8 @@
 import matplotlib as mpl
 #mpl.use('Agg')
 mpl.rc('text',usetex=True)
+mpl.rcParams['font.size'] = 27
+mpl.rcParams['font.weight']   = 'bold'
 mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
@@ -575,7 +577,21 @@ class Plot:
     def nch_dist(self):
         
         self.ReOpen()
-        fig, ax = plt.subplots()
+        plot     = np.asarray([plt.subplots() for i in range(4)])
+        figs = plot[:,0]
+        axs  = plot[:,1]
+        majorLocator = MultipleLocator(50)
+        minorLocator = MultipleLocator(10)
+        DPI = figs[0].get_dpi()
+        size = 1000
+        [fig[0].set_size_inches(size/DPI,size/DPI) for fig in plot]
+        [ax.grid(which='both',alpha=0.5) for ax in axs]
+        [ax.xaxis.set_minor_locator(minorLocator) for ax in axs]
+        [ax.xaxis.set_major_locator(majorLocator) for ax in axs]
+        [ax.xaxis.set_tick_params(which='major',length=12,width=2) for ax in axs] 
+        [ax.yaxis.set_tick_params(which='major',length=12,width=2) for ax in axs]
+        [ax.xaxis.set_tick_params(which='minor',length=8 ,width=2) for ax in axs]
+        [ax.yaxis.set_tick_params(which='minor',length=8 ,width=2) for ax in axs]
 
         for i in range(25):
             for j in range(25):
@@ -589,9 +605,7 @@ class Plot:
         All_nf = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
         All_nf_sum = np.sum(All_nf)
         All_nf = All_nf/All_nf_sum
-        ax.set_yscale('log')
-        ax.plot(All_nf,marker='o',linestyle='-')
-         
+        axs[0].plot(All_nf,marker='o',linestyle='-',label='All')
 
         self.ReOpen()
         for i in range(12):
@@ -605,8 +619,68 @@ class Plot:
             Nbins   = tempS_nf.GetNbinsX()
             All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
             All_nf = All_nf/All_nf_sum
-            ax.set_yscale('log')
-            ax.plot(All_nf,marker='',linestyle='-')
+            axs[0].plot(All_nf,marker='o',linestyle='',label='N={}'.format(i))
+
+    #################################################################################################
+
+        self.ReOpen()
+        for j in range(12):
+            for i in range(25):
+                if i:
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
+        
+            Nbins   = tempS_nf.GetNbinsX()
+            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
+            All_nf = All_nf/All_nf_sum
+            axs[1].plot(All_nf,marker='o',linestyle='',label='NPOMH={}'.format(j))
+
+    #################################################################################################
+
+        self.ReOpen()
+        for i in range(2):
+            for j in range(25):
+                if j:
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
+            
+            Nbins   = tempS_nf.GetNbinsX()
+            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
+            All_nf = All_nf/All_nf_sum
+            axs[i+2].plot(All_nf,marker='',linestyle='-',label='All NPOMH')
+        
+    #################################################################################################
+
+        self.ReOpen()
+        for i in range(2):
+            for j in range(12):
+                if 0:
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
+                Nbins   = tempS_nf.GetNbinsX()
+                All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
+                All_nf = All_nf/All_nf_sum
+                axs[i+2].plot(All_nf,marker='',linestyle='-',label='NPOMH={}'.format(j))
+
+    #################################################################################################
+
+        xlims = [(0,300),(0,300),(0,150),(0,150)]
+        titles = ['$NPOMS=N + \sum^{All}NPOMH$','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
+        filenames = ['N_NPOMS_All_NPOMH.pdf','N_NPOMH_All_NPOMS.pdf','NPOMS0.pdf','NPOMS1.pdf']
+        [ax.set_yscale('log') for ax in axs]
+        [ax.set_xlim(xlim) for ax,xlim in zip(axs,xlims)]
+        [ax.set_ylabel('$P_{n_{ch}}$') for ax in axs]
+        [ax.set_xlabel('$n_{ch}$') for ax in axs]
+        [ax.set_title(title) for ax,title in zip(axs,titles)]
+        [ax.legend(framealpha=0.0) for ax in axs]
+        [fig.savefig(self.filepath+'/analyzed/'+name) for fig,name in zip(figs,filenames)]
+        
 
 
 if __name__=="__main__":
