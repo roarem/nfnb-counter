@@ -296,7 +296,8 @@ void Count::ReadAndCount()
                     if (IDIAG !=1 and IDIAG !=6 and IDIAG != 10)
                     {
                         nf_nb_reg[nbnf_index+2] += 1;
-                        counted_reg[1] = 1;
+                        if (psrap_abs < 1)
+                            counted_reg[1] = 1;
                     }
                     if (psrap_abs < 1)
                     {
