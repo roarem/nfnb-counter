@@ -5,7 +5,7 @@ mpl.rcParams['font.size'] = 27
 mpl.rcParams['font.weight']   = 'bold'
 mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+import matplotlib.ticker as ticker
 import numpy as np
 import ROOT
 import linecache
@@ -41,11 +41,11 @@ class Plot:
     def plotSetup(self,xlim=None,ylim=None):
         
         if self.nsd:
-            majorLocator = MultipleLocator(20)
-            minorLocator = MultipleLocator(10)
+            majorLocator = ticker.MultipleLocator(20)
+            minorLocator = ticker.MultipleLocator(10)
         else:
-            majorLocator = MultipleLocator(5)
-            minorLocator = MultipleLocator(1)
+            majorLocator = ticker.MultipleLocator(5)
+            minorLocator = ticker.MultipleLocator(1)
 
         fig, ax = plt.subplots()
         DPI = fig.get_dpi()
@@ -60,8 +60,8 @@ class Plot:
 
         ax.grid(which='minor',alpha=0.5)
 
-        majorFormatter = FormatStrFormatter('%d')
-        minorFormatter = FormatStrFormatter('%d')
+        majorFormatter = ticker.FormatStrFormatter('%d')
+        minorFormatter = ticker.FormatStrFormatter('%d')
         ax.yaxis.set_minor_locator(minorLocator)
         ax.xaxis.set_minor_locator(minorLocator)
         ax.yaxis.set_major_locator(majorLocator)
@@ -539,8 +539,8 @@ class Plot:
         ax.set_xlim(-0.2,1.3)
         ax.set_ylim(0.1,0.9)
 
-        majorLocator = MultipleLocator(0.1)
-        minorLocator = MultipleLocator(0.1)
+        majorLocator = ticker.MultipleLocator(0.1)
+        minorLocator = ticker.MultipleLocator(0.1)
 
         DPI = fig.get_dpi()
         size = 1000
@@ -552,8 +552,8 @@ class Plot:
 
         ax.grid(which='minor',alpha=1)
 
-        majorFormatter = FormatStrFormatter('%.1f')
-        minorFormatter = FormatStrFormatter('%.1f')
+        majorFormatter = ticker.FormatStrFormatter('%.1f')
+        minorFormatter = ticker.FormatStrFormatter('%.1f')
         ax.yaxis.set_minor_locator(minorLocator)
         ax.xaxis.set_minor_locator(minorLocator)
         ax.yaxis.set_major_locator(majorLocator)
@@ -674,8 +674,8 @@ class Plot:
         [ax.legend(framealpha=0.0) for ax in axs]
 
         [fig.set_size_inches(size/DPI,size/DPI) for fig in figs]
-        [ax.xaxis.set_minor_locator(MultipleLocator(10)) for ax in axs]
-        [ax.xaxis.set_major_locator(MultipleLocator(50)) for ax in axs]
+        [ax.xaxis.set_minor_locator(ticker.MultipleLocator(10)) for ax in axs]
+        [ax.xaxis.set_major_locator(ticker.MultipleLocator(50)) for ax in axs]
         [ax.xaxis.set_tick_params(which='major',length=12,width=2) for ax in axs] 
         [ax.yaxis.set_tick_params(which='major',length=12,width=2) for ax in axs]
         [ax.xaxis.set_tick_params(which='minor',length=8 ,width=2) for ax in axs]
