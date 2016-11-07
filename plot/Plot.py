@@ -106,6 +106,26 @@ class Plot:
         self.ReOpen()
 
         if self.nsd:
+            prefix = 'nsd'
+        else:
+            prefix = 'ptcut'
+
+        for i in range(25):
+            for j in range(25):
+                if i or j:
+                    tempS_nbnf.Add(self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nbnf = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j))
+                    tempS_nf = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j))
+
+        Nbins  = tempS_nbnf.GetNbinsX()
+        tempS_nbnf.Divide(tempS_nf)
+        simNBNF     = np.asarray([tempS_nbnf.GetBinContent(k) for k in range(1,Nbins)])
+        simNBNF_err = np.asarray([tempS_nbnf.GetBinError(k) for k in range(1,Nbins)])
+        simNF       = np.linspace(0,Nbins,(Nbins+1))
+        ''' 
+        if self.nsd:
             simNBNF_in  = self.f.FindObjectAnyAny("nsdReg")
             simNF_in    = self.f.FindObjectAnyAny("nsdReg_nf")
             simNBNF_in.Divide(simNF_in) 
@@ -117,13 +137,11 @@ class Plot:
             simNBNF_in.Divide(simNF_in)
 
         Nbins       = simNBNF_in.GetNbinsX()
-        simNF       = np.linspace(0,Nbins,(Nbins+1))
         simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
         simNBNF_err = np.asarray([simNBNF_in.GetBinError(i) for i in range(1,Nbins)])
-        
+         
         simNBNF_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
-        fit_a = simNBNF_fit.Parameter(0)
-        fit_b = simNBNF_fit.Parameter(1)
+        '''
         if self.nsd:        
             ax.plot(simNF[:xsize],simNBNF[:xsize],linestyle='',marker='o',markersize=8,color='black',\
                     label='simulation')
@@ -131,17 +149,21 @@ class Plot:
             ax.errorbar(simNF[:xsize],simNBNF[:xsize],yerr=simNBNF_err[:xsize],linestyle='',\
                         marker='s',markersize=10,color='black',label='simulation'),\
                         #zorder=9)
+        if 0:
+            simNBNF_fit = tempS_nbnf.Fit('pol1','SQN','',0,30)
+            fit_a = simNBNF_fit.Parameter(0)
+            fit_b = simNBNF_fit.Parameter(1)
+            nf = np.linspace(0,30,31)
+            ax.plot(nf,self.fit(fit_a,fit_b,nf),linestyle='-',marker='',markersize=8,color='black',\
+                    linewidth=3,label='simNBNF self.fit',zorder=8)
 
-       # nf = np.linspace(0,30,31)
-       # ax.plot(nf,self.fit(nf),linestyle='-',marker='',markersize=8,color='black',\
-       #         linewidth=3,label='simNBNF self.fit',zorder=8)
 
 ############## Lines with different number of soft pomerons ####################
         self.ReOpen()
         NPOMList = []
         for i in range(7):
-            SxH0_name = "ptcut_NPOM_{:02d}_00".format(i)
-            SxH0_nf_name = "ptcut_NPOM_NF_{:02d}_00".format(i)
+            SxH0_name = prefix+"_NPOM_{:02d}_00".format(i)
+            SxH0_nf_name = prefix+"_NPOM_NF_{:02d}_00".format(i)
             #SxH0 = self.f.FindObjectAny(SxH0_name)
             #SxH0_nf = self.f.FindObjectAny(SxH0_nf_name)
             SxH0 =    self.f.FindObjectAny(SxH0_name)
@@ -149,7 +171,6 @@ class Plot:
             SxH0.Divide(SxH0_nf)
             temp_hist = [SxH0.GetBinContent(j) for j in range(1,Nbins)]
             NPOMList.append(np.asarray(temp_hist))
-
         if self.nsd:
             nf = np.linspace(0,239,240)
             nfnew = np.linspace(nf.min(),nf.max(),900)
@@ -163,6 +184,7 @@ class Plot:
                 npom = np.trim_zeros(npom,trim='b')
             else:
                 npom = np.trim_zeros(npom,trim='b')[:11+i]
+            #smooth = npom
             smooth = spline(nf[:len(npom)],npom,nfnew)
             #ax.plot(nf[:len(npom)],npom,marker='',linestyle='-',label='NPOMS {}'.format(i))
             smooth = np.trim_zeros(smooth,trim='b')
@@ -191,13 +213,19 @@ class Plot:
 
 ################## All soft pomerons and 0 hard pomerons########################
         self.ReOpen()
-        S    = self.f.FindObjectAny("ptcut_NPOM_00_00")
-        S_nf = self.f.FindObjectAny("ptcut_NPOM_NF_00_00")
-        for i in range(1,25):
-            S_name = "ptcut_NPOM_{:02d}_00".format(i)
-            S_nf_name = "ptcut_NPOM_NF_{:02d}_00".format(i)
-            S.Add(self.f.FindObjectAny(S_name))
-            S_nf.Add(self.f.FindObjectAny(S_nf_name))
+        #S    = self.f.FindObjectAny(prefix+"_NPOM_00_00")
+        #S_nf = self.f.FindObjectAny(prefix+"_NPOM_NF_00_00")
+        for i in range(25):
+            if i:
+                S.Add(self.f.FindObjectAny(prefix+"_NPOM_{:02d}_00".format(i)))
+                S_nf.Add(self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_00".format(i)))
+            else:
+                S    = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_00".format(i))
+                S_nf = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_00".format(i))
+            #S_name = prefix+"_NPOM_{:02d}_00".format(i)
+            #S_nf_name = prefix+"_NPOM_NF_{:02d}_00".format(i)
+            #S.Add(self.f.FindObjectAny(S_name))
+            #S_nf.Add(self.f.FindObjectAny(S_nf_name))
         S.Divide(S_nf)
         simS_err = np.asarray([S.GetBinError(i) for i in range(1,Nbins)])
         simS = np.asarray([S.GetBinContent(i) for i in range(1,Nbins)])
@@ -281,22 +309,43 @@ class Plot:
 ######################### Simulated for all npom ###############################
         self.ReOpen()
         if self.nsd:
-            simNBNF_in  = self.f.FindObjectAny("nsdReg")
-            simNF_in    = self.f.FindObjectAny("nsdReg_nf")
-            simNBNF_in.Divide(simNF_in) 
+            prefix = 'nsd'
         else:
-            simNBNF_in  = self.f.FindObjectAny("ptcutReg")
-            simNF_in    = self.f.FindObjectAny("ptcutReg_nf")
-            simNBNF_in.Divide(simNF_in)
+            prefix = 'ptcut'
 
-        Nbins       = simNBNF_in.GetNbinsX()
-        simNF       = np.linspace(0,Nbins,Nbins-1)
-        simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
-        simNBNF_err = np.asarray([simNBNF_in.GetBinError(i) for i in range(1,Nbins)])
+        for i in range(25):
+            for j in range(25):
+                if i or j:
+                    tempS_nbnf.Add(self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j)))
+                    tempS_nf.Add(self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                else:
+                    tempS_nbnf = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j))
+                    tempS_nf = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j))
+
+        Nbins  = tempS_nbnf.GetNbinsX()
+        tempS_nbnf.Divide(tempS_nf)
+        simNBNF     = np.asarray([tempS_nbnf.GetBinContent(k) for k in range(1,Nbins)])
+        simNBNF_err = np.asarray([tempS_nbnf.GetBinError(k) for k in range(1,Nbins)])
+        simNF       = np.linspace(0,Nbins,(Nbins+1))
+        #if self.nsd:
+        #    simNBNF_in  = self.f.FindObjectAny("nsdReg")
+        #    simNF_in    = self.f.FindObjectAny("nsdReg_nf")
+        #    simNBNF_in.Divide(simNF_in) 
+        #else:
+        #    simNBNF_in  = self.f.FindObjectAny("ptcutReg")
+        #    simNF_in    = self.f.FindObjectAny("ptcutReg_nf")
+        #    simNBNF_in.Divide(simNF_in)
+
+        #Nbins       = simNBNF_in.GetNbinsX()
+        #simNF       = np.linspace(0,Nbins,Nbins-1)
+        #simNBNF     = np.asarray([simNBNF_in.GetBinContent(i) for i in range(1,Nbins)])
+        #simNBNF_err = np.asarray([simNBNF_in.GetBinError(i) for i in range(1,Nbins)])
         if self.nsd:
-            temp_fit = simNBNF_in.Fit('pol1','SQN','',0,239)
+            temp_fit = tempS_nbnf.Fit('pol1','SQN','',0,239)
+            #temp_fit = simNBNF_in.Fit('pol1','SQN','',0,239)
         else:
-            temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
+            temp_fit = tempS_nbnf.Fit('pol1','SQN','',0,30)
+            #temp_fit = simNBNF_in.Fit('pol1','SQN','',0,30)
         cof_a = temp_fit.Parameter(0)
         cof_b = temp_fit.Parameter(1)
         cof_a_err = '{:.4}'.format(temp_fit.ParError(0))
@@ -307,9 +356,9 @@ class Plot:
 
         if self.nsd:
             simNBNF = np.ma.masked_equal(simNBNF,0)
-            ax.plot(simNF,self.fit(cof_a,cof_b,simNF),linestyle='--',linewidth=2,\
+            ax.plot(simNF[:xsize],self.fit(cof_a,cof_b,simNF[:xsize]),linestyle='--',linewidth=2,\
                     alpha=1,label=label+' fit')
-            ax.plot(simNF,simNBNF,linestyle='',marker='o',markersize=7,color='black',\
+            ax.plot(simNF[:xsize],simNBNF[:xsize],linestyle='',marker='o',markersize=7,color='black',\
                     label=label,zorder=9)
             #ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
             #            marker='o',markersize=7,color='black',label=label,\
@@ -317,7 +366,7 @@ class Plot:
         else:
             ax.plot(simNF[:30],self.fit(cof_a,cof_b,simNF[:30]),linestyle='--',linewidth=2,\
                     alpha=1,label=label+' fit')
-            ax.errorbar(simNF,simNBNF,yerr=simNBNF_err,linestyle='',\
+            ax.errorbar(simNF[:xsize],simNBNF[:xsize],yerr=simNBNF_err[:xsize],linestyle='',\
                         marker='s',markersize=10,color='black',label=label,\
                         zorder=9)
          
@@ -387,17 +436,19 @@ class Plot:
     def fix_S_var_H(self):
         self.ReOpen()
         if self.nsd:
+            prefix = 'nsd'
             fig,ax = self.plotSetup(xlim=[-1,140],ylim=[0,120])
             xsize = ax.get_xlim()[1]
         else:
+            prefix = 'ptcut'
             fig, ax   = self.plotSetup(xlim=[-1,25],ylim=[0,6])
             xsize = ax.get_xlim()[1] + 5
         NS = 2
         NH = [0,1,2,3,4]
 
         for h in NH:
-            tempS      = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,h))
-            tempS_nf   = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,h))
+            tempS      = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(NS,h))
+            tempS_nf   = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(NS,h))
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
             tempAllS_nf  = np.linspace(0,Nbins,Nbins+1)
@@ -411,11 +462,11 @@ class Plot:
 
         self.ReOpen()
 
-        tempS = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,NH[0]))
-        tempS_nf = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(NS,NH[0]))
+        tempS_nf = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(NS,NH[0]))
         for h in range(1,25):
-            tempS.Add   (self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(NS,h)))
-            tempS_nf.Add(self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(NS,h)))
+            tempS.Add   (self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(NS,h)))
+            tempS_nf.Add(self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(NS,h)))
         tempS.Divide(tempS_nf)
         Nbins = tempS.GetNbinsX()
         tempAll_nf   = np.linspace(0,Nbins,Nbins+1)
@@ -687,30 +738,30 @@ class Plot:
 
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
-    def nsd7(save=0):
-        name = 'out/7TeV_4M_nsd.root' 
-        P = Plot(root_file_path=path,filename=name,save=save,nsd=1)
-        return P
-    def ptcut7(save=0):
+    def GeV7000(save=0,nsd=0):
         name = 'build/7TeV_4M.root' 
         #name = 'out/7TeV_4M.root.pre2810' 
-        P = Plot(root_file_path=path,filename=name,save=save)
+        P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
-    def ptcut9(save=0):
-        name = 'out/900GeV_1M.root' 
-        P = Plot(root_file_path=path,filename=name,save=save)
+    def GeV2760(save=0,nsd=0):
+        name = 'out/2760GeV_4M.root' 
+        P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
-    def ptcut13(save=0):
+    def GeV900(save=0,nsd=0):
+        name = 'out/900GeV_4M.root' 
+        P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
+        return P
+    def GeV13000(save=0,nsd=0):
         name = 'out/13000GeV_1M.root' 
-        P = Plot(root_file_path=path,filename=name,save=save)
+        P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
 
-    options = {0: nsd7, 1:ptcut7,2:ptcut9,3:ptcut13}
-    P = options[1](save=1)
+    options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
+    P = options[0](save=0,nsd=0)
 
     #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    #P.bcorr()
     P.nch_dist()
+    #P.bcorr()
     P.Show()

@@ -42,31 +42,37 @@ class Count
         float stop  = NBins + start;
         TFile *output;
         const char* NBNFFilename;
+        std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin","NBNFDou"};
+        std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
+        std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 
         #if NBNFRegular
-        const char* REGFolder = "NBNFRegular";
+        //folders.push_back("NBNFRegular");
+        //const char* REGFolder = "NBNFRegular";
         std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
         std::vector<TH1F*> NBREG;
         #endif
 
         #if NBNFSingle
-        const char* SINFolder = "NBNFSingle";
+        //folders.push_back("NBNFSingle");
+        //const char* SINFolder = "NBNFSingle";
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
         #endif
 
         #if NBNFDouble
-        const char* DOUFolder = "NBNFDouble";
+        //folders.push_back("NBNFDouble");
+        //const char* DOUFolder = "NBNFDouble";
         std::vector<TH1F*> NBNFDOU;
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
         #endif
 
         #if NPOM
-        std::vector<const char*> NPOMFolders = 
-            std::vector<const char*>{"NPOMptcut","NPOMall","NPOMnsd","NPOMdou","NPOMsin"};
+        //std::vector<const char*> NPOMFolders = 
+        //    std::vector<const char*>{"NPOMptcut","NPOMall","NPOMnsd","NPOMdou","NPOMsin"};
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;

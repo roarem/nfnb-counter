@@ -10,6 +10,9 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
     number_of_events    = numberofevents;
 
     #if NBNF
+    output = new TFile(NBNFFilename,"recreate");
+    for (int i=0 ; i<folders.size() ; i++)
+        output->mkdir(folders[i]);
     InitializeNBNF();
     #endif//NBNF
 }
@@ -17,10 +20,9 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
 #if NBNF
 void Count::InitializeNBNF()
 {
-    output = new TFile(NBNFFilename,"recreate");
 #if NBNFRegular
     // Creates NFNB trees and histograms
-    
+/*    
     output->mkdir(REGFolder,REGFolder);
 
     std::vector<const char*> HistNamesReg;
@@ -49,10 +51,11 @@ void Count::InitializeNBNF()
         NFREG [i]->Sumw2(true);
         NBREG [i]->Sumw2(true);
     }
+*/
 #endif//NBNFRegular
 
 #if NBNFSingle
-    output->mkdir(SINFolder,SINFolder);
+    //output->mkdir(SINFolder);
 
     std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
@@ -82,7 +85,7 @@ void Count::InitializeNBNF()
 #endif//NBNFSingle
 
 #if NBNFDouble
-    output->mkdir(DOUFolder,DOUFolder);
+    //output->mkdir(DOUFolder,DOUFolder);
 
     std::vector<const char*> HistNamesDou;
     HistNamesDou.push_back("ALL Double");
@@ -114,10 +117,8 @@ void Count::InitializeNBNF()
 #if NPOM
     // Creates NPOM tree and histograms
 
-    std::vector<std::string> prefix = {"ptcut_","all_","nsd_","dou_","sin_"};
-    for (int i=0 ; i<5 ; i++)
+    for (int i=0 ; i<prefix.size() ; i++)
     {
-        output->mkdir(NPOMFolders[i]);
         NPOMSH.push_back(std::vector<std::vector<TH1F*>>());
         NPOMSH_nf.push_back(std::vector<std::vector<TH1F*>>());
         NPOMSH_nb.push_back(std::vector<std::vector<TH1F*>>());
@@ -132,12 +133,12 @@ void Count::InitializeNBNF()
                 char number_string [7];
                 sprintf(number_string,"_%02d_%02d",j,k);
                 number_string[6] = '\0';
-                std::string temp  = prefix[i]+"NPOM"+std::string(number_string);
-                std::string temp1 = prefix[i]+"npom"+std::string(number_string);
-                std::string temp2 = prefix[i]+"NPOM_NF"+std::string(number_string);
-                std::string temp3 = prefix[i]+"npom_nf"+std::string(number_string);
-                std::string temp4 = prefix[i]+"NPOM_NB"+std::string(number_string);
-                std::string temp5 = prefix[i]+"npom_nb"+std::string(number_string);
+                std::string temp  = prefix[i]+"_NPOM"+std::string(number_string);
+                std::string temp1 = prefix[i]+"_npom"+std::string(number_string);
+                std::string temp2 = prefix[i]+"_NPOM_NF"+std::string(number_string);
+                std::string temp3 = prefix[i]+"_npom_nf"+std::string(number_string);
+                std::string temp4 = prefix[i]+"_NPOM_NB"+std::string(number_string);
+                std::string temp5 = prefix[i]+"_npom_nb"+std::string(number_string);
 
                 NPOMSH[i][j].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
                 NPOMSH_nf[i][j].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
@@ -159,9 +160,10 @@ void Count::ReadAndCount()
     timer.startTimer();
 
     #if NBNF
+    int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
     #if NBNFRegular
-    int nf_nb_reg [8] = {0,0,0,0,0,0,0,0};
-    int counted_reg [4] = {0,0,0,0};
+    //int nf_nb_reg [8] = {0,0,0,0,0,0,0,0};
+    //int counted_reg [4] = {0,0,0,0};
     #endif//NBNFRegular
 
     #if NBNFSingle
@@ -210,7 +212,6 @@ void Count::ReadAndCount()
     std::string finalprLine, B_MULTLine, NPOMLine;
     std::ifstream finalprFile(finalpr_loc.c_str());
     std::ifstream B_MULTFile(B_MULT_loc.c_str());
-    
     while (std::getline(B_MULTFile,B_MULTLine))
     {
         std::istringstream aa(B_MULTLine);
@@ -274,6 +275,7 @@ void Count::ReadAndCount()
                             nf_nb_sin[2*i+nbnf_index] += 1;
                             counted_sin[i] = 1;
                         }
+                        count_this[3] = 1;
                     }
                     #endif//NBNFSingle
 
@@ -285,28 +287,35 @@ void Count::ReadAndCount()
                             nf_nb_dou[2*i+nbnf_index] += 1;
                             counted_dou[i] = 1;
                         }
+                        count_this[4] = 1;
                     }
                     #endif//NBNFDouble
 
                     #if NBNFRegular
-                    nf_nb_reg[nbnf_index] += 1;
-                    counted_reg[0] = 1;
+                    //nf_nb_reg[nbnf_index] += 1;
+                    //counted_reg[0] = 1;
+                    nf_nb[nbnf_index+2] += 1;
+                    count_this[1] = 1;
 
                     // Non-single diffraction
                     if (IDIAG !=1 and IDIAG !=6 and IDIAG != 10)
                     {
-                        nf_nb_reg[nbnf_index+2] += 1;
+                        //nf_nb_reg[nbnf_index+2] += 1;
+                        nf_nb[nbnf_index+4] += 1;
                         if (psrap_abs < 1)
-                            counted_reg[1] = 1;
+                            count_this[2] = 1;
+                            //counted_reg[1] = 1;
                     }
                     if (psrap_abs < 1)
                     {
-                        nf_nb_reg[nbnf_index+4] += 1;
-                        counted_reg[2] = counted_reg[3] = 1;
+                        //nf_nb_reg[nbnf_index+4] += 1;
+                        //counted_reg[2] = counted_reg[3] = 1;
+                        count_this[0] = 1;
                         if (psrap_abs > 0.2 and psrap_abs < 0.8)
                         {
                             if (p_T > 0.3 and p_T < 1.5)
-                                nf_nb_reg[nbnf_index+6] += 1;
+                                nf_nb[nbnf_index] += 1;
+                                //nf_nb_reg[nbnf_index+6] += 1;
                         }
                     }
                     #endif//NBNFRegular
@@ -327,15 +336,15 @@ void Count::ReadAndCount()
         #if NBNF
         #if NBNFRegular
         // Counts for different conditions
-        for(int i=0 ; i<4 ; i++)
-        {
-            if (counted_reg[i])
-            {
-                NBNFREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
-                NFREG[i]->Fill(nf_nb_reg[2*i]);
-                NBREG[i]->Fill(nf_nb_reg[2*i+1]);
-            }
-        }
+        //for(int i=0 ; i<4 ; i++)
+        //{
+        //    if (counted_reg[i])
+        //    {
+        //        NBNFREG[i]->Fill(nf_nb_reg[2*i],nf_nb_reg[2*i+1]);
+        //        NFREG[i]->Fill(nf_nb_reg[2*i]);
+        //        NBREG[i]->Fill(nf_nb_reg[2*i+1]);
+        //    }
+        //}
         #endif//NBNFRegular
 
         #if NBNFSingle
@@ -366,6 +375,16 @@ void Count::ReadAndCount()
 
         #if NPOM
         // Counts if abs(eta) < 1
+        for (int i=0 ; i<count_this.size() ; i++)
+        {
+            if (count_this[i])
+            {
+                NPOMSH[i][npoms][npomh]->Fill(nf_nb[2*i],nf_nb[2*i+1]);
+                NPOMSH_nf[i][npoms][npomh]->Fill(nf_nb[2*i]);
+                NPOMSH_nb[i][npoms][npomh]->Fill(nf_nb[2*i+1]);
+            }
+        }
+        /*
         if (counted_reg[3])
         {
             NPOMSH[0][npoms][npomh]->Fill(nf_nb_reg[6],nf_nb_reg[7]);
@@ -384,6 +403,7 @@ void Count::ReadAndCount()
             NPOMSH_nf[2][npoms][npomh]->Fill(nf_nb_reg[2]);
             NPOMSH_nb[2][npoms][npomh]->Fill(nf_nb_reg[3]);
         }
+        */
         #if NBNFDouble
         if (counted_sin[3])
         {
@@ -403,9 +423,11 @@ void Count::ReadAndCount()
         #endif//NPOM
 
         // Resets nf and nb counters
+        for (int i=0 ; i<count_this.size() ; i++)
+            nf_nb[2*i] = nf_nb[2*i+1] = count_this[i] = 0;
         #if NBNFRegular
-        for(int i=0 ; i<4 ; i++)
-            nf_nb_reg[2*i] = nf_nb_reg[2*i+1] = counted_reg[i] = 0;
+        //for(int i=0 ; i<4 ; i++)
+        //    nf_nb_reg[2*i] = nf_nb_reg[2*i+1] = counted_reg[i] = 0;
         #endif//NBNFRegular
 
         #if NBNFSingle
@@ -432,17 +454,18 @@ void Count::ReadAndCount()
     }
     #if NBNF
     #if NBNFRegular
-    output->cd(REGFolder);
-    for(int i=0 ; i<4 ; i++)
-    {
-        NBNFREG[i]->Write();
-        NFREG [i]->Write();
-        NBREG [i]->Write();
-    }
+    //output->cd(REGFolder);
+    //for(int i=0 ; i<4 ; i++)
+    //{
+    //    NBNFREG[i]->Write();
+    //    NFREG [i]->Write();
+    //    NBREG [i]->Write();
+    //}
     #endif//NBNFRegular
 
     #if NBNFSingle
-    output->cd(SINFolder);
+    //output->cd(SINFolder);
+    output->cd(folders[5]);
     for(int i=0 ; i<4 ; i++)
     {
         NBNFSIN[i]->Write();
@@ -452,7 +475,8 @@ void Count::ReadAndCount()
     #endif//NBNFSingle
 
     #if NBNFDouble
-    output->cd(DOUFolder);
+    //output->cd(DOUFolder);
+    output->cd(folders[6]);
     for(int i=0 ; i<4 ; i++)
     {
         NBNFDOU[i]->Write();
@@ -462,9 +486,9 @@ void Count::ReadAndCount()
     #endif//NBNFDouble
 
     #if NPOM
-    for(int k=0 ; k<5 ; k++)
+    for(int k=0 ; k<prefix.size() ; k++)
     {
-        output->cd(NPOMFolders[k]);
+        output->cd(folders[k]);
         for(int i=0 ; i<25 ; i++)
         {
             for(int j=0 ; j<25 ; j++)
@@ -475,6 +499,19 @@ void Count::ReadAndCount()
             }
         }
     }
+    //for(int k=0 ; k<5 ; k++)
+    //{
+    //    output->cd(NPOMFolders[k]);
+    //    for(int i=0 ; i<25 ; i++)
+    //    {
+    //        for(int j=0 ; j<25 ; j++)
+    //        {
+    //            NPOMSH[k][i][j]->Write();
+    //            NPOMSH_nf[k][i][j]->Write();
+    //            NPOMSH_nb[k][i][j]->Write();
+    //        }
+    //    }
+    //}
     #endif//NPOM
 
     output->Close();
