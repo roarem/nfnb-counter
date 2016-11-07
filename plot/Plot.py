@@ -209,7 +209,7 @@ class Plot:
             pass
             #[ax.text(-0.4,npom[npom_indicies[i][0]]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
         else:
-            [ax.text(-0.4,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
+            [ax.text(-0.6,npom[0]-0.1,str(i),fontsize=16) for i,npom in enumerate(NPOMList)]
 
 ################## All soft pomerons and 0 hard pomerons########################
         self.ReOpen()
@@ -264,6 +264,7 @@ class Plot:
                      'All NPOMS and NPOMH = 0',\
                      'NPOMH = 0 and for NPOMS = \{0,...,6\}'\
                     ), loc='upper left',fontsize=24)
+            leg.get_frame().set_alpha(0.0)
             if self.save:
                 plt.savefig(self.filepath+'analyzed/nsd_nbnf_allnpoms_0npomh.pdf')
         else:
@@ -276,9 +277,9 @@ class Plot:
                               ),\
                               #'{:.3f}+{:.3f}x self.fit of simulated data'.format(self.fit_a,self.fit_b),\
                               loc='best',fontsize=24)
+            leg.get_frame().set_alpha(0.0)
             if self.save:
                 plt.savefig(self.filepath+'analyzed/nbnf_allnpoms_0npomh.pdf')
-        leg.get_frame().set_alpha(0.0)
         self.Close()
 
     def var_NPOMS(self):
@@ -492,95 +493,62 @@ class Plot:
 
     def bcorr(self):
 
-        x900 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
-        exp900 = np.asarray([0.212, 0.203, 0.193, 0.182, 0.172, 0.163, 0.159, 0.335, 0.3, 0.274,\
-                             0.406, 0.368, 0.452])
-        exp900err = np.asarray([0.008935882720806042, 0.007034912934784624, 0.00795110055275369,\
+        exps = []; experrs = []
+
+        x = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
+        exps.append(np.asarray([0.212, 0.203, 0.193, 0.182, 0.172, 0.163, 0.159, 0.335, 0.3, 0.274,\
+                             0.406, 0.368, 0.452]))
+        experrs.append(np.asarray([0.008935882720806042, 0.007034912934784624, 0.00795110055275369,\
                                 0.00751065909225016, 0.007930952023559342, 0.007516648189186454,\
                                 0.007256031973468695, 0.008836288813749808, 0.008945389874119518,\
                                 0.008628441342444185, 0.009135097153287424, 0.008845903006477066,\
-                                0.009334345183246651])
+                                0.009334345183246651]))
 
-        #x2760 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
-        #exp2760 = np.asarray([0.302, 0.294, 0.285, 0.269, 0.259, 0.253, 0.247, 0.447, 0.413, 0.386,\
-        #                      0.525, 0.488, 0.572])
-        #exp2760err = np.asarray([0.011016351483136328, 0.011029052543169788, 0.008009993757800314,\
-        #                         0.007011419257183242, 0.010007996802557442, 0.011022250223978767,\
-        #                         0.011004090148667448, 0.014012851244482689, 0.015005332385522154,\
-        #                         0.01700264685276972, 0.017007351351694948, 0.021002142747824568,\
-        #                         0.022005681084665385])
+        exps.append(np.asarray([0.302, 0.294, 0.285, 0.269, 0.259, 0.253, 0.247, 0.447, 0.413, 0.386,\
+                              0.525, 0.488, 0.572]))
+        experrs.append(np.asarray([0.011016351483136328, 0.011029052543169788, 0.008009993757800314,\
+                                 0.007011419257183242, 0.010007996802557442, 0.011022250223978767,\
+                                 0.011004090148667448, 0.014012851244482689, 0.015005332385522154,\
+                                 0.01700264685276972, 0.017007351351694948, 0.021002142747824568,\
+                                 0.022005681084665385]))
 
-        x7000 = np.asarray([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 0.0, 0.4, 0.8, 0.0, 0.4, 0.0])
-        exp7000 = np.asarray([0.366, 0.358, 0.345, 0.334, 0.327, 0.316, 0.311, 0.521,\
-                             0.487, 0.463, 0.598, 0.564, 0.643])
-        exp7000err = np.asarray([0.00852877482408816, 0.007910120100226039, 0.00840535543567314,\
+        exps.append(np.asarray([0.366, 0.358, 0.345, 0.334, 0.327, 0.316, 0.311, 0.521,\
+                             0.487, 0.463, 0.598, 0.564, 0.643]))
+        experrs.append(np.asarray([0.00852877482408816, 0.007910120100226039, 0.00840535543567314,\
                                 0.008514693182963202, 0.007134423592694788, 0.006007495318350236,\
                                 0.00920869154657707, 0.008728115489611717, 0.011901680553602505,\
                                 0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
-                                0.010117806086301516])
+                                0.010117806086301516]))
 
-        fig900, ax900  = self.bcorrPlotSetup()
-        #fig2760,ax2760 = self.bcorrPlotSetup()
-        fig7000,ax7000 = self.bcorrPlotSetup()
-
-
-        nevents900 = float(linecache.getline(self.filepath+'out/900GeV_1M_bcorr.csv',1))
-        bcorr900 = np.loadtxt(self.filepath+'out/900GeV_1M_bcorr.csv',skiprows=1)
-        #nevents2760 = float(linecache.getline(self.filepath+'out/2760GeV_4M_bcorr.csv',1))
-        #bcorr2760 = np.loadtxt(self.filepath+'out/2760GeV_4M_bcorr.csv',skiprows=1)
-        nevents7000 = float(linecache.getline(self.filepath+'out/7TeV_4M_bcorr.csv',1))
-        bcorr7000 = np.loadtxt(self.filepath+'out/7TeV_4M_bcorr.csv',skiprows=1)
-
+        plots = np.asarray([self.bcorrPlotSetup() for i in range(3)])
+        figs = plots[:,0]
+        axs  = plots[:,1]
+        csvfiles = ['900GeV_4M_bcorr.csv','2760GeV_4M_bcorr.csv','7TeV_4M_bcorr.csv'] 
+        simbcorr = [np.loadtxt(self.filepath+'out/'+csvfile,skiprows=1) for csvfile in csvfiles]
+        
         delta = 0; fontsize=27; markersize=10
         fontdict = {'fontsize':27,'weight':'bold'}
 
-        for i,j in zip([0,7,10,12],[7,10,12,13]):
-            ax900.errorbar(x900[i:j],exp900[i:j],exp900err[i:j],marker='s',markersize=markersize,\
-                    linestyle='',color='grey',label='ALICE')
-            ax900.plot(x900[i:j],bcorr900[i:j],marker='o',markersize=markersize,\
-                    linestyle='--',color='black',label='QGSM')
-            ax900.text(-0.1,exp900[i],'0.{}'.format(delta),fontsize=fontsize)
+        for k,ax in enumerate(axs):
+            delta = 0
+            for i,j in zip([0,7,10,12],[7,10,12,13]):
+                ax.errorbar(x[i:j],exps[k][i:j],experrs[k][i:j],marker='s',markersize=markersize,\
+                        linestyle='',color='grey',label='ALICE')
+                ax.plot(x[i:j],simbcorr[k][i:j],marker='o',markersize=markersize,\
+                        linestyle='--',color='black',label='QGSM')
+                ax.text(-0.13,exps[k][i],'0.{:d}'.format(delta),fontsize=fontsize)
 
-            #ax2760.errorbar(x2760[i:j],exp2760[i:j],exp2760err[i:j],marker='s',markersize=markersize,\
-            #                linestyle='',color='grey',label='ALICE')
-            #ax2760.plot(x2760[i:j],bcorr2760[i:j],marker='o',markersize=markersize,\
-            #            linestyle='--',color='black',label='QGSM')
-            #ax2760.text(-0.1,exp2760[i],'0.{}'.format(delta),fontsize=fontsize)
+                delta +=2
 
-            ax7000.errorbar(x7000[i:j],exp7000[i:j],exp7000err[i:j],marker='s',markersize=markersize,\
-                    linestyle='',color='grey',label='ALICE')
-            ax7000.plot(x7000[i:j],bcorr7000[i:j],marker='o',markersize=markersize,\
-                    linestyle='--',color='black',label='QGSM')
-            ax7000.text(-0.1,exp7000[i],'0.{}'.format(delta),fontsize=fontsize)
-
-            delta +=2
-        
-        ax900.text(-0.1,bcorr900[12]+0.03,'$\delta\eta$',fontsize=fontsize)
-        ax900.set_title('$900 GeV$',fontdict=fontdict)
-        ax900.set_xlabel('$\eta$',fontdict=fontdict)
-        ax900.set_ylabel('$b_{corr}$',fontdict=fontdict)
-
-        #ax2760.text(-0.1,bcorr2760[12]+0.03,'$\delta\eta$',fontsize=fontsize)
-        #ax2760.set_title('$2760 GeV$',fontdict=fontdict)
-        #ax2760.set_xlabel('$\eta$',fontdict=fontdict)
-        #ax2760.set_ylabel('$b_{corr}$',fontdict=fontdict)
-
-        ax7000.text(-0.1,bcorr7000[12]+0.03,'$\delta\eta$',fontsize=fontsize)
-        ax7000.set_title('$7000 GeV$',fontdict=fontdict)
-        ax7000.set_xlabel('$\eta$',fontdict=fontdict)
-        ax7000.set_ylabel('$b_{corr}$',fontdict=fontdict)
-
-        handles, labels = ax900.get_legend_handles_labels()
-        leg900 = ax900.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
-        leg900.get_frame().set_alpha(0.0)
-
-        #handles, labels = ax2760.get_legend_handles_labels()
-        #leg2760 = ax2760.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
-        #leg2760.get_frame().set_alpha(0.0)
-
-        handles, labels = ax7000.get_legend_handles_labels()
-        leg7000 = ax7000.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
-        leg7000.get_frame().set_alpha(0.0)
+        titles = ['$900 GeV$','$2760 GeV$','$7000 GeV$']
+        for i,ax in enumerate(axs):
+            ax.text(-0.13,simbcorr[i][12]+0.03,'$\delta\eta$',fontsize=fontsize)
+            ax.set_title(titles[i],fontdict=fontdict)
+            ax.set_xlabel('$\eta$',fontdict=fontdict)
+            ax.set_ylabel('$b_{corr}$',fontdict=fontdict)
+            handles, labels = ax.get_legend_handles_labels()
+            leg = ax.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
+            leg.get_frame().set_alpha(0.0)
 
 
     def bcorrPlotSetup(self):
@@ -739,7 +707,8 @@ class Plot:
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
     def GeV7000(save=0,nsd=0):
-        name = 'build/7TeV_4M.root' 
+        name = 'out/7TeV_4M.root' 
+        #name = 'build/7TeV_4M.root' 
         #name = 'out/7TeV_4M.root.pre2810' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
@@ -757,11 +726,11 @@ if __name__=="__main__":
         return P
 
     options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
-    P = options[0](save=0,nsd=0)
+    P = options[0](save=1,nsd=0)
 
     #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    P.nch_dist()
-    #P.bcorr()
+    #P.nch_dist()
+    P.bcorr()
     P.Show()

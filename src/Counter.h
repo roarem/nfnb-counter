@@ -11,13 +11,13 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define bcorr 0
-#define NBNF 1 
+#define bcorr 1
+#define NBNF 0 
     ///Dependent on NBNF///
-    #define NBNFRegular 1
-    #define NBNFSingle 1
-    #define NBNFDouble 1
-    #define NPOM 1  
+    //#define NBNFRegular 1
+    //#define NBNFSingle 1
+    //#define NBNFDouble 1
+    //#define NPOM 1  
 
 class Count 
 {
@@ -46,38 +46,38 @@ class Count
         std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 
-        #if NBNFRegular
+        //#if NBNFRegular
         //folders.push_back("NBNFRegular");
         //const char* REGFolder = "NBNFRegular";
         std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
         std::vector<TH1F*> NBREG;
-        #endif
+        //#endif
 
-        #if NBNFSingle
+        //#if NBNFSingle
         //folders.push_back("NBNFSingle");
         //const char* SINFolder = "NBNFSingle";
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
-        #endif
+        //#endif
 
-        #if NBNFDouble
+        //#if NBNFDouble
         //folders.push_back("NBNFDouble");
         //const char* DOUFolder = "NBNFDouble";
         std::vector<TH1F*> NBNFDOU;
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
-        #endif
+        //#endif
 
-        #if NPOM
+        //#if NPOM
         //std::vector<const char*> NPOMFolders = 
         //    std::vector<const char*>{"NPOMptcut","NPOMall","NPOMnsd","NPOMdou","NPOMsin"};
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;
-        #endif
-        #endif
+        //#endif
+        #endif//NBNF
 
         #if bcorr
         void BcorrCheck(int EVENTNR, double eta);
@@ -92,5 +92,5 @@ class Count
             std::vector<std::vector<double>>(13,std::vector<double>(2,0));
         std::vector<std::vector<double>> bne =
             std::vector<std::vector<double>>(9,std::vector<double>(2,0));
-        #endif
+        #endif//bcorr
 };

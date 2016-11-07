@@ -1,7 +1,9 @@
 #include "Counter.h"
 
 Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
+#if NBNF
     : NBNFFilename(nbnfout)
+#endif//NBNF
 {
     data_loc            = datapath;
     finalpr_loc         = datapath + "finalpr.data";
@@ -20,7 +22,7 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
 #if NBNF
 void Count::InitializeNBNF()
 {
-#if NBNFRegular
+//#if NBNFRegular
     // Creates NFNB trees and histograms
 /*    
     output->mkdir(REGFolder,REGFolder);
@@ -52,9 +54,9 @@ void Count::InitializeNBNF()
         NBREG [i]->Sumw2(true);
     }
 */
-#endif//NBNFRegular
+//#endif//NBNFRegular
 
-#if NBNFSingle
+//#if NBNFSingle
     //output->mkdir(SINFolder);
 
     std::vector<const char*> HistNamesSin;
@@ -82,9 +84,9 @@ void Count::InitializeNBNF()
         NFSIN[i]->Sumw2(true);
         NBSIN[i]->Sumw2(true);
     }
-#endif//NBNFSingle
+//#endif//NBNFSingle
 
-#if NBNFDouble
+//#if NBNFDouble
     //output->mkdir(DOUFolder,DOUFolder);
 
     std::vector<const char*> HistNamesDou;
@@ -112,9 +114,9 @@ void Count::InitializeNBNF()
         NFDOU[i]->Sumw2(true);
         NBDOU[i]->Sumw2(true);
     }
-#endif//NBNFDouble
+//#endif//NBNFDouble
 
-#if NPOM
+//#if NPOM
     // Creates NPOM tree and histograms
 
     for (int i=0 ; i<prefix.size() ; i++)
@@ -151,7 +153,7 @@ void Count::InitializeNBNF()
             }
         }
     }
-#endif//NPOM
+//#endif//NPOM
 }
 #endif//NBNF
 
@@ -161,26 +163,26 @@ void Count::ReadAndCount()
 
     #if NBNF
     int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
-    #if NBNFRegular
+    //#if NBNFRegular
     //int nf_nb_reg [8] = {0,0,0,0,0,0,0,0};
     //int counted_reg [4] = {0,0,0,0};
-    #endif//NBNFRegular
+    //#endif//NBNFRegular
 
-    #if NBNFSingle
+    //#if NBNFSingle
     int nf_nb_sin [8] = {0,0,0,0,0,0,0,0};
     int counted_sin [4] = {0,0,0,0};
-    #endif//NBNFSingle
+    //#endif//NBNFSingle
 
-    #if NBNFDouble
+    //#if NBNFDouble
     int nf_nb_dou [8] = {0,0,0,0,0,0,0,0};
     int counted_dou [4] = {0,0,0,0};
-    #endif//NBNFDouble
-    #endif//NBNF
-
-    #if NPOM
+    //#endif//NBNFDouble
+    //#if NPOM
     int npoms, npomh;
     std::ifstream NPOMFile(NPOM_loc.c_str());
-    #endif//NPOM
+    //#endif//NPOM
+    #endif//NBNF
+
 
     //B_MULT columns
     int   EVENTNR;  // Event number
@@ -217,11 +219,13 @@ void Count::ReadAndCount()
         std::istringstream aa(B_MULTLine);
         aa >> EVENTNR >> temp >> PARTNR;
 
-        #if NPOM
+        #if NBNF
+        //#if NPOM
         std::getline(NPOMFile,NPOMLine);
         std::istringstream cc(NPOMLine);
         cc >> npoms >> npomh;
-        #endif//NPOM
+        //#endif//NPOM
+        #endif//NBNF
         
         if(EVENTNR%100==0)
             Progress(EVENTNR);
@@ -255,7 +259,7 @@ void Count::ReadAndCount()
                     #if NBNF
                     int nbnf_index = (psrap<0);
 
-                    #if NBNFSingle || NBNFDouble
+                    //#if NBNFSingle || NBNFDouble
                     int i_start = 0;
                     if(psrap_abs<0.5)
                         i_start = 0;
@@ -265,9 +269,9 @@ void Count::ReadAndCount()
                         i_start = 2;
                     else
                         i_start = 3;
-                    #endif//NBNFSingle||NBNFDouble
+                    //#endif//NBNFSingle||NBNFDouble
 
-                    #if NBNFSingle
+                    //#if NBNFSingle
                     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
                     {
                         for(int i=i_start ; i<4 ; i++)
@@ -277,9 +281,9 @@ void Count::ReadAndCount()
                         }
                         count_this[3] = 1;
                     }
-                    #endif//NBNFSingle
+                    //#endif//NBNFSingle
 
-                    #if NBNFDouble
+                    //#if NBNFDouble
                     if(IDIAG==11)
                     {
                         for(int i=i_start ; i<4 ; i++)
@@ -289,9 +293,9 @@ void Count::ReadAndCount()
                         }
                         count_this[4] = 1;
                     }
-                    #endif//NBNFDouble
+                    //#endif//NBNFDouble
 
-                    #if NBNFRegular
+                    //#if NBNFRegular
                     //nf_nb_reg[nbnf_index] += 1;
                     //counted_reg[0] = 1;
                     nf_nb[nbnf_index+2] += 1;
@@ -318,7 +322,7 @@ void Count::ReadAndCount()
                                 //nf_nb_reg[nbnf_index+6] += 1;
                         }
                     }
-                    #endif//NBNFRegular
+                    //#endif//NBNFRegular
                     #endif//NBNF
 
                 #if bcorr
@@ -334,7 +338,7 @@ void Count::ReadAndCount()
         }
 
         #if NBNF
-        #if NBNFRegular
+        //#if NBNFRegular
         // Counts for different conditions
         //for(int i=0 ; i<4 ; i++)
         //{
@@ -345,9 +349,9 @@ void Count::ReadAndCount()
         //        NBREG[i]->Fill(nf_nb_reg[2*i+1]);
         //    }
         //}
-        #endif//NBNFRegular
+        //#endif//NBNFRegular
 
-        #if NBNFSingle
+        //#if NBNFSingle
         // Counts for different conditions
         for(int i=0 ; i<4 ; i++)
         {
@@ -358,9 +362,9 @@ void Count::ReadAndCount()
                 NBSIN[i]->Fill(nf_nb_sin[2*i+1]);
             }
         }
-        #endif//NBNFSingle
+        //#endif//NBNFSingle
 
-        #if NBNFDouble
+        //#if NBNFDouble
         // Counts for different conditions
         for(int i=0 ; i<4 ; i++)
         {
@@ -371,9 +375,9 @@ void Count::ReadAndCount()
                 NBDOU[i]->Fill(nf_nb_dou[2*i+1]);
             }
         }
-        #endif//NBNFDouble
+        //#endif//NBNFDouble
 
-        #if NPOM
+        //#if NPOM
         // Counts if abs(eta) < 1
         for (int i=0 ; i<count_this.size() ; i++)
         {
@@ -404,41 +408,41 @@ void Count::ReadAndCount()
             NPOMSH_nb[2][npoms][npomh]->Fill(nf_nb_reg[3]);
         }
         */
-        #if NBNFDouble
+        //#if NBNFDouble
         if (counted_sin[3])
         {
             NPOMSH[3][npoms][npomh]->Fill(nf_nb_dou[5],nf_nb_dou[6]);
             NPOMSH_nf[3][npoms][npomh]->Fill(nf_nb_dou[5]);
             NPOMSH_nb[3][npoms][npomh]->Fill(nf_nb_dou[6]);
         }
-        #endif//NBNFDouble
-        #if NBNFSingle
+        //#endif//NBNFDouble
+        //#if NBNFSingle
         if (counted_sin[3])
         {
             NPOMSH[4][npoms][npomh]->Fill(nf_nb_sin[5],nf_nb_sin[6]);
             NPOMSH_nf[4][npoms][npomh]->Fill(nf_nb_sin[5]);
             NPOMSH_nb[4][npoms][npomh]->Fill(nf_nb_sin[6]);
         }
-        #endif//NBNFSingle
-        #endif//NPOM
+        //#endif//NBNFSingle
+        //#endif//NPOM
 
         // Resets nf and nb counters
         for (int i=0 ; i<count_this.size() ; i++)
             nf_nb[2*i] = nf_nb[2*i+1] = count_this[i] = 0;
-        #if NBNFRegular
+        //#if NBNFRegular
         //for(int i=0 ; i<4 ; i++)
         //    nf_nb_reg[2*i] = nf_nb_reg[2*i+1] = counted_reg[i] = 0;
-        #endif//NBNFRegular
+        //#endif//NBNFRegular
 
-        #if NBNFSingle
+        //#if NBNFSingle
         for(int i=0 ; i<4 ; i++)
             nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
-        #endif//NBNFSingle
+        //#endif//NBNFSingle
 
-        #if NBNFDouble
+        //#if NBNFDouble
         for(int i=0 ; i<4 ; i++)
             nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
-        #endif//NBNFDouble
+        //#endif//NBNFDouble
         #endif//NBNF
 
         #if bcorr
@@ -453,7 +457,7 @@ void Count::ReadAndCount()
         #endif//bcorr
     }
     #if NBNF
-    #if NBNFRegular
+    //#if NBNFRegular
     //output->cd(REGFolder);
     //for(int i=0 ; i<4 ; i++)
     //{
@@ -461,9 +465,9 @@ void Count::ReadAndCount()
     //    NFREG [i]->Write();
     //    NBREG [i]->Write();
     //}
-    #endif//NBNFRegular
+    //#endif//NBNFRegular
 
-    #if NBNFSingle
+    //#if NBNFSingle
     //output->cd(SINFolder);
     output->cd(folders[5]);
     for(int i=0 ; i<4 ; i++)
@@ -472,9 +476,9 @@ void Count::ReadAndCount()
         NFSIN [i]->Write();
         NBSIN [i]->Write();
     }
-    #endif//NBNFSingle
+    //#endif//NBNFSingle
 
-    #if NBNFDouble
+    //#if NBNFDouble
     //output->cd(DOUFolder);
     output->cd(folders[6]);
     for(int i=0 ; i<4 ; i++)
@@ -483,9 +487,9 @@ void Count::ReadAndCount()
         NFDOU [i]->Write();
         NBDOU [i]->Write();
     }
-    #endif//NBNFDouble
+    //#endif//NBNFDouble
 
-    #if NPOM
+    //#if NPOM
     for(int k=0 ; k<prefix.size() ; k++)
     {
         output->cd(folders[k]);
@@ -512,13 +516,13 @@ void Count::ReadAndCount()
     //        }
     //    }
     //}
-    #endif//NPOM
+    //#endif//NPOM
 
     output->Close();
     #endif//NBNF
     std::cout << std::endl;
     #if bcorr
-	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/bcorr.csv");
+	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M_bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
     for (int i=0 ; i<13 ; i++)
