@@ -11,8 +11,8 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define bcorr 1
-#define NBNF 0 
+#define bcorr 0
+#define NBNF 1 
     ///Dependent on NBNF///
     //#define NBNFRegular 1
     //#define NBNFSingle 1

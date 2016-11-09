@@ -522,7 +522,7 @@ void Count::ReadAndCount()
     #endif//NBNF
     std::cout << std::endl;
     #if bcorr
-	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/7TeV_4M_bcorr.csv");
+	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/7000_4M_bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
     for (int i=0 ; i<13 ; i++)

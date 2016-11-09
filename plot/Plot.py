@@ -1,5 +1,5 @@
 import matplotlib as mpl
-#mpl.use('Agg')
+mpl.use('Agg')
 mpl.rc('text',usetex=True)
 mpl.rcParams['font.size'] = 27
 mpl.rcParams['font.weight']   = 'bold'
@@ -523,7 +523,7 @@ class Plot:
         plots = np.asarray([self.bcorrPlotSetup() for i in range(3)])
         figs = plots[:,0]
         axs  = plots[:,1]
-        csvfiles = ['900GeV_4M_bcorr.csv','2760GeV_4M_bcorr.csv','7TeV_4M_bcorr.csv'] 
+        csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv'] 
         simbcorr = [np.loadtxt(self.filepath+'out/'+csvfile,skiprows=1) for csvfile in csvfiles]
         
         delta = 0; fontsize=27; markersize=10
@@ -707,17 +707,17 @@ class Plot:
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
     def GeV7000(save=0,nsd=0):
-        name = 'out/7TeV_4M.root' 
+        name = 'out/7000_4M.root' 
         #name = 'build/7TeV_4M.root' 
         #name = 'out/7TeV_4M.root.pre2810' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV2760(save=0,nsd=0):
-        name = 'out/2760GeV_4M.root' 
+        name = 'out/2760_4M.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV900(save=0,nsd=0):
-        name = 'out/900GeV_4M.root' 
+        name = 'out/900_4M.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV13000(save=0,nsd=0):
@@ -728,9 +728,9 @@ if __name__=="__main__":
     options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
     P = options[0](save=1,nsd=0)
 
-    #P.NBNFPicture()
-    #P.var_NPOMS()
-    #P.fix_S_var_H()
-    #P.nch_dist()
-    P.bcorr()
-    P.Show()
+    P.NBNFPicture()
+    P.var_NPOMS()
+    P.fix_S_var_H()
+    P.nch_dist()
+    #P.bcorr()
+    #P.Show()
