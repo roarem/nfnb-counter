@@ -190,15 +190,15 @@ class Plot:
             smooth = np.trim_zeros(smooth,trim='b')
             if self.nsd:
                 npom = np.ma.masked_equal(npom,0)
-                j = npom_indicies[i][0]
-                k = npom_indicies[i][1]
-                ax.plot(nf[j:k],npom[j:k],linestyle='',marker='${}$'.format(i),\
-                        color='{}'.format(0.20+i*0.1),\
-                        markersize=8,label='NPOMS {}'.format(i),zorder=6)
-                #j = npom_indicies[i][0]*900/240
-                #k = npom_indicies[i][1]*900/240
-                #ax.plot(nfnew[j:k],smooth[j:k],linestyle='-',linewidth=4,\
-                #        color='grey',label='NPOMS {}'.format(i),zorder=6)
+                #j = npom_indicies[i][0]
+                #k = npom_indicies[i][1]
+                #ax.plot(nf[j:k],npom[j:k],linestyle='',marker='${}$'.format(i),\
+                #        color='{}'.format(0.20+i*0.1),\
+                #        markersize=8,label='NPOMS {}'.format(i),zorder=6)
+                j = npom_indicies[i][0]*900/240
+                k = npom_indicies[i][1]*900/240
+                ax.plot(nfnew[j:k],smooth[j:k],linestyle='-',linewidth=4,\
+                        color='grey',label='NPOMS {}'.format(i),zorder=6)
             else:
                 ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=4,\
                         color='grey',label='NPOMS {}'.format(i),zorder=6)
@@ -380,11 +380,11 @@ class Plot:
             for i in range(n+1):
                 for j in range(NSNH):
                     if i or j:
-                        tempS.Add   (self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(i,j)))
-                        tempS_nf.Add(self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+                        tempS.Add   (self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j)))
+                        tempS_nf.Add(self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j)))
                     else:
-                        tempS      = self.f.FindObjectAny("ptcut_NPOM_{:02d}_{:02d}".format(i,j))
-                        tempS_nf   = self.f.FindObjectAny("ptcut_NPOM_NF_{:02d}_{:02d}".format(i,j))
+                        tempS      = self.f.FindObjectAny(prefix+"_NPOM_{:02d}_{:02d}".format(i,j))
+                        tempS_nf   = self.f.FindObjectAny(prefix+"_NPOM_NF_{:02d}_{:02d}".format(i,j))
 
             tempS.Divide(tempS_nf)
             Nbins = tempS.GetNbinsX()
@@ -726,7 +726,7 @@ if __name__=="__main__":
         return P
 
     options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
-    P = options[0](save=1,nsd=0)
+    P = options[0](save=1,nsd=1)
 
     P.NBNFPicture()
     P.var_NPOMS()
