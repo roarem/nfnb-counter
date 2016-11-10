@@ -13,11 +13,6 @@
 
 #define bcorr 0
 #define NBNF 1 
-    ///Dependent on NBNF///
-    //#define NBNFRegular 1
-    //#define NBNFSingle 1
-    //#define NBNFDouble 1
-    //#define NPOM 1  
 
 class Count 
 {
@@ -75,11 +70,15 @@ class Count
         #endif//NBNF
 
         #if bcorr
+        void bcorr_initialize();
         void BcorrCheck(int EVENTNR, double eta);
         void Bcorrgap();
 
         int bcorr_count         = 0;
         double bcorr_Nevents    = 0;
+        const char* bcorr_folder= "bcorr";
+
+        std::vector<std::vector<TH1F*>> bcorr_hists;
 
         std::vector<std::vector<double>> eta_gaps = 
             std::vector<std::vector<double>>(13,std::vector<double>(4,0));
