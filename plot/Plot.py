@@ -1,5 +1,5 @@
 import matplotlib as mpl
-mpl.use('Agg')
+#mpl.use('Agg')
 mpl.rc('text',usetex=True)
 mpl.rcParams['font.size'] = 27
 mpl.rcParams['font.weight']   = 'bold'
@@ -190,15 +190,15 @@ class Plot:
             smooth = np.trim_zeros(smooth,trim='b')
             if self.nsd:
                 npom = np.ma.masked_equal(npom,0)
-                #j = npom_indicies[i][0]
-                #k = npom_indicies[i][1]
-                #ax.plot(nf[j:k],npom[j:k],linestyle='',marker='${}$'.format(i),\
-                #        color='{}'.format(0.20+i*0.1),\
-                #        markersize=8,label='NPOMS {}'.format(i),zorder=6)
-                j = npom_indicies[i][0]*900/240
-                k = npom_indicies[i][1]*900/240
-                ax.plot(nfnew[j:k],smooth[j:k],linestyle='-',linewidth=4,\
-                        color='grey',label='NPOMS {}'.format(i),zorder=6)
+                j = npom_indicies[i][0]
+                k = npom_indicies[i][1]
+                ax.plot(nf[j:k],npom[j:k],linestyle='',marker='${}$'.format(i),\
+                        color='{}'.format(0.20+i*0.1),\
+                        markersize=8,label='NPOMS {}'.format(i),zorder=6)
+                #j = npom_indicies[i][0]*900/240
+                #k = npom_indicies[i][1]*900/240
+                #ax.plot(nfnew[j:k],smooth[j:k],linestyle='-',linewidth=4,\
+                #        color='grey',label='NPOMS {}'.format(i),zorder=6)
             else:
                 ax.plot(nfnew[:len(smooth)],smooth,linestyle='-',linewidth=4,\
                         color='grey',label='NPOMS {}'.format(i),zorder=6)
@@ -485,8 +485,8 @@ class Plot:
         handles, labels = ax.get_legend_handles_labels()
         leg = plt.legend(handles,labels,loc='best')
         leg.get_frame().set_alpha(0.0)
-	if self.save:
-       	    if self.nsd: 
+        if self.save:
+            if self.nsd: 
                 plt.savefig(self.filepath+'analyzed/nsd_nbnf_fixed_s_var_h.pdf')
             else:
                 plt.savefig(self.filepath+'analyzed/nbnf_fixed_s_var_h.pdf')
@@ -613,8 +613,9 @@ class Plot:
         Nbins  = tempS_nf.GetNbinsX()
         All_nf = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
         All_nf_sum = np.sum(All_nf)
-        All_nf = All_nf/All_nf_sum
-        axs[0].plot(All_nf,marker='o',linestyle='-',label='All')
+        P_ch = All_nf/All_nf_sum
+        x = np.linspace(0,len(All_nf)-1,len(All_nf))
+        axs[0].plot(x,P_ch,marker='o',linestyle='-',label='All')
 
         self.ReOpen()
         for i in range(12):
@@ -627,8 +628,8 @@ class Plot:
         
             Nbins   = tempS_nf.GetNbinsX()
             All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-            All_nf = All_nf/All_nf_sum
-            axs[0].plot(All_nf,marker='o',linestyle='',label='N={}'.format(i))
+            P_ch = All_nf/All_nf_sum
+            axs[0].plot(P_ch,marker='o',linestyle='',label='N={}'.format(i))
 
     #################################################################################################
 
@@ -679,7 +680,7 @@ class Plot:
 
     #################################################################################################
 
-        xlims = [(0,300),(0,300),(0,150),(0,150)]
+        xlims = [(0,500),(0,500),(0,250),(0,250)]
         titles = ['$NPOMS=N + \sum^{All}NPOMH$','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
         filenames = ['N_NPOMS_All_NPOMH.pdf','N_NPOMH_All_NPOMS.pdf','NPOMS0.pdf','NPOMS1.pdf']
         DPI = figs[0].get_dpi(); size = 1000
@@ -707,8 +708,9 @@ class Plot:
 if __name__=="__main__":
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
     def GeV7000(save=0,nsd=0):
-        name = 'out/7000_4M.root' 
-        #name = 'build/7TeV_4M.root' 
+        #name = 'out/7000_4M.root' 
+        name = 'build/7000_4M.root' 
+        #name = 'build/7000_4M.test.root' 
         #name = 'out/7TeV_4M.root.pre2810' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
@@ -732,5 +734,5 @@ if __name__=="__main__":
     P.var_NPOMS()
     P.fix_S_var_H()
     P.nch_dist()
-    #P.bcorr()
+    P.bcorr()
     #P.Show()

@@ -36,47 +36,42 @@ class Count
 
         #if NBNF
         void InitializeNBNF();
+        void Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ);
+        void Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ);
+        void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T, int ICHJ);
+        void Filler(int npoms, int npomh);
+        void Writer();
 
         float NBins = 600;
         float start = -0.5;
         float stop  = NBins + start;
+        int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
+        int nf_nb_sin [8] = {0,0,0,0,0,0,0,0};
+        int counted_sin [4] = {0,0,0,0};
+        int nf_nb_dou [8] = {0,0,0,0,0,0,0,0};
+        int counted_dou [4] = {0,0,0,0};
+
         TFile *output;
         const char* NBNFFilename;
         std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin","NBNFDou"};
         std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 
-        //#if NBNFRegular
-        //folders.push_back("NBNFRegular");
-        //const char* REGFolder = "NBNFRegular";
         std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
         std::vector<TH1F*> NBREG;
-        //#endif
 
-        //#if NBNFSingle
-        //folders.push_back("NBNFSingle");
-        //const char* SINFolder = "NBNFSingle";
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
-        //#endif
 
-        //#if NBNFDouble
-        //folders.push_back("NBNFDouble");
-        //const char* DOUFolder = "NBNFDouble";
         std::vector<TH1F*> NBNFDOU;
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
-        //#endif
 
-        //#if NPOM
-        //std::vector<const char*> NPOMFolders = 
-        //    std::vector<const char*>{"NPOMptcut","NPOMall","NPOMnsd","NPOMdou","NPOMsin"};
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;
-        //#endif
         #endif//NBNF
 
         #if bcorr

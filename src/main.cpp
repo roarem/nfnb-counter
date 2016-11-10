@@ -5,9 +5,10 @@
 int main() 
 {
     //std::string datapath = "/home/roar/DISKS/BIG1/19-31_oct/4mln/no_DD/7TeV/build/data/";
-    std::string datapath = "/home/roar/DISKS/BIG1/19-31_oct/4mln/code_recieved_2810/7000/build/data/"; 
-    //std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/7000/data/";
-    const char* nbnfout = "7000_4M.root";
+    //std::string datapath = "/home/roar/DISKS/BIG1/19-31_oct/4mln/code_recieved_2810/7000/build/data/"; 
+    std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/7000/data/";
+    //const char* nbnfout = "7000_4M.root";
+    const char* nbnfout = "7000_4M.test.root";
     double number_of_events = 4000000.0;
 
     //std::string datapath = "/home/roar/master/qgsm_lhc_analyze/data/rawData/900/data/";
