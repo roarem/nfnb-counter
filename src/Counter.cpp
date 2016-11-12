@@ -11,8 +11,8 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
     NPOM_loc            = datapath + "NPOM.dat";
     number_of_events    = numberofevents;
 
-    #if NBNF
     output = new TFile(NBNFFilename,"recreate");
+    #if NBNF
     for (int i=0 ; i<folders.size() ; i++)
         output->mkdir(folders[i]);
     InitializeNBNF();
@@ -26,6 +26,10 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
 #if NBNF
 void Count::InitializeNBNF()
 {
+    
+    //N_CH = new TH1F("n_ch","Multiplicity",NBins,start,stop);
+    //N_CH->Sumw2(true);
+
     std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
@@ -112,6 +116,22 @@ void Count::InitializeNBNF()
             }
         }
     }
+
+    for (int i=0 ; i<25 ; i++)
+    {
+        NPOM_NCH.push_back(std::vector<TH1F*>());
+        for (int j=0 ; j<25 ; j++)
+        {
+            char number_string [7];
+            sprintf(number_string,"_%02d_%02d",i,j);
+            number_string[6] = '\0';
+            std::string temp  = "multi_NPOM"+std::string(number_string);
+            std::string temp1 = "multi_npom"+std::string(number_string);
+            NPOM_NCH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
+            NPOM_NCH[i][j]->Sumw2(true);
+        }
+    }
+
 }
 #endif//NBNF
 #if bcorr
@@ -136,6 +156,8 @@ void Count::bcorr_initialize()
 
 void Count::ReadAndCount()
 {
+    std::cout << "using data from " << data_loc << " and storing in " << NBNFFilename << std::endl;
+
     timer.startTimer();
 
     #if NBNF
@@ -211,7 +233,7 @@ void Count::ReadAndCount()
                 const double rap        = 0.5*std::log((EPAT+PZJ)/(EPAT-PZJ));
                 const double psrap      = 0.5*std::log((p_abs+PZJ)/(p_abs-PZJ));
                 const double psrap_abs  = std::abs(psrap);
-                const int nbnf_index = (psrap<0);
+                const int nbnf_index    = (psrap<0);
 
                 Sin_Dou(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
@@ -238,6 +260,7 @@ void Count::ReadAndCount()
         #if NBNF
         Filler(npoms,npomh);
         // Resets nf and nb counters
+        nch = 0;
         for (int i=0 ; i<count_this.size() ; i++)
             nf_nb[2*i] = nf_nb[2*i+1] = count_this[i] = 0;
         for(int i=0 ; i<4 ; i++)
@@ -258,11 +281,13 @@ void Count::ReadAndCount()
         }
         #endif//bcorr
     }
+    std::cout << std::endl;
     #if NBNF
+    std::cout << "writing nbnf to root file" << std::endl;
     Writer();
     #endif//NBNF
-    std::cout << std::endl;
     #if bcorr
+    std::cout << "writing bcorr to root file" << std::endl;
     output->cd(bcorr_folder);
     for (int i=0 ; i<13 ; i++)
     {
@@ -282,7 +307,9 @@ void Count::ReadAndCount()
     }
 	bcorr_file.close();
     #endif//bcorr
+    std::cout << "closing root file" << std::endl;
     output->Close();
+    std::cout << "done and done, bye!" << std::endl;
 }
 
 #if bcorr
@@ -359,11 +386,12 @@ void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T, int ICHJ)
 }
 void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 {
-    if (IDIAG !=1 and IDIAG !=6 and IDIAG != 10)
+    nf_nb[nbnf_index+4] += 1;
+    if (IDIAG != 1 and IDIAG != 6 and IDIAG != 10)
     {
-        nf_nb[nbnf_index+4] += 1;
         if (ICHJ != 0)
         {
+            nch += 1;
             count_this[2] = 1;
         }
     }
@@ -406,6 +434,10 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 
 void Count::Filler(int npoms,int npomh)
 {
+    if (count_this[2])
+        NPOM_NCH[npoms][npomh]->Fill(nch);
+        //N_CH->Fill(nch);
+
     for(int i=0 ; i<4 ; i++)
     {
         if (counted_sin[i])
@@ -430,7 +462,6 @@ void Count::Filler(int npoms,int npomh)
     {
         if (count_this[i])
         {
-            Nevents[i] += 1;
             NPOMSH[i][npoms][npomh]->Fill(nf_nb[2*i],nf_nb[2*i+1]);
             NPOMSH_nf[i][npoms][npomh]->Fill(nf_nb[2*i]);
             NPOMSH_nb[i][npoms][npomh]->Fill(nf_nb[2*i+1]);
@@ -440,6 +471,14 @@ void Count::Filler(int npoms,int npomh)
 
 void Count::Writer()
 {
+    output->cd(folders[7]);
+    for(int i=0 ; i<25 ; i++)
+    {
+        for(int j=0 ; j<25 ; j++)
+            NPOM_NCH[i][j]->Write();
+    }
+    //N_CH->Write();
+
     output->cd(folders[5]);
     for(int i=0 ; i<4 ; i++)
     {

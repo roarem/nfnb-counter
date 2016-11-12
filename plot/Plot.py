@@ -575,61 +575,66 @@ class Plot:
         figs = plot[:,0]
         axs  = plot[:,1]
 
+        #self.ReOpen()
+        #tempS_nch = self.f.FindObjectAny("n_ch")
+        #Nbins = tempS_nch.GetNbinsX()
+        #entries= tempS_nch.GetEntries()
+        #n_ch = np.asarray([tempS_nch.GetBinContent(i) for i in range(1,Nbins)])
+        #axs[0].plot(x,n_ch/entries,marker='o',linestyle='',label='direct')
+
         self.ReOpen()
         for i in range(25):
             for j in range(25):
                 if i or j:
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
                 else:
-                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
+            
+        ##testsum_main=np.asarray([tempS_nf.GetBinContent(i) for i in range(0,300,10)])
+        ##testsum_main=tempS_nf.GetBinContent(30)
 
-        Nbins  = tempS_nf.GetNbinsX()
-        entries = tempS_nf.GetEntries()/2 #due to both nf and nb entries being counted
-        All_nf = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-        All_nf_sum = np.sum(All_nf)
-        P_ch = All_nf/entries
-        x = np.linspace(0,len(All_nf)-1,len(All_nf))
-        axs[0].plot(P_ch,marker='o',linestyle='-',label='roar')
+        Nbins  = tempS_nch.GetNbinsX()
+        entries = tempS_nch.GetEntries()
+        All_nch = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+        P_ch = All_nch/entries
+        axs[0].plot(P_ch,marker='o',linestyle='',label='sum')
+
 
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
         a = np.loadtxt('/home/roar/downloads/fort.7_inel_7000_nsd')
-        print(np.sum(a[:,2]), entries)
-        axs[0].plot(a[:,2]/np.sum(a[:,2]),marker='o',linestyle='-',label='larissa')
+        #print(np.sum(a[:,2]), entries)
+        axs[0].plot(a[:,2]/np.sum(a[:,2]),marker='o',linestyle='',label='larissa')
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
-
+        #testsum_rest = np.zeros(300/10)
         self.ReOpen()
-        for i in range(12):
+        for i in range(25):
             for j in range(25):
                 if j:
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
                 else:
-                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
-        
-            Nbins   = tempS_nf.GetNbinsX()
-            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-            P_ch = All_nf/All_nf_sum
+                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
+            #testsum_rest[i] = tempS_nf.GetBinContent(30)
+            Nbins   = tempS_nch.GetNbinsX()
+            All_nch  = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+            P_ch = All_nch/entries
             #axs[0].plot(P_ch,marker='o',linestyle='',label='N={}'.format(i))
-
+        #print(testsum_main)
+        #print(testsum_rest)
+        #print(np.sum(testsum_rest))
     #################################################################################################
 
         self.ReOpen()
         for j in range(12):
             for i in range(25):
                 if i:
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
                 else:
-                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
         
-            Nbins   = tempS_nf.GetNbinsX()
-            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-            All_nf = All_nf/All_nf_sum
-            axs[1].plot(All_nf,marker='o',linestyle='',label='NPOMH={}'.format(j))
+            Nbins   = tempS_nch.GetNbinsX()
+            All_nch  = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+            All_nch = All_nch/entries
+            axs[1].plot(All_nch,marker='o',linestyle='',label='NPOMH={}'.format(j))
 
     #################################################################################################
 
@@ -637,16 +642,14 @@ class Plot:
         for i in range(2):
             for j in range(25):
                 if j:
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
                 else:
-                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
             
-            Nbins   = tempS_nf.GetNbinsX()
-            All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-            All_nf = All_nf/All_nf_sum
-            axs[i+2].plot(All_nf,marker='',linestyle='-',label='All NPOMH')
+            Nbins   = tempS_nch.GetNbinsX()
+            All_nch = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+            All_nch = All_nch/entries
+            axs[i+2].plot(All_nch,marker='',linestyle='-',label='All NPOMH')
         
     #################################################################################################
 
@@ -654,18 +657,17 @@ class Plot:
         for i in range(2):
             for j in range(12):
                 if 0:
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nf.Add(self.f.FindObjectAny("nsd_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
                 else:
-                    tempS_nf = self.f.FindObjectAny("nsd_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                Nbins   = tempS_nf.GetNbinsX()
-                All_nf  = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-                All_nf = All_nf/All_nf_sum
-                axs[i+2].plot(All_nf,marker='',linestyle='-',label='NPOMH={}'.format(j))
+                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
+                Nbins   = tempS_nch.GetNbinsX()
+                All_nch = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+                All_nch = All_nch/entries
+                axs[i+2].plot(All_nch,marker='',linestyle='-',label='NPOMH={}'.format(j))
 
     #################################################################################################
 
-        xlims = [(0,500),(0,500),(0,250),(0,250)]
+        xlims = [(0,800),(0,800),(0,250),(0,250)]
         titles = ['$NPOMS=N + \sum^{All}NPOMH$','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
         filenames = ['N_NPOMS_All_NPOMH.pdf','N_NPOMH_All_NPOMS.pdf','NPOMS0.pdf','NPOMS1.pdf']
         DPI = figs[0].get_dpi(); size = 1000
@@ -714,7 +716,8 @@ if __name__=="__main__":
     def GeV7000(save=0,nsd=0):
         #name = 'out/7000_4M.root' 
         #name = 'build/7000_4M.root' 
-        name = 'build/7000_4M.test.root' 
+        #name = 'build/7000_4M.test.root' 
+        name = 'build/7000_4M.multi.root' 
         #name = 'out/7TeV_4M.root.pre2810' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P

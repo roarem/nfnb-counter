@@ -11,7 +11,7 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define bcorr 0
+#define bcorr 1
 #define NBNF 1 
 
 class Count 
@@ -48,9 +48,12 @@ class Count
 
         TFile *output;
         const char* NBNFFilename;
-        std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin","NBNFDou"};
+        std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin","NBNFDou","multi"};
         std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
+
+        TH1F* N_CH;
+        int nch = 0;
 
         std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
@@ -64,6 +67,7 @@ class Count
         std::vector<TH1F*> NFDOU;
         std::vector<TH1F*> NBDOU;
 
+        std::vector<std::vector<TH1F*>> NPOM_NCH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;
