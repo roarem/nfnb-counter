@@ -249,7 +249,7 @@ class Plot:
             leg = plt.legend((handles[8],handles[9],handles[0],handles[7]),#handles[10]),\
                              (\
                               'ALICE pp, $\sqrt{s}$=7 TeV',\
-                              r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<\eta<0.8$',\
+                              r'QGSM $0.3<p_T<1.5$ GeV/c, $0.2<|\eta|<0.8$',\
                               'NPOMH = 0 and for NPOMS = \{0,...,6\}',\
                               'All NPOMS and NPOMH = 0'\
                               ),\
@@ -514,17 +514,22 @@ class Plot:
             leg = ax.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
             leg.get_frame().set_alpha(0.0)
 
-        for i in range(13):
-            if i:
-                nf.  Add(self.f.FindObjectAny('BCORR_'+str(i)+'1'))
-                nb.  Add(self.f.FindObjectAny('BCORR_'+str(i)+'2'))
-                nbnf.Add(self.f.FindObjectAny('BCORR_'+str(i)+'3'))
-                nfnf.Add(self.f.FindObjectAny('BCORR_'+str(i)+'4'))
-            else:
-                nf      =self.f.FindObjectAny('BCORR_'+str(i)+'1')
-                nb      =self.f.FindObjectAny('BCORR_'+str(i)+'2')
-                nbnf    =self.f.FindObjectAny('BCORR_'+str(i)+'3')
-                nfnf    =self.f.FindObjectAny('BCORR_'+str(i)+'4')
+        #tree = self.f.FindObjectAny('bcorrTree')
+        #nf = np.zeros(13)
+        #nb = np.zeros(13)
+        #nbnf = np.zeros(13)
+        #nfnf = np.zeros(13)
+        #for event in tree:
+        #    for i in range(13):
+        #        nf[i]   += getattr(event,"BCORR_{}_0".format(i)) 
+        #        nb[i]   += getattr(event,"BCORR_{}_1".format(i)) 
+        #        nbnf[i] += getattr(event,"BCORR_{}_2".format(i)) 
+        #        nfnf[i] += getattr(event,"BCORR_{}_3".format(i)) 
+
+        #b_corr = (nfnf - nf*nb/tree.GetEntries())/(nbnf - nf*nf/tree.GetEntries())
+        #print(b_corr)
+
+
     def bcorrPlotSetup(self):
 
         fig, ax = plt.subplots()
@@ -570,42 +575,44 @@ class Plot:
 
     def nch_dist(self):
         
-        #plt.xkcd()
-        plot     = np.asarray([plt.subplots() for i in range(4)])
+        plot = np.asarray([plt.subplots() for i in range(4)])
         figs = plot[:,0]
         axs  = plot[:,1]
 
-        #self.ReOpen()
-        #tempS_nch = self.f.FindObjectAny("n_ch")
-        #Nbins = tempS_nch.GetNbinsX()
-        #entries= tempS_nch.GetEntries()
-        #n_ch = np.asarray([tempS_nch.GetBinContent(i) for i in range(1,Nbins)])
-        #axs[0].plot(x,n_ch/entries,marker='o',linestyle='',label='direct')
-
         self.ReOpen()
-        for i in range(25):
-            for j in range(25):
-                if i or j:
-                    tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
-                else:
-                    tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
-            
-        ##testsum_main=np.asarray([tempS_nf.GetBinContent(i) for i in range(0,300,10)])
-        ##testsum_main=tempS_nf.GetBinContent(30)
-
-        Nbins  = tempS_nch.GetNbinsX()
-        entries = tempS_nch.GetEntries()
-        All_nch = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
-        P_ch = All_nch/entries
-        axs[0].plot(P_ch,marker='o',linestyle='',label='sum')
-
+        tempS_nch = self.f.FindObjectAny("nch")
+        Nbins = tempS_nch.GetNbinsX()
+        entries= tempS_nch.GetEntries()
+        n_ch = np.asarray([tempS_nch.GetBinContent(i) for i in range(1,Nbins)])
+        P_ch = n_ch/n_ch.sum()
+        #n_ch[1::2] = n_ch[1::2]*0
+        axs[0].plot(P_ch,marker='o',linestyle='',label='roar')
 
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
         a = np.loadtxt('/home/roar/downloads/fort.7_inel_7000_nsd')
-        #print(np.sum(a[:,2]), entries)
-        axs[0].plot(a[:,2]/np.sum(a[:,2]),marker='o',linestyle='',label='larissa')
+        axs[0].plot(a[:,2]/a[:,2].sum(),marker='o',markersize=6,linestyle='-',label='larissa')
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
-        #testsum_rest = np.zeros(300/10)
+
+        #self.ReOpen()
+        #for i in range(0,25):
+        #    for j in range(0,25):
+        #        if i or j:
+        #            tempS_nch.Add(self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j)))
+        #        else:
+        #            tempS_nch = self.f.FindObjectAny("multi_NPOM_{:02d}_{:02d}".format(i,j))
+           
+        #testsum_main=np.asarray([tempS_nf.GetBinContent(i) for i in range(0,300,10)])
+        #testsum_main=tempS_nf.GetBinContent(30)
+
+        #Nbins   = tempS_nch.GetNbinsX()
+        #entries = tempS_nch.GetEntries()
+        #All_nch = np.asarray([tempS_nch.GetBinContent(k) for k in range(1,Nbins)])
+        #P_ch = All_nch/All_nch.sum()
+        ##P_ch[1::2] = 0
+        #axs[0].plot(P_ch,marker='o',markersize=6,linestyle='',label='roar')
+
+        print(a[:,2].sum(), entries, n_ch.sum())#, All_nch.sum())
+
         self.ReOpen()
         for i in range(25):
             for j in range(25):
@@ -667,8 +674,9 @@ class Plot:
 
     #################################################################################################
 
-        xlims = [(0,800),(0,800),(0,250),(0,250)]
-        titles = ['$NPOMS=N + \sum^{All}NPOMH$','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
+        xlims = [(0,500),(0,500),(0,250),(0,250)]
+        #titles = ['$NPOMS=N + \sum^{All}NPOMH$','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
+        titles = ['','$NPOMH=N + \sum^{All}NPOMS$','$NPOMS=0$','$NPOMS=1$']
         filenames = ['N_NPOMS_All_NPOMH.pdf','N_NPOMH_All_NPOMS.pdf','NPOMS0.pdf','NPOMS1.pdf']
         DPI = figs[0].get_dpi(); size = 1000
 
@@ -695,20 +703,28 @@ class Plot:
         plot     = np.asarray([plt.subplots() for i in range(1)])
         figs = plot[:,0]
         axs  = plot[:,1]
-        self.ReOpen()
-        for i in range(25):
-            for j in range(25):
-                if i or j:
-                    tempS_nf.Add(self.f.FindObjectAny("sin_NPOM_NF_{:02d}_{:02d}".format(i,j)))
-                    tempS_nb.Add(self.f.FindObjectAny("sin_NPOM_NB_{:02d}_{:02d}".format(i,j)))
-                else:
-                    tempS_nf = self.f.FindObjectAny("sin_NPOM_NF_{:02d}_{:02d}".format(i,j))
-                    tempS_nb = self.f.FindObjectAny("sin_NPOM_NB_{:02d}_{:02d}".format(i,j))
+        #self.ReOpen()
+        #for i in range(25):
+        #    for j in range(25):
+        #        if i or j:
+        #            tempS_nf.Add(self.f.FindObjectAny("sin_NPOM_NF_{:02d}_{:02d}".format(i,j)))
+        #            tempS_nb.Add(self.f.FindObjectAny("sin_NPOM_NB_{:02d}_{:02d}".format(i,j)))
+        #        else:
+        #            tempS_nf = self.f.FindObjectAny("sin_NPOM_NF_{:02d}_{:02d}".format(i,j))
+        #            tempS_nb = self.f.FindObjectAny("sin_NPOM_NB_{:02d}_{:02d}".format(i,j))
+        
+        tempS_nf = self.f.FindObjectAny("nfFullSin")
 
         Nbins  = tempS_nf.GetNbinsX()
-        All_nf = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])
-        All_nb = np.asarray([tempS_nb.GetBinContent(k) for k in range(1,Nbins)])
-        axs[0].plot(All_nb,All_nf)
+        events = tempS_nf.GetEntries()
+        All_nf      = np.asarray([tempS_nf.GetBinContent(k) for k in range(1,Nbins)])/events
+        All_nfErr   = np.asarray([tempS_nf.GetBinError(k) for k in range(1,Nbins)])
+        #All_nb = np.asarray([tempS_nb.GetBinContent(k) for k in range(1,Nbins)])
+        #axs[0].plot(All_nb,All_nf)
+        x=np.linspace(0,Nbins,Nbins-1)
+        print(All_nf)
+        axs[0].errorbar(x=x,y=All_nf,yerr=All_nfErr,marker='o',linestyle='')
+        axs[0].set_xlim(0,15)
 
 
 if __name__=="__main__":
@@ -716,9 +732,8 @@ if __name__=="__main__":
     def GeV7000(save=0,nsd=0):
         #name = 'out/7000_4M.root' 
         #name = 'build/7000_4M.root' 
-        #name = 'build/7000_4M.test.root' 
-        name = 'build/7000_4M.multi.root' 
-        #name = 'out/7TeV_4M.root.pre2810' 
+        #name = 'build/7000_4M.test2.root' 
+        name = 'build/7000_4M.test7.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV2760(save=0,nsd=0):

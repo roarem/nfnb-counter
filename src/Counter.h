@@ -11,7 +11,7 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define bcorr 1
+#define bcorr 0
 #define NBNF 1 
 
 class Count 
@@ -40,6 +40,11 @@ class Count
         float NBins = 600;
         float start = -0.5;
         float stop  = NBins + start;
+
+        int nch_tot      = 0;
+        int nevents      = 0;
+
+        int nch = 0;
         int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
         int nf_nb_sin [8] = {0,0,0,0,0,0,0,0};
         int counted_sin [4] = {0,0,0,0};
@@ -53,7 +58,6 @@ class Count
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 
         TH1F* N_CH;
-        int nch = 0;
 
         std::vector<TH1F*> NBNFREG;
         std::vector<TH1F*> NFREG;
@@ -82,7 +86,9 @@ class Count
         double bcorr_Nevents    = 0;
         const char* bcorr_folder= "bcorr";
 
-        std::vector<std::vector<TH1F*>> bcorr_hists;
+        TTree *bcorr_tree;
+
+        //std::vector<std::vector<TH1F*>> bcorr_hists;
 
         std::vector<std::vector<double>> eta_gaps = 
             std::vector<std::vector<double>>(13,std::vector<double>(4,0));

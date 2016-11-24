@@ -27,9 +27,6 @@ Count::Count(const char* nbnfout, std::string datapath,double numberofevents)
 void Count::InitializeNBNF()
 {
     
-    //N_CH = new TH1F("n_ch","Multiplicity",NBins,start,stop);
-    //N_CH->Sumw2(true);
-
     std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
@@ -117,6 +114,7 @@ void Count::InitializeNBNF()
         }
     }
 
+    N_CH = new TH1F("nch","NCH",NBins,start,stop);
     for (int i=0 ; i<25 ; i++)
     {
         NPOM_NCH.push_back(std::vector<TH1F*>());
@@ -137,20 +135,23 @@ void Count::InitializeNBNF()
 #if bcorr
 void Count::bcorr_initialize()
 {
-    for (int i=0 ; i<13 ; i++)
-    {
-        bcorr_hists.push_back(std::vector<TH1F*>());
-        for (int j=0 ; j<4 ; j++)
-        {
-            char number_string [6];
-            sprintf(number_string,"_%d_%d",i,j);
-            number_string[5] = '\0';
-            std::string temp = "BCORR_"+std::string(number_string);
-            std::string temp2 = "bcorr_"+std::string(number_string);
-            bcorr_hists[i].push_back(new TH1F(temp.c_str(),temp2.c_str(),NBins,start,stop));
-            bcorr_hists[i][j]->Sumw2(true);
-        }
-    }
+    //bcorr_tree = new TTree("bcorrTree","b_correlation");
+    //for (int i=0 ; i<13 ; i++)
+    //{
+    //    //bcorr_hists.push_back(std::vector<TH1F*>());
+    //    for (int j=0 ; j<4 ; j++)
+    //    {
+    //        char number_string [6];
+    //        sprintf(number_string,"_%d_%d",i,j);
+    //        number_string[5] = '\0';
+    //        std::string temp = "BCORR"+std::string(number_string);
+    //        std::string temp2 = "bcorr"+std::string(number_string);
+    //        //bcorr_hists[i].push_back(new TH1F(temp.c_str(),temp2.c_str(),NBins,start,stop));
+    //        //bcorr_hists[i][j]->Sumw2(true);
+
+    //        bcorr_tree->Branch(temp.c_str(),&eta_gaps[i][j]);
+    //    }
+    //}
 }
 #endif//bcorr
 
@@ -210,7 +211,6 @@ void Count::ReadAndCount()
             Progress(EVENTNR);
         //if (EVENTNR%100!=0) 
         //    continue;
-        
         for (int i=0 ; i<PARTNR ; i++)
         {
             std::getline(finalprFile,finalprLine);
@@ -219,22 +219,33 @@ void Count::ReadAndCount()
                >> IDENT >> IDIAG >> IBJ >> ISJ >> ICHJ >> TFORMJ >> XXJI >> YYJI 
                >> ZZJI >> IORIGJ >> TFORMRJUK;
 
-            // Checks if there is anything happening
-            if (i==0 and IDIAG==4)
+            if (ICHJ != 0)
             {
-                std::getline(finalprFile,finalprLine);
-                break;
+              //nf_nb[4] += 1;
+              //nch +=1;
+              //count_this[2] = 1;
             }
-            else
+            // Checks if there is anything happening
+            //if (i==0 and IDIAG==4)
+            //{
+            //    std::cout << IDENT << " " << ICHJ << std::endl;
+            //    std::getline(finalprFile,finalprLine);
+            //    std::istringstream bb(finalprLine);
+            //    bb >> FREEZJ >> XXJ >> YYJ >> ZZJ >> EPAT >> PXJ >> PYJ >> PZJ >> AMJ 
+            //       >> IDENT >> IDIAG >> IBJ >> ISJ >> ICHJ >> TFORMJ >> XXJI >> YYJI 
+            //       >> ZZJI >> IORIGJ >> TFORMRJUK;
+            //    std::cout << IDENT << " " << ICHJ << std::endl << std::endl << std::endl;
+            //    break;
+            //}
+            //else
             {
-                #if NBNF
                 const double p_abs      = std::sqrt(PXJ*PXJ + PYJ*PYJ + PZJ*PZJ);
                 const double p_T        = std::sqrt(PXJ*PXJ + PYJ*PYJ);
                 const double rap        = 0.5*std::log((EPAT+PZJ)/(EPAT-PZJ));
                 const double psrap      = 0.5*std::log((p_abs+PZJ)/(p_abs-PZJ));
                 const double psrap_abs  = std::abs(psrap);
                 const int nbnf_index    = (psrap<0);
-
+                #if NBNF
                 Sin_Dou(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 eta_pt_cut(nbnf_index,psrap_abs,p_T,ICHJ);
@@ -242,7 +253,6 @@ void Count::ReadAndCount()
                 nf_nb[nbnf_index+2] += 1;
                 if (ICHJ != 0)
                     count_this[1] = 1;
-
                 #endif//NBNF
 
                 #if bcorr
@@ -267,7 +277,6 @@ void Count::ReadAndCount()
             nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
         for(int i=0 ; i<4 ; i++)
             nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
-
         #endif//NBNF
 
         #if bcorr
@@ -287,15 +296,7 @@ void Count::ReadAndCount()
     Writer();
     #endif//NBNF
     #if bcorr
-    std::cout << "writing bcorr to root file" << std::endl;
-    output->cd(bcorr_folder);
-    for (int i=0 ; i<13 ; i++)
-    {
-        for (int j=0 ; j<4 ; j++)
-        {
-            bcorr_hists[i][j]->Write();
-        }
-    }
+    std::cout << "writing bcorr to file" << std::endl;
 	std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/7000_4M_bcorr.csv");
     bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
@@ -306,10 +307,13 @@ void Count::ReadAndCount()
         bcorr_file << b_corr << std::endl;
     }
 	bcorr_file.close();
+    
     #endif//bcorr
     std::cout << "closing root file" << std::endl;
     output->Close();
     std::cout << "done and done, bye!" << std::endl;
+    //std::cout << std::endl << "PS. sum of charged in NSD diagrams: " << nch_tot << std::endl;
+    //std::cout << "and n events: " << nevents << std::endl;
 }
 
 #if bcorr
@@ -346,10 +350,6 @@ void Count::Bcorrgap()
 
     for (int k=0 ; k<13 ; k++)
     {
-        bcorr_hists[k][0]->Fill(temp_eta_gaps[k][0]);
-        bcorr_hists[k][1]->Fill(temp_eta_gaps[k][1]);
-        bcorr_hists[k][2]->Fill(temp_eta_gaps[k][0]*temp_eta_gaps[k][0]);
-        bcorr_hists[k][3]->Fill(temp_eta_gaps[k][0]*temp_eta_gaps[k][1]);
         eta_gaps[k][0] += temp_eta_gaps[k][0];
         eta_gaps[k][1] += temp_eta_gaps[k][1];
         eta_gaps[k][2] += temp_eta_gaps[k][0]*temp_eta_gaps[k][0];
@@ -386,11 +386,12 @@ void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T, int ICHJ)
 }
 void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 {
-    nf_nb[nbnf_index+4] += 1;
-    if (IDIAG != 1 and IDIAG != 6 and IDIAG != 10)
+    if (IDIAG != 1 and IDIAG != 6 and IDIAG != 10 and IDIAG != 4)
     {
         if (ICHJ != 0)
         {
+            nch_tot += ICHJ;
+            nf_nb[nbnf_index+4] += 1;
             nch += 1;
             count_this[2] = 1;
         }
@@ -435,8 +436,17 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 void Count::Filler(int npoms,int npomh)
 {
     if (count_this[2])
-        NPOM_NCH[npoms][npomh]->Fill(nch);
+    {
+        nevents += 1;
+        //NPOM_NCH[npoms][npomh]->Fill(nf_nb[4]);//+nf_nb[5]);
+        NPOM_NCH[npoms][npomh]->Fill(nf_nb[4]+nf_nb[5]);
+        N_CH->Fill(nch);
+    }
+    //if(0)
+    //{
+        //NPOM_NCH[npoms][npomh]->Fill(nf_nb[4]);
         //N_CH->Fill(nch);
+    //}
 
     for(int i=0 ; i<4 ; i++)
     {
@@ -472,12 +482,12 @@ void Count::Filler(int npoms,int npomh)
 void Count::Writer()
 {
     output->cd(folders[7]);
+    N_CH->Write();
     for(int i=0 ; i<25 ; i++)
     {
         for(int j=0 ; j<25 ; j++)
             NPOM_NCH[i][j]->Write();
     }
-    //N_CH->Write();
 
     output->cd(folders[5]);
     for(int i=0 ; i<4 ; i++)
