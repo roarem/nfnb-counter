@@ -84,7 +84,6 @@ class Plot:
 
     def NBNFPicture(self):
         
-        #plt.xkcd()
         if self.nsd:
             fig,ax = self.plotSetup(xlim=[-1,130],ylim=[0,140])
             xsize = ax.get_xlim()[1]
@@ -752,10 +751,10 @@ if __name__=="__main__":
     options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
     P = options[0](save=0,nsd=0)
 
-    #P.NBNFPicture()
+    P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    P.nch_dist()
+    #P.nch_dist()
     #P.nf_nb()
     #P.bcorr()
     P.Show()
