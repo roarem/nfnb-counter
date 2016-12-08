@@ -15,10 +15,11 @@ set(HEADERS
     src/Counter.h
   )
 
-include_directories(/home/roar/root/root-6.06.06/include)
+include_directories(/home/roar/div_progs/root/include)
 include_directories(${PROJECT_SOURCE_DIR}/lib)
 include_directories(${PROJECT_SOURCE_DIR}/lib/Timer)
-link_directories(/home/roar/root/root-6.06.06/lib)
+link_directories(/home/roar/div_progs/root/lib)
 
 add_executable(count src/main.cpp ${SOURCES} ${HEADERS})
-target_link_libraries(count dl Core Cint RIO Net Hist Graf Graf3d Gpad Tree Rint Postscript Matrix Physics MathCore Thread Gui pthread m)
+target_link_libraries(count Core RIO Hist)
+# (count dl Core RIO Net Hist Graf Graf3d Gpad Tree Rint Postscript Matrix Physics MathCore Thread Gui pthread m)

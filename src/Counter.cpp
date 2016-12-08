@@ -226,18 +226,18 @@ void Count::ReadAndCount()
               //count_this[2] = 1;
             }
             // Checks if there is anything happening
-            //if (i==0 and IDIAG==4)
-            //{
+            if (i==0 and IDIAG==4)
+            {
             //    std::cout << IDENT << " " << ICHJ << std::endl;
-            //    std::getline(finalprFile,finalprLine);
-            //    std::istringstream bb(finalprLine);
+                std::getline(finalprFile,finalprLine);
+                std::istringstream bb(finalprLine);
             //    bb >> FREEZJ >> XXJ >> YYJ >> ZZJ >> EPAT >> PXJ >> PYJ >> PZJ >> AMJ 
             //       >> IDENT >> IDIAG >> IBJ >> ISJ >> ICHJ >> TFORMJ >> XXJI >> YYJI 
             //       >> ZZJI >> IORIGJ >> TFORMRJUK;
             //    std::cout << IDENT << " " << ICHJ << std::endl << std::endl << std::endl;
-            //    break;
-            //}
-            //else
+                break;
+            }
+            else
             {
                 const double p_abs      = std::sqrt(PXJ*PXJ + PYJ*PYJ + PZJ*PZJ);
                 const double p_T        = std::sqrt(PXJ*PXJ + PYJ*PYJ);

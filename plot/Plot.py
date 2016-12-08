@@ -86,10 +86,10 @@ class Plot:
         
         if self.nsd:
             fig,ax = self.plotSetup(xlim=[-1,130],ylim=[0,140])
-            xsize = ax.get_xlim()[1]
+            xsize = int(ax.get_xlim()[1])
         else:
             fig, ax = self.plotSetup(xlim=[-1,25],ylim=[0,15])
-            xsize = ax.get_xlim()[1]+5
+            xsize = int(ax.get_xlim()[1]+5)
 ############################# Larissas points ##################################
         #larNF,larNBNF = np.loadtxt('/home/roar/master/qgsm_analysis_tool/ana/out/larissa_anfnb_exp_soft',\
         #        unpack=True)
@@ -588,8 +588,8 @@ class Plot:
         axs[0].plot(P_ch,marker='o',linestyle='',label='roar')
 
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
-        a = np.loadtxt('/home/roar/downloads/fort.7_inel_7000_nsd')
-        axs[0].plot(a[:,2]/a[:,2].sum(),marker='o',markersize=6,linestyle='-',label='larissa')
+        #a = np.loadtxt('/home/roar/downloads/fort.7_inel_7000_nsd')
+        #axs[0].plot(a[:,2]/a[:,2].sum(),marker='o',markersize=6,linestyle='-',label='larissa')
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
 
         #self.ReOpen()
@@ -610,7 +610,7 @@ class Plot:
         ##P_ch[1::2] = 0
         #axs[0].plot(P_ch,marker='o',markersize=6,linestyle='',label='roar')
 
-        print(a[:,2].sum(), entries, n_ch.sum())#, All_nch.sum())
+        #print(a[:,2].sum(), entries, n_ch.sum())#, All_nch.sum())
 
         self.ReOpen()
         for i in range(25):
@@ -732,7 +732,7 @@ if __name__=="__main__":
         #name = 'out/7000_4M.root' 
         #name = 'build/7000_4M.root' 
         #name = 'build/7000_4M.test2.root' 
-        name = 'build/7000_4M.test7.root' 
+        name = 'build/7000_4M.test.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV2760(save=0,nsd=0):
@@ -751,10 +751,10 @@ if __name__=="__main__":
     options = {0: GeV7000,1:GeV2760,2:GeV900,3:GeV13000}
     P = options[0](save=0,nsd=0)
 
-    P.NBNFPicture()
+    #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    #P.nch_dist()
+    P.nch_dist()
     #P.nf_nb()
     #P.bcorr()
     P.Show()
