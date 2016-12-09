@@ -487,10 +487,12 @@ class Plot:
         figs = plots[:,0]
         axs  = plots[:,1]
         csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv'] 
-        simbcorr = [np.loadtxt(self.filepath+'out/'+csvfile,skiprows=1) for csvfile in csvfiles]
+        #simbcorr = [np.loadtxt(self.filepath+'out/'+csvfile,skiprows=1) for csvfile in csvfiles]
+        simbcorr = [np.loadtxt(self.filepath+'build/'+csvfile,skiprows=1) for csvfile in csvfiles]
         
         delta = 0; fontsize=27; markersize=10
         fontdict = {'fontsize':27,'weight':'bold'}
+        print(simbcorr[2]-[0.36672, 0.36456, 0.35950, 0.35500, 0.34924, 0.34422, 0.34115, 0.53123, 0.51858, 0.50338, 0.63815,0.62057, 0.69480])
 
         for k,ax in enumerate(axs):
             delta = 0
@@ -588,8 +590,8 @@ class Plot:
         axs[0].plot(P_ch,marker='o',linestyle='',label='roar')
 
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
-        #a = np.loadtxt('/home/roar/downloads/fort.7_inel_7000_nsd')
-        #axs[0].plot(a[:,2]/a[:,2].sum(),marker='o',markersize=6,linestyle='-',label='larissa')
+        #a = np.loadtxt('/home/roar/download/fort.7_7000_4mln_nsd')
+        #axs[0].plot(a[:,2]/a[:,2].sum(),marker='o',markersize=6,linestyle='',label='larissa')
 #####TEMPTEMPTEMPTEMPTMEP##########TEMPTEMPTEMPTEMPTMEP#####
 
         #self.ReOpen()
@@ -732,15 +734,17 @@ if __name__=="__main__":
         #name = 'out/7000_4M.root' 
         #name = 'build/7000_4M.root' 
         #name = 'build/7000_4M.test2.root' 
-        name = 'build/7000_4M.test.root' 
+        name = 'build/7000_4M.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV2760(save=0,nsd=0):
-        name = 'out/2760_4M.root' 
+        #name = 'out/2760_4M.root' 
+        name = 'build/2760_4M.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV900(save=0,nsd=0):
-        name = 'out/900_4M.root' 
+        #name = 'out/900_4M.root' 
+        name = 'build/900_4M.root' 
         P = Plot(root_file_path=path,filename=name,save=save,nsd=nsd)
         return P
     def GeV13000(save=0,nsd=0):
@@ -754,7 +758,7 @@ if __name__=="__main__":
     #P.NBNFPicture()
     #P.var_NPOMS()
     #P.fix_S_var_H()
-    P.nch_dist()
+    #P.nch_dist()
     #P.nf_nb()
-    #P.bcorr()
+    P.bcorr()
     P.Show()

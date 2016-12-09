@@ -11,13 +11,13 @@
 #include "TH1.h"
 #include "TTree.h"
 
-#define bcorr 0
 #define NBNF 1 
+  #define bcorr 1
 
 class Count 
 {
     public:
-        Count (const char* nbnfout, std::string datapath,double numberofevents);
+        Count (const char* nbnfout, const char* bcorrout, std::string datapath,double numberofevents);
         void ReadAndCount();
         void Progress(int eventnr);
 
@@ -40,9 +40,6 @@ class Count
         float NBins = 600;
         float start = -0.5;
         float stop  = NBins + start;
-
-        int nch_tot      = 0;
-        int nevents      = 0;
 
         int nch = 0;
         int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
@@ -84,11 +81,7 @@ class Count
 
         int bcorr_count         = 0;
         double bcorr_Nevents    = 0;
-        const char* bcorr_folder= "bcorr";
-
-        TTree *bcorr_tree;
-
-        //std::vector<std::vector<TH1F*>> bcorr_hists;
+        const char* bcorrFilename;
 
         std::vector<std::vector<double>> eta_gaps = 
             std::vector<std::vector<double>>(13,std::vector<double>(4,0));
