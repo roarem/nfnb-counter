@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	std::string datapath = "/home/roar/DISKS/1/13000_attempts/";
     	const char* nbnfout = "13000_4M.root";
     	const char* bcorrout= "13000_4M_bcorr.csv";
-    	double number_of_events = 4000000.0;
+    	double number_of_events = 4580316.0;
 	Count NBNFandNPOM(nbnfout=nbnfout,bcorrout=bcorrout,datapath=datapath,number_of_events=number_of_events);
     	NBNFandNPOM.ReadAndCount();
     }
