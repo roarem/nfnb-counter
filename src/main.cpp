@@ -3,8 +3,14 @@
 
 int main(int argc, char* argv[]) 
 {
-    std::cout << argv[0] << "  " << argv[1] << std::endl;
-    if (strcmp(argv[1],"7000")==0)
+    //std::cout << argv[0] << "  " << argv[1] << std::endl;
+    
+    if (argc<2)
+    {
+	std::cout << "Need input, yo" << std::endl;
+	exit(1);
+    } 
+    else if (strcmp(argv[1],"7000")==0)
     {
     	std::string datapath = "/home/roar/DISKS/1/19-31_oct/4mln/code_recieved_2810/7000/build/data/"; 
     	//std::string datapath = "/home/roar/DISKS/1/30_aug/7000/data/";
@@ -40,20 +46,18 @@ int main(int argc, char* argv[])
     
     else if (strcmp(argv[1],"13000")==0)
     {
-	std::string datapath = "/home/roar/DISKS/1/19-31_oct/4mln/code_recieved_2810/13000/build/data/"; 
+	std::string datapath = "/home/roar/DISKS/1/13000_attempts/";
     	const char* nbnfout = "13000_4M.root";
     	const char* bcorrout= "13000_4M_bcorr.csv";
     	double number_of_events = 4000000.0;
 	Count NBNFandNPOM(nbnfout=nbnfout,bcorrout=bcorrout,datapath=datapath,number_of_events=number_of_events);
     	NBNFandNPOM.ReadAndCount();
     }
-
     else
     {
-	std::cout << "Need input, yo" << std::endl;
+	std::cout << "Wrong input, yo" << std::endl;
 	exit(1);
     }
-
 
     return 0;
 }

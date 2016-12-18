@@ -128,7 +128,6 @@ void Count::InitializeNBNF()
             NPOM_NCH[i][j]->Sumw2(true);
         }
     }
-
 }
 #endif//NBNF
 
@@ -215,8 +214,8 @@ void Count::ReadAndCount()
                 const double psrap      = 0.5*std::log((p_abs+PZJ)/(p_abs-PZJ));
                 const double psrap_abs  = std::abs(psrap);
                 const int nbnf_index    = (psrap<0);
-                #if NBNF
 
+                #if NBNF
 		if(i==0)
 		{
 		    if (IDIAG != 1 and IDIAG != 6 and IDIAG != 10 and IDIAG != 4)
