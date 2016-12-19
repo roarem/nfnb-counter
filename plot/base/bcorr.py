@@ -38,12 +38,11 @@ def bcorr(filepath):
                             0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
                             0.010117806086301516]))
 
-    plots = np.asarray([bcorrPlotSetup() for i in range(3)])
+    plots = np.asarray([bcorrPlotSetup() for i in range(4)])
     figs = plots[:,0]
     axs  = plots[:,1]
-    csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv'] 
-    #simbcorr = [np.loadtxt(filepath+'out/'+csvfile,skiprows=1) for csvfile in csvfiles]
-    simbcorr = [np.loadtxt(filepath+'out/1612/'+csvfile,skiprows=1) for csvfile in csvfiles]
+    csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv','13000_4M_bcorr.csv'] 
+    simbcorr = [np.loadtxt(filepath+csvfile,skiprows=1) for csvfile in csvfiles]
     
     delta = 0; fontsize=27; markersize=10
     fontdict = {'fontsize':27,'weight':'bold'}
@@ -52,22 +51,29 @@ def bcorr(filepath):
     for k,ax in enumerate(axs):
         delta = 0
         for i,j in zip([0,7,10,12],[7,10,12,13]):
-            ax.errorbar(x[i:j],exps[k][i:j],experrs[k][i:j],marker='s',markersize=markersize,\
-                    linestyle='',color='grey',label='ALICE')
+            if k<3:
+                ax.errorbar(x[i:j],exps[k][i:j],experrs[k][i:j],marker='s',markersize=markersize,\
+                        linestyle='',color='grey',label='ALICE':
+            ax.text(-0.13,simbcorr[k][i],'0.{:d}'.format(delta),fontsize=fontsize)
+
             ax.plot(x[i:j],simbcorr[k][i:j],marker='o',markersize=markersize,\
                     linestyle='--',color='black',label='QGSM')
-            ax.text(-0.13,exps[k][i],'0.{:d}'.format(delta),fontsize=fontsize)
 
             delta +=2
 
-    titles = ['$900 GeV$','$2760 GeV$','$7000 GeV$']
+    titles = ['$900 GeV$','$2760 GeV$','$7000 GeV$','$13000 GeV$']
     for i,ax in enumerate(axs):
         ax.text(-0.13,simbcorr[i][12]+0.03,'$\delta\eta$',fontsize=fontsize)
         ax.set_title(titles[i],fontdict=fontdict)
         ax.set_xlabel('$\eta$',fontdict=fontdict)
         ax.set_ylabel('$b_{corr}$',fontdict=fontdict)
         handles, labels = ax.get_legend_handles_labels()
-        leg = ax.legend((handles[0],handles[4]),(labels[0],labels[4]),loc='upper left')
+        #leg = ax.legend((handles[0],handles[-1]),(labels[0],labels[-1]),loc='upper left')
+        if i<2:
+            handles,labels=(handles[0],handles[-1]),(labels[0],labels[1])
+        else:
+            handles,labels=(handles[0],),(labels[0],)
+        leg = ax.legend((handles[0],),(labels[0],),loc='upper left')
         leg.get_frame().set_alpha(0.0)
     plt.show()
 
@@ -115,5 +121,5 @@ def bcorrPlotSetup():
     return fig, ax
 
 if __name__=='__main__':
-    path = "/home/roar/master/qgsm_analysis_tool/ana/"
+    path = "/home/roar/master/qgsm_analysis_tool/ana/out/1912/"
     bcorr(path)

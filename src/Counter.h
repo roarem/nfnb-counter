@@ -50,7 +50,8 @@ class Count
 
         TFile *output;
         const char* NBNFFilename;
-        std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin","NBNFDou","multi"};
+        std::vector<const char*> folders = {"ptcut","all","nsd","sin","dou","NBNFSin",
+					    "NBNFDou","multi"};
         std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 

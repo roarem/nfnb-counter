@@ -1,6 +1,6 @@
-from base import General,bcorr
+from base import General,bcorr,nbnf_corr
 
-def base():
+def Base():
     path = "/home/roar/master/qgsm_analysis_tool/ana/"
     def GeV7000(save=0,nsd=0):
         name = 'out/1612/7000_4M.root' 
@@ -28,11 +28,14 @@ def base():
     P.Show()
 
 def Bcorr():
-    path = "/home/roar/master/qgsm_analysis_tool/ana/"
+    path = "/home/roar/master/qgsm_analysis_tool/ana/out/1912/"
     bcorr.bcorr(path)
 
-
+def Nbnf_corr():
+    path = '/home/roar/master/qgsm_analysis_tool/ana/out/1912/'
+    nbnf_corr.nbnf(path,kin=False)
 
 if __name__=='__main__':
-    base()
+    Nbnf_corr()
+    #Base()
     #Bcorr()

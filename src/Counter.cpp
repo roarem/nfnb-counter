@@ -220,7 +220,7 @@ void Count::ReadAndCount()
 		{
 		    if (IDIAG != 1 and IDIAG != 6 and IDIAG != 10 and IDIAG != 4)
 		    {
-			count_this[2] = 1;
+			count_this[2] = 1; //nsd
 		    }
 		}
 
@@ -228,10 +228,10 @@ void Count::ReadAndCount()
                 Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 eta_pt_cut(nbnf_index,psrap_abs,p_T,ICHJ);
 
-                nf_nb[nbnf_index+2] += 1;
                 if (ICHJ != 0)
 		{
-                    count_this[1] = 1;
+		    nf_nb[nbnf_index+2] += 1;
+                    count_this[1] = 1;   //all charged
 		}
                 #endif//NBNF
 
@@ -359,7 +359,7 @@ void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T, int ICHJ)
 {
     if (psrap_abs < 1 and ICHJ != 0)
     {
-        count_this[0] = 1;
+        count_this[0] = 1; //ptcut
         if (psrap_abs > 0.2 and psrap_abs < 0.8)
         {
             if (p_T > 0.3 and p_T < 1.5)
@@ -396,7 +396,7 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
             counted_sin[i] = 1;
         }
         if (ICHJ != 0)
-            count_this[3] = 1;
+            count_this[3] = 1;//single diffraction
     }
     
     if(IDIAG==11)
@@ -407,7 +407,7 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
             counted_dou[i] = 1;
         }
         if (ICHJ!=0)
-            count_this[4] = 1;
+            count_this[4] = 1; //double diffraction
     }
 }
 
