@@ -43,10 +43,10 @@ class Count
 
         int nch = 0;
         int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
-        int nf_nb_sin [8] = {0,0,0,0,0,0,0,0};
-        int counted_sin [4] = {0,0,0,0};
-        int nf_nb_dou [8] = {0,0,0,0,0,0,0,0};
-        int counted_dou [4] = {0,0,0,0};
+	std::vector<int> nf_nb_sin   = std::vector<int>(80,0); 
+        std::vector<int> counted_sin = std::vector<int>(40,0); 
+        std::vector<int> nf_nb_dou   = std::vector<int>(80,0); 
+        std::vector<int> counted_dou = std::vector<int>(40,0); 
 
         TFile *output;
         const char* NBNFFilename;

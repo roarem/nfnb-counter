@@ -32,10 +32,10 @@ def Bcorr():
     bcorr.bcorr(path)
 
 def Nbnf_corr():
-    path = '/home/roar/master/qgsm_analysis_tool/ana/out/1912/'
-    nbnf_corr.nbnf(path,kin=False)
+    path = '/home/roar/master/qgsm_analysis_tool/ana/out/2012/'
+    nbnf_corr.nbnf(path,kin=True)
 
 if __name__=='__main__':
-    Nbnf_corr()
+    #Nbnf_corr()
     #Base()
-    #Bcorr()
+    Bcorr()

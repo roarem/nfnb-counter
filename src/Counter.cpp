@@ -26,6 +26,39 @@ Count::Count(const char* nbnfout,const char* bcorrout, std::string datapath,doub
 void Count::InitializeNBNF()
 {
     
+    std::string HistTitleSin = "All single diffraction";
+    std::string HistTitleDou = "All double diffraction";
+    for (int i=1 ; i<counted_sin.size()+1 ; i++)
+    {
+	char number_string [4];
+    	sprintf(number_string,"_%02d",i);
+    	number_string[3] = '\0';
+    	std::string temp0  = "SIN_NBNF_eta_le_"+std::string(number_string);
+    	std::string temp1  = "SIN_NF_eta_le_"+std::string(number_string);
+    	std::string temp2  = "SIN_NB_eta_le_"+std::string(number_string);
+        NBNFSIN.push_back(new TH1F(temp0.c_str(),HistTitleSin.c_str(),NBins,start,stop));
+        NFSIN.push_back(new TH1F(temp1.c_str(),HistTitleSin.c_str(),NBins,start,stop));
+        NBSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),NBins,start,stop));
+
+        // Setting errorbar calculations
+        NBNFSIN[i-1]->Sumw2(true);
+        NFSIN[i-1]->Sumw2(true);
+        NBSIN[i-1]->Sumw2(true);
+
+    	temp0  = "DOU_NBNF_eta_le_"+std::string(number_string);
+    	temp1  = "DOU_NF_eta_le_"+std::string(number_string);
+    	temp2  = "DOU_NB_eta_le_"+std::string(number_string);
+        NBNFDOU.push_back(new TH1F(temp0.c_str(),HistTitleDou.c_str(),NBins,start,stop));
+        NFDOU.push_back(new TH1F(temp1.c_str(),HistTitleDou.c_str(),NBins,start,stop));
+        NBDOU.push_back(new TH1F(temp2.c_str(),HistTitleDou.c_str(),NBins,start,stop));
+
+        NBNFDOU[i-1]->Sumw2(true);
+        NFDOU[i-1]->Sumw2(true);
+        NBDOU[i-1]->Sumw2(true);
+
+    }
+
+    /* 
     std::vector<const char*> HistNamesSin;
     HistNamesSin.push_back("ALL Single");
     HistNamesSin.push_back("|\\eta|<1 Single");
@@ -43,14 +76,6 @@ void Count::InitializeNBNF()
     NBNFSIN.push_back(new TH1F("allEta05Sin",HistNamesSin[0],NBins,start,stop));
     NFSIN. push_back(new TH1F("nfEta05Sin",HistNamesSin[0],NBins,start,stop));
     NBSIN. push_back(new TH1F("nbEta05Sin",HistNamesSin[0],NBins,start,stop));
-    
-    for(int i=0 ; i<4 ; i++)
-    {
-        // Setting errorbar calculations
-        NBNFSIN[i]->Sumw2(true);
-        NFSIN[i]->Sumw2(true);
-        NBSIN[i]->Sumw2(true);
-    }
 
     std::vector<const char*> HistNamesDou;
     HistNamesDou.push_back("ALL Double");
@@ -77,7 +102,7 @@ void Count::InitializeNBNF()
         NFDOU[i]->Sumw2(true);
         NBDOU[i]->Sumw2(true);
     }
-
+    */
     for (int i=0 ; i<prefix.size() ; i++)
     {
         NPOMSH.push_back(std::vector<std::vector<TH1F*>>());
@@ -182,7 +207,7 @@ void Count::ReadAndCount()
         std::istringstream cc(NPOMLine);
         cc >> npoms >> npomh;
         #endif//NBNF
-        
+	    
         if(EVENTNR%100==0)
             Progress(EVENTNR);
         //if (EVENTNR%100!=0) 
@@ -255,9 +280,9 @@ void Count::ReadAndCount()
         nch = 0;
         for (int i=0 ; i<count_this.size() ; i++)
             nf_nb[2*i] = nf_nb[2*i+1] = count_this[i] = 0;
-        for(int i=0 ; i<4 ; i++)
+        for(int i=0 ; i<counted_sin.size() ; i++)
             nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
-        for(int i=0 ; i<4 ; i++)
+        for(int i=0 ; i<counted_dou.size() ; i++)
             nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
         #endif//NBNF
 
@@ -279,8 +304,7 @@ void Count::ReadAndCount()
     #endif//NBNF
     #if bcorr
     std::cout << "writing bcorr to file" << std::endl;
-	//std::ofstream bcorr_file("/home/roar/master/qgsm_analysis_tool/ana/out/7000_4M_bcorr.csv");
-	std::ofstream bcorr_file(bcorrFilename);
+    std::ofstream bcorr_file(bcorrFilename);
     bcorr_file << bcorr_Nevents << std::endl;
     double b_corr = 0;
     for (int i=0 ; i<13 ; i++)
@@ -288,10 +312,10 @@ void Count::ReadAndCount()
         b_corr = (eta_gaps[i][3] - eta_gaps[i][0]*eta_gaps[i][1]/(double)bcorr_Nevents)/
                  (eta_gaps[i][2] - eta_gaps[i][0]*eta_gaps[i][0]/(double)bcorr_Nevents);
         bcorr_file << b_corr << std::endl;
-	std::cout << "gap: " << i << "  nfnb: " <<eta_gaps[i][3] << " nf**2: " << eta_gaps[i][2] << 
-	    " nf: " << eta_gaps[i][0] << " nb: " << eta_gaps[i][1] << std::endl;
+	//std::cout << "gap: " << i << "  nfnb: " <<eta_gaps[i][3] << " nf**2: " << eta_gaps[i][2] << 
+	//    " nf: " << eta_gaps[i][0] << " nb: " << eta_gaps[i][1] << std::endl;
     }
-	bcorr_file.close();
+    bcorr_file.close();
     
     #endif//bcorr
     std::cout << "closing root file" << std::endl;
@@ -378,6 +402,7 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 
 void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 {
+    /*
     int i_start = 0;
     if(psrap_abs<0.5)
         i_start = 0;
@@ -409,6 +434,33 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
         if (ICHJ!=0)
             count_this[4] = 1; //double diffraction
     }
+    */
+    int psrap_abs10 = (int)(psrap_abs*10);
+    if (IDIAG==1 or IDIAG==6 or IDIAG==10)
+    {
+	if (psrap_abs10 < counted_sin.size()+1)
+	{
+	    for(int i=psrap_abs10 ; i>-1 ; i--)
+	    {
+	        nf_nb_sin[2*i+nbnf_index] += 1;
+	        counted_sin[i] = 1;
+	    }
+	}
+
+    }
+    if (IDIAG==11)
+    {
+	if (psrap_abs10 < counted_dou.size()+1)
+	{
+	    for(int i=psrap_abs10 ; i>-1 ; i--)
+	    {
+	        
+	        nf_nb_dou[2*i+nbnf_index] += 1;
+	        counted_dou[i] = 1;
+	    }
+	}
+    }
+
 }
 
 void Count::Filler(int npoms,int npomh)
@@ -419,7 +471,7 @@ void Count::Filler(int npoms,int npomh)
         N_CH->Fill(nch);
     }
 
-    for(int i=0 ; i<4 ; i++)
+    for(int i=0 ; i<NBNFSIN.size() ; i++)
     {
         if (counted_sin[i])
         {
@@ -429,7 +481,7 @@ void Count::Filler(int npoms,int npomh)
         }
     }
     
-    for(int i=0 ; i<4 ; i++)
+    for(int i=0 ; i<NBNFDOU.size() ; i++)
     {
         if (counted_dou[i])
         {
@@ -454,14 +506,14 @@ void Count::Writer()
 {
     output->cd(folders[7]);
     N_CH->Write();
-    for(int i=0 ; i<25 ; i++)
+    for(int i=0 ; i<NPOM_NCH.size() ; i++)
     {
-        for(int j=0 ; j<25 ; j++)
+        for(int j=0 ; j<NPOM_NCH[i].size() ; j++)
             NPOM_NCH[i][j]->Write();
     }
 
     output->cd(folders[5]);
-    for(int i=0 ; i<4 ; i++)
+    for(int i=0 ; i<NBNFSIN.size() ; i++)
     {
         NBNFSIN[i]->Write();
         NFSIN [i]->Write();
@@ -469,7 +521,7 @@ void Count::Writer()
     }
 
     output->cd(folders[6]);
-    for(int i=0 ; i<4 ; i++)
+    for(int i=0 ; i<NBNFDOU.size() ; i++)
     {
         NBNFDOU[i]->Write();
         NFDOU [i]->Write();
@@ -479,9 +531,9 @@ void Count::Writer()
     for(int k=0 ; k<prefix.size() ; k++)
     {
         output->cd(folders[k]);
-        for(int i=0 ; i<25 ; i++)
+        for(int i=0 ; i<NPOMSH[k].size() ; i++)
         {
-            for(int j=0 ; j<25 ; j++)
+            for(int j=0 ; j<NPOMSH[k][i].size() ; j++)
             {
                 NPOMSH[k][i][j]->Write();
                 NPOMSH_nf[k][i][j]->Write();
@@ -499,5 +551,5 @@ void Count::Progress(int eventnr)
     int *returnTime = new int[3];
     returnTime = timer.elapsedTimeClock();
     printf("\r %3d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
-                                       returnTime[0],returnTime[1],returnTime[2]);
+					  returnTime[0],returnTime[1],returnTime[2]);
 }

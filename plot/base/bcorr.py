@@ -38,9 +38,10 @@ def bcorr(filepath):
                             0.01271927670899568, 0.010117806086301516, 0.012403628501370072,\
                             0.010117806086301516]))
 
-    plots = np.asarray([bcorrPlotSetup() for i in range(4)])
-    figs = plots[:,0]
-    axs  = plots[:,1]
+    #plots = np.asarray([bcorrPlotSetup() for i in range(4)])
+    #figs = plots[:,0]
+    #axs  = plots[:,1]
+    fig,axs = bcorrPlotSetup()
     csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv','13000_4M_bcorr.csv'] 
     simbcorr = [np.loadtxt(filepath+csvfile,skiprows=1) for csvfile in csvfiles]
     
@@ -53,7 +54,7 @@ def bcorr(filepath):
         for i,j in zip([0,7,10,12],[7,10,12,13]):
             if k<3:
                 ax.errorbar(x[i:j],exps[k][i:j],experrs[k][i:j],marker='s',markersize=markersize,\
-                        linestyle='',color='grey',label='ALICE':
+                        linestyle='',color='grey',label='ALICE')
             ax.text(-0.13,simbcorr[k][i],'0.{:d}'.format(delta),fontsize=fontsize)
 
             ax.plot(x[i:j],simbcorr[k][i:j],marker='o',markersize=markersize,\
@@ -61,64 +62,73 @@ def bcorr(filepath):
 
             delta +=2
 
-    titles = ['$900 GeV$','$2760 GeV$','$7000 GeV$','$13000 GeV$']
     for i,ax in enumerate(axs):
-        ax.text(-0.13,simbcorr[i][12]+0.03,'$\delta\eta$',fontsize=fontsize)
-        ax.set_title(titles[i],fontdict=fontdict)
-        ax.set_xlabel('$\eta$',fontdict=fontdict)
-        ax.set_ylabel('$b_{corr}$',fontdict=fontdict)
+        ax.text(-0.13,simbcorr[i][12]+0.09,'$\delta\eta$',fontsize=fontsize)
         handles, labels = ax.get_legend_handles_labels()
-        #leg = ax.legend((handles[0],handles[-1]),(labels[0],labels[-1]),loc='upper left')
         if i<2:
             handles,labels=(handles[0],handles[-1]),(labels[0],labels[1])
         else:
             handles,labels=(handles[0],),(labels[0],)
-        leg = ax.legend((handles[0],),(labels[0],),loc='upper left')
+        leg = ax.legend((handles[0],),(labels[0],),loc='best')
         leg.get_frame().set_alpha(0.0)
-    plt.show()
+    #plt.show()
+    plt.savefig('testy.pdf')
 
 def bcorrPlotSetup():
 
-    fig, ax = plt.subplots()
-
-    ax.set_xlim(-0.2,1.3)
-    ax.set_ylim(0.1,0.9)
-
-    majorLocator = ticker.MultipleLocator(0.1)
-    minorLocator = ticker.MultipleLocator(0.1)
-
+    titles = ['$900\, GeV$','$2760\, GeV$','$7000\, GeV$','$13000\, GeV$']
+    
+    fig, axs = plt.subplots(2,2)
+    axs = axs.reshape(4)
+    fig.subplots_adjust(wspace=0.001,hspace=0.001)
     DPI = fig.get_dpi()
     size = 1000
-    fig.set_size_inches(size/DPI,size/DPI)
+    fig.set_size_inches(1500/DPI,1500/DPI)
 
-    x0,x1 = ax.get_xlim()
-    y0,y1 = ax.get_ylim()
-    ax.set_aspect((x1-x0)/(y1-y0))
-
-    ax.grid(which='minor',alpha=1)
-
+    majorLocator = ticker.MultipleLocator(0.3)
+    minorLocator = ticker.MultipleLocator(0.1)
     majorFormatter = ticker.FormatStrFormatter('%.1f')
     minorFormatter = ticker.FormatStrFormatter('%.1f')
-    ax.yaxis.set_minor_locator(minorLocator)
-    ax.xaxis.set_minor_locator(minorLocator)
-    ax.yaxis.set_major_locator(majorLocator)
-    ax.xaxis.set_major_locator(majorLocator)
-    ax.xaxis.set_major_formatter(majorFormatter)
-    #ax.xaxis.set_minor_formatter(minorFormatter)
+    for ax in axs:
+        ax.set_xlim(-0.2,1.3)
+        ax.set_ylim(0.1,0.9)
 
-    [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
-    [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
-    #[tick.label.set_fontsize(20) for tick in ax.xaxis.get_minor_ticks()]
-    #[tick.label.set_fontsize(20) for tick in ax.yaxis.get_minor_ticks()]
+        #x0,x1 = ax.get_xlim()
+        #y0,y1 = ax.get_ylim()
+        #ax.set_aspect((x1-x0)/(y1-y0))
 
-    ax.xaxis.set_tick_params(which='major',length=12,width=2)
-    ax.yaxis.set_tick_params(which='major',length=12,width=2)
-    ax.xaxis.set_tick_params(which='minor',length=8 ,width=2)
-    ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
-    #ax.tick_params(labeltop=1,labelright=1)
+        ax.grid(which='minor',alpha=1)
 
+        ax.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+        ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(0.2))
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(0.2))
+        ax.xaxis.set_major_formatter(majorFormatter)
 
-    return fig, ax
+        [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
+        [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
+        #[tick.label.set_fontsize(20) for tick in ax.xaxis.get_minor_ticks()]
+        #[tick.label.set_fontsize(20) for tick in ax.yaxis.get_minor_ticks()]
+
+        ax.xaxis.set_tick_params(which='major',length=14,width=3)
+        ax.yaxis.set_tick_params(which='major',length=14,width=3)
+        ax.xaxis.set_tick_params(which='minor',length=8 ,width=2)
+        ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
+
+        ax.set_xlabel('$\eta$')
+        ax.set_ylabel('$b_{corr}$')
+
+    
+    [label.set_visible(False) for label in axs[0].get_xticklabels()]
+    [label.set_visible(False) for label in axs[1].get_xticklabels()]
+    [label.set_visible(False) for label in axs[1].get_yticklabels()]
+    [label.set_visible(False) for label in axs[3].get_yticklabels()]
+    [axs[2].get_yticklabels()[-i].set_visible(False) for i in range(2)]
+    [axs[2].get_xticklabels()[-i].set_visible(False) for i in range(3)]
+    [ax.text(0.5,0.9,tit,horizontalalignment='center',
+             verticalalignment='center',transform=ax.transAxes) for ax,tit in zip(axs,titles)]
+
+    return fig, axs
 
 if __name__=='__main__':
     path = "/home/roar/master/qgsm_analysis_tool/ana/out/1912/"
