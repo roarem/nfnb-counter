@@ -28,11 +28,11 @@ def Base():
     P.Show()
 
 def Bcorr():
-    path = "/home/roar/master/qgsm_analysis_tool/ana/out/1912/"
+    path = "/home/roar/master/qgsm_analysis_tool/ana/out/2112/"
     bcorr.bcorr(path)
 
 def Nbnf_corr():
-    path = '/home/roar/master/qgsm_analysis_tool/ana/out/2012/'
+    path = '/home/roar/master/qgsm_analysis_tool/ana/out/2112/'
     nbnf_corr.nbnf(path,kin=True)
 
 if __name__=='__main__':

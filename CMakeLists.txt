@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project("counting")
 
-set(GCC_COMPILE_FLAGS "--std=c++11")
+set(GCC_COMPILE_FLAGS "-Wall --std=c++11")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COMPILE_FLAGS}")
 

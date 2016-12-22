@@ -16,7 +16,7 @@ Count::Count(const char* nbnfout,const char* bcorrout, std::string datapath,doub
 
     output = new TFile(NBNFFilename,"recreate");
     #if NBNF
-    for (int i=0 ; i<folders.size() ; i++)
+    for (int i=0 ; i<folders_size ; i++)
         output->mkdir(folders[i]);
     InitializeNBNF();
     #endif//NBNF
@@ -26,16 +26,16 @@ Count::Count(const char* nbnfout,const char* bcorrout, std::string datapath,doub
 void Count::InitializeNBNF()
 {
     
-    std::string HistTitleSin = "All single diffraction";
-    std::string HistTitleDou = "All double diffraction";
-    for (int i=1 ; i<counted_sin.size()+1 ; i++)
+    std::string HistTitleSin = "single diffraction";
+    std::string HistTitleDou = "double diffraction";
+    for (int i=1 ; i<counted_sin_size+1 ; i++)
     {
-	char number_string [4];
-    	sprintf(number_string,"_%02d",i);
+        char number_string [4];
+    	sprintf(number_string,"%02d",i);
     	number_string[3] = '\0';
-    	std::string temp0  = "SIN_NBNF_eta_le_"+std::string(number_string);
-    	std::string temp1  = "SIN_NF_eta_le_"+std::string(number_string);
-    	std::string temp2  = "SIN_NB_eta_le_"+std::string(number_string);
+    	std::string temp0  = "SIN_NBNF_rap_le_"+std::string(number_string);
+    	std::string temp1  = "SIN_NF_rap_le_"+std::string(number_string);
+    	std::string temp2  = "SIN_NB_rap_le_"+std::string(number_string);
         NBNFSIN.push_back(new TH1F(temp0.c_str(),HistTitleSin.c_str(),NBins,start,stop));
         NFSIN.push_back(new TH1F(temp1.c_str(),HistTitleSin.c_str(),NBins,start,stop));
         NBSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),NBins,start,stop));
@@ -45,9 +45,9 @@ void Count::InitializeNBNF()
         NFSIN[i-1]->Sumw2(true);
         NBSIN[i-1]->Sumw2(true);
 
-    	temp0  = "DOU_NBNF_eta_le_"+std::string(number_string);
-    	temp1  = "DOU_NF_eta_le_"+std::string(number_string);
-    	temp2  = "DOU_NB_eta_le_"+std::string(number_string);
+    	temp0  = "DOU_NBNF_rap_le_"+std::string(number_string);
+    	temp1  = "DOU_NF_rap_le_"+std::string(number_string);
+    	temp2  = "DOU_NB_rap_le_"+std::string(number_string);
         NBNFDOU.push_back(new TH1F(temp0.c_str(),HistTitleDou.c_str(),NBins,start,stop));
         NFDOU.push_back(new TH1F(temp1.c_str(),HistTitleDou.c_str(),NBins,start,stop));
         NBDOU.push_back(new TH1F(temp2.c_str(),HistTitleDou.c_str(),NBins,start,stop));
@@ -103,7 +103,7 @@ void Count::InitializeNBNF()
         NBDOU[i]->Sumw2(true);
     }
     */
-    for (int i=0 ; i<prefix.size() ; i++)
+    for (int i=0 ; i<prefix_size ; i++)
     {
         NPOMSH.push_back(std::vector<std::vector<TH1F*>>());
         NPOMSH_nf.push_back(std::vector<std::vector<TH1F*>>());
@@ -153,6 +153,15 @@ void Count::InitializeNBNF()
             NPOM_NCH[i][j]->Sumw2(true);
         }
     }
+    
+   NBNFSIN_size	    = (int)NBNFSIN.size(); 
+   NBNFDOU_size     = (int)NBNFDOU.size(); 
+   NPOM_NCH_size    = (int)NPOM_NCH.size();
+   NPOM_NCHi_size   = (int)NPOM_NCH[0].size();
+   NPOMSH_size	    = (int)NPOMSH.size();
+   NPOMSHk_size	    = (int)NPOMSH[0].size();
+   NPOMSHki_size    = (int)NPOMSH[0][0].size();
+
 }
 #endif//NBNF
 
@@ -173,26 +182,26 @@ void Count::ReadAndCount()
     float temp;     // unknown
 
     //finalpr columns
-    float FREEZJ;   // Time event is completed
-    float XXJ;      // position x at freeze time
-    float YYJ;      // position y at freeze time
-    float ZZJ;      // position z at freeze time
-    float EPAT;     // energy at freeze time
-    float PXJ;      // momentum p_x at freeze time
-    float PYJ;      // momentum p_y at freeze time
-    float PZJ;      // momentum p_z at freeze time
-    float AMJ;      // mass
-    float IDENT;    // identity of particle
-    float IDIAG;    // Type of event
-    float IBJ;      // baryon number
-    float ISJ;      // strangeness
-    float ICHJ;     // charge
-    float TFORMJ;   // formation time
-    float XXJI;     // formatiom position x
-    float YYJI;     // formation position y
-    float ZZJI;     // formation position z
-    float IORIGJ;   // origin of particle
-    float TFORMRJUK;// unknown
+    float FREEZJ   = 0;// Time event is completed
+    float XXJ      = 0;// position x at freeze time
+    float YYJ      = 0;// position y at freeze time
+    float ZZJ      = 0;// position z at freeze time
+    float EPAT     = 0;// energy at freeze time
+    float PXJ      = 0;// momentum p_x at freeze time
+    float PYJ      = 0;// momentum p_y at freeze time
+    float PZJ      = 0;// momentum p_z at freeze time
+    float AMJ      = 0;// mass
+    float IDENT    = 0;// identity of particle
+    float IDIAG    = 0;// Type of event
+    float IBJ      = 0;// baryon number
+    float ISJ      = 0;// strangeness
+    float ICHJ     = 0;// charge
+    float TFORMJ   = 0;// formation time
+    float XXJI     = 0;// formatiom position x
+    float YYJI     = 0;// formation position y
+    float ZZJI     = 0;// formation position z
+    float IORIGJ   = 0;// origin of particle
+    float TFORMRJUK= 0;// unknown
     
     std::string finalprLine, B_MULTLine, NPOMLine;
     std::ifstream finalprFile(finalpr_loc.c_str());
@@ -249,7 +258,7 @@ void Count::ReadAndCount()
 		    }
 		}
 
-                Sin_Dou(nbnf_index,psrap_abs,IDIAG,ICHJ);
+                Sin_Dou(nbnf_index,rap,IDIAG,ICHJ);
                 Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 eta_pt_cut(nbnf_index,psrap_abs,p_T,ICHJ);
 
@@ -278,11 +287,11 @@ void Count::ReadAndCount()
         Filler(npoms,npomh);
         // Resets nf and nb counters
         nch = 0;
-        for (int i=0 ; i<count_this.size() ; i++)
+        for (int i=0 ; i<count_this_size ; i++)
             nf_nb[2*i] = nf_nb[2*i+1] = count_this[i] = 0;
-        for(int i=0 ; i<counted_sin.size() ; i++)
+        for(int i=0 ; i<counted_sin_size ; i++)
             nf_nb_sin[2*i] = nf_nb_sin[2*i+1] = counted_sin[i] = 0;
-        for(int i=0 ; i<counted_dou.size() ; i++)
+        for(int i=0 ; i<counted_dou_size ; i++)
             nf_nb_dou[2*i] = nf_nb_dou[2*i+1] = counted_dou[i] = 0;
         #endif//NBNF
 
@@ -320,6 +329,8 @@ void Count::ReadAndCount()
     #endif//bcorr
     std::cout << "closing root file" << std::endl;
     output->Close();
+    //std::cout << "destroying all new" << std::endl;
+    //Destroy();
     std::cout << "done and done, bye!" << std::endl;
 }
 
@@ -400,47 +411,15 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
     }
 }
 
-void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
+void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
 {
-    /*
-    int i_start = 0;
-    if(psrap_abs<0.5)
-        i_start = 0;
-    else if(psrap_abs<1)
-        i_start = 1;
-    else if(psrap_abs<2)
-        i_start = 2;
-    else
-        i_start = 3;
-    
+    int rap_abs = (int)std::abs(rap);
+    //std::cout << rap_abs << std::endl;
     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
     {
-        for(int i=i_start ; i<4 ; i++)
-        {
-            nf_nb_sin[2*i+nbnf_index] += 1;
-            counted_sin[i] = 1;
-        }
-        if (ICHJ != 0)
-            count_this[3] = 1;//single diffraction
-    }
-    
-    if(IDIAG==11)
-    {
-        for(int i=i_start ; i<4 ; i++)
-        {
-            nf_nb_dou[2*i+nbnf_index] += 1;
-            counted_dou[i] = 1;
-        }
-        if (ICHJ!=0)
-            count_this[4] = 1; //double diffraction
-    }
-    */
-    int psrap_abs10 = (int)(psrap_abs*10);
-    if (IDIAG==1 or IDIAG==6 or IDIAG==10)
-    {
-	if (psrap_abs10 < counted_sin.size()+1)
+	if (rap_abs < counted_sin_size)
 	{
-	    for(int i=psrap_abs10 ; i>-1 ; i--)
+	    for(int i=rap_abs ; i>-1 ; i--)
 	    {
 	        nf_nb_sin[2*i+nbnf_index] += 1;
 	        counted_sin[i] = 1;
@@ -450,11 +429,10 @@ void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
     }
     if (IDIAG==11)
     {
-	if (psrap_abs10 < counted_dou.size()+1)
+	if (rap_abs < counted_dou_size)
 	{
-	    for(int i=psrap_abs10 ; i>-1 ; i--)
+	    for(int i=rap_abs ; i>-1 ; i--)
 	    {
-	        
 	        nf_nb_dou[2*i+nbnf_index] += 1;
 	        counted_dou[i] = 1;
 	    }
@@ -471,7 +449,7 @@ void Count::Filler(int npoms,int npomh)
         N_CH->Fill(nch);
     }
 
-    for(int i=0 ; i<NBNFSIN.size() ; i++)
+    for(int i=0 ; i<NBNFSIN_size ; i++)
     {
         if (counted_sin[i])
         {
@@ -481,7 +459,7 @@ void Count::Filler(int npoms,int npomh)
         }
     }
     
-    for(int i=0 ; i<NBNFDOU.size() ; i++)
+    for(int i=0 ; i<NBNFDOU_size ; i++)
     {
         if (counted_dou[i])
         {
@@ -491,7 +469,7 @@ void Count::Filler(int npoms,int npomh)
         }
     }
     
-    for (int i=0 ; i<count_this.size() ; i++)
+    for (int i=0 ; i<count_this_size ; i++)
     {
         if (count_this[i])
         {
@@ -506,14 +484,14 @@ void Count::Writer()
 {
     output->cd(folders[7]);
     N_CH->Write();
-    for(int i=0 ; i<NPOM_NCH.size() ; i++)
+    for(int i=0 ; i<NPOM_NCH_size ; i++)
     {
-        for(int j=0 ; j<NPOM_NCH[i].size() ; j++)
+        for(int j=0 ; j<NPOM_NCHi_size ; j++)
             NPOM_NCH[i][j]->Write();
     }
 
     output->cd(folders[5]);
-    for(int i=0 ; i<NBNFSIN.size() ; i++)
+    for(int i=0 ; i<NBNFSIN_size ; i++)
     {
         NBNFSIN[i]->Write();
         NFSIN [i]->Write();
@@ -521,19 +499,19 @@ void Count::Writer()
     }
 
     output->cd(folders[6]);
-    for(int i=0 ; i<NBNFDOU.size() ; i++)
+    for(int i=0 ; i<NBNFDOU_size ; i++)
     {
         NBNFDOU[i]->Write();
         NFDOU [i]->Write();
         NBDOU [i]->Write();
     }
 
-    for(int k=0 ; k<prefix.size() ; k++)
+    for(int k=0 ; k<prefix_size ; k++)
     {
         output->cd(folders[k]);
-        for(int i=0 ; i<NPOMSH[k].size() ; i++)
+        for(int i=0 ; i<NPOMSHk_size ; i++)
         {
-            for(int j=0 ; j<NPOMSH[k][i].size() ; j++)
+            for(int j=0 ; j<NPOMSHki_size ; j++)
             {
                 NPOMSH[k][i][j]->Write();
                 NPOMSH_nf[k][i][j]->Write();
@@ -541,6 +519,41 @@ void Count::Writer()
             }
         }
     }
+}
+
+void Count::Destroy()
+{
+    delete output;
+    delete N_CH;
+    for (int i=0 ; i<NBNFSIN_size ; i++)
+    {
+	delete NBNFSIN[i];
+	delete NFSIN[i];
+	delete NBSIN[i];
+    }
+    for (int i=0 ; i<NBNFDOU_size ; i++)
+    {
+	delete NBNFDOU[i];
+	delete NFDOU[i];
+	delete NBDOU[i];
+    }
+    for (int i=0 ; i<NPOM_NCH_size ; i++){
+	for (int j=0 ; j<NPOM_NCHi_size ; j++){
+	    delete NPOM_NCH[i][j];
+	}
+    }
+
+    for (int i=0 ; i<NPOMSH_size ; i++){
+	for (int j=0 ; j<NPOMSHk_size ; j++){
+	    for (int k=0 ; k<NPOMSHki_size ; k++){
+		delete NPOMSH[i][j][k];
+		delete NPOMSH_nf[i][j][k];
+		delete NPOMSH_nb[i][j][k];
+	    }
+	}
+    }
+	
+
 }
 
 #endif//NBNF
@@ -552,4 +565,5 @@ void Count::Progress(int eventnr)
     returnTime = timer.elapsedTimeClock();
     printf("\r %3d%% %02dh %02dm %02ds  ",(int)(eventnr/number_of_events*100),
 					  returnTime[0],returnTime[1],returnTime[2]);
+    //delete returnTime;
 }

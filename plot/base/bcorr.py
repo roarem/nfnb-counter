@@ -2,7 +2,7 @@ import matplotlib as mpl
 #mpl.use('Agg')
 mpl.rc('text',usetex=True)
 mpl.rcParams['legend.numpoints']=1
-mpl.rcParams['font.size'] = 27
+#mpl.rcParams['font.size'] =
 mpl.rcParams['font.weight']   = 'bold'
 mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import numpy as np
@@ -45,8 +45,9 @@ def bcorr(filepath):
     csvfiles = ['900_4M_bcorr.csv','2760_4M_bcorr.csv','7000_4M_bcorr.csv','13000_4M_bcorr.csv'] 
     simbcorr = [np.loadtxt(filepath+csvfile,skiprows=1) for csvfile in csvfiles]
     
-    delta = 0; fontsize=27; markersize=10
-    fontdict = {'fontsize':27,'weight':'bold'}
+    delta = 0; fontsize=40; 
+    markersize=20
+    #fontdict = {'fontsize':27,'weight':'bold'}
     #print(simbcorr[2]-[0.36672, 0.36456, 0.35950, 0.35500, 0.34924, 0.34422, 0.34115, 0.53123, 0.51858, 0.50338, 0.63815,0.62057, 0.69480])
 
     for k,ax in enumerate(axs):
@@ -54,29 +55,31 @@ def bcorr(filepath):
         for i,j in zip([0,7,10,12],[7,10,12,13]):
             if k<3:
                 ax.errorbar(x[i:j],exps[k][i:j],experrs[k][i:j],marker='s',markersize=markersize,\
+                        linestyle='',color='grey',label='')
+                ax.plot(x[i:j],exps[k][i:j],marker='s',markersize=markersize,\
                         linestyle='',color='grey',label='ALICE')
-            ax.text(-0.13,simbcorr[k][i],'0.{:d}'.format(delta),fontsize=fontsize)
+            ax.text(-0.25,simbcorr[k][i],'0.{:d}'.format(delta),size=fontsize)
 
             ax.plot(x[i:j],simbcorr[k][i:j],marker='o',markersize=markersize,\
                     linestyle='--',color='black',label='QGSM')
+            ax.plot(x[i:j],simbcorr[k][i:j],marker='o',markersize=markersize,\
+                    linestyle='',color='black',label='QGSM')
 
             delta +=2
 
-    for i,ax in enumerate(axs):
-        ax.text(-0.13,simbcorr[i][12]+0.09,'$\delta\eta$',fontsize=fontsize)
-        handles, labels = ax.get_legend_handles_labels()
-        if i<2:
-            handles,labels=(handles[0],handles[-1]),(labels[0],labels[1])
-        else:
-            handles,labels=(handles[0],),(labels[0],)
-        leg = ax.legend((handles[0],),(labels[0],),loc='best')
-        leg.get_frame().set_alpha(0.0)
+        ax.text(-0.25,simbcorr[k][12]+0.09,'$\delta\eta$',size=fontsize)
+
+    handles, labels = axs[0].get_legend_handles_labels()
+    handles,labels=(handles[0],handles[-1]),(labels[0],labels[-1])
+    leg = axs[0].legend(handles,labels,loc='best')
+    leg.get_frame().set_alpha(0.0)
     #plt.show()
     plt.savefig('testy.pdf')
 
 def bcorrPlotSetup():
 
     titles = ['$900\, GeV$','$2760\, GeV$','$7000\, GeV$','$13000\, GeV$']
+    fontsize = 50
     
     fig, axs = plt.subplots(2,2)
     axs = axs.reshape(4)
@@ -90,7 +93,7 @@ def bcorrPlotSetup():
     majorFormatter = ticker.FormatStrFormatter('%.1f')
     minorFormatter = ticker.FormatStrFormatter('%.1f')
     for ax in axs:
-        ax.set_xlim(-0.2,1.3)
+        ax.set_xlim(-0.3,1.3)
         ax.set_ylim(0.1,0.9)
 
         #x0,x1 = ax.get_xlim()
@@ -102,11 +105,11 @@ def bcorrPlotSetup():
         ax.yaxis.set_minor_locator(ticker.MultipleLocator(0.1))
         ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))
         ax.yaxis.set_major_locator(ticker.MultipleLocator(0.2))
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(0.2))
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(0.3))
         ax.xaxis.set_major_formatter(majorFormatter)
 
-        [tick.label.set_fontsize(20) for tick in ax.xaxis.get_major_ticks()]
-        [tick.label.set_fontsize(20) for tick in ax.yaxis.get_major_ticks()]
+        [tick.label.set_fontsize(fontsize) for tick in ax.xaxis.get_major_ticks()]
+        [tick.label.set_fontsize(fontsize) for tick in ax.yaxis.get_major_ticks()]
         #[tick.label.set_fontsize(20) for tick in ax.xaxis.get_minor_ticks()]
         #[tick.label.set_fontsize(20) for tick in ax.yaxis.get_minor_ticks()]
 
@@ -115,8 +118,8 @@ def bcorrPlotSetup():
         ax.xaxis.set_tick_params(which='minor',length=8 ,width=2)
         ax.yaxis.set_tick_params(which='minor',length=8 ,width=2)
 
-        ax.set_xlabel('$\eta$')
-        ax.set_ylabel('$b_{corr}$')
+        #ax.set_xlabel('$\eta$')
+        #ax.set_ylabel('$b_{corr}$')
 
     
     [label.set_visible(False) for label in axs[0].get_xticklabels()]
@@ -124,12 +127,20 @@ def bcorrPlotSetup():
     [label.set_visible(False) for label in axs[1].get_yticklabels()]
     [label.set_visible(False) for label in axs[3].get_yticklabels()]
     [axs[2].get_yticklabels()[-i].set_visible(False) for i in range(2)]
-    [axs[2].get_xticklabels()[-i].set_visible(False) for i in range(3)]
+    [axs[2].get_xticklabels()[i].set_visible(False) for i in range(2)]
+    [axs[3].get_xticklabels()[i].set_visible(False) for i in range(2)]
     [ax.text(0.5,0.9,tit,horizontalalignment='center',
-             verticalalignment='center',transform=ax.transAxes) for ax,tit in zip(axs,titles)]
+             verticalalignment='center',transform=ax.transAxes,
+             size=fontsize) for ax,tit in zip(axs[1:],titles[1:])]
+    axs[0].text(-0.65,1.9,titles[0],horizontalalignment='center',
+             verticalalignment='center',transform=ax.transAxes,
+             size=fontsize) 
+
+    fig.text(0.5,0.03,'$\eta$',ha='center',size=fontsize)
+    fig.text(0.03,0.5,'$b_{corr}$',va='center',size=fontsize,rotation=90)
 
     return fig, axs
 
 if __name__=='__main__':
-    path = "/home/roar/master/qgsm_analysis_tool/ana/out/1912/"
-    bcorr(path)
+    path = "/home/roar/master/qgsm_analysis_tool/ana/out/2112/"
+    (path)

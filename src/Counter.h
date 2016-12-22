@@ -36,17 +36,12 @@ class Count
         void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T, int ICHJ);
         void Filler(int npoms, int npomh);
         void Writer();
+	void Destroy();
 
         float NBins = 600;
         float start = -0.5;
         float stop  = NBins + start;
 
-        int nch = 0;
-        int nf_nb [10] = {0,0,0,0,0,0,0,0,0,0};
-	std::vector<int> nf_nb_sin   = std::vector<int>(80,0); 
-        std::vector<int> counted_sin = std::vector<int>(40,0); 
-        std::vector<int> nf_nb_dou   = std::vector<int>(80,0); 
-        std::vector<int> counted_dou = std::vector<int>(40,0); 
 
         TFile *output;
         const char* NBNFFilename;
@@ -54,12 +49,29 @@ class Count
 					    "NBNFDou","multi"};
         std::vector<std::string> prefix = {"ptcut","all","nsd","sin","dou"};
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
+	
+        int nch = 0;
+	std::vector<int> nf_nb		= std::vector<int>(10,0);
+	std::vector<int> nf_nb_sin	= std::vector<int>(16,0); 
+        std::vector<int> counted_sin	= std::vector<int>(8,0); 
+        std::vector<int> nf_nb_dou  	= std::vector<int>(16,0); 
+        std::vector<int> counted_dou	= std::vector<int>(8,0); 
+
+	int folders_size     = (int)folders.size();
+	int prefix_size      = (int)prefix.size();
+	int count_this_size  = (int)count_this.size();
+	int counted_sin_size = (int)counted_sin.size();
+	int counted_dou_size = (int)counted_dou.size();
+	int NBNFSIN_size     = 0;
+	int NBNFDOU_size     = 0;
+	int NPOM_NCH_size    = 0;
+	int NPOM_NCHi_size   = 0;
+	int NPOMSH_size	     = 0;
+	int NPOMSHk_size     = 0;
+	int NPOMSHki_size    = 0;
+
 
         TH1F* N_CH;
-
-        std::vector<TH1F*> NBNFREG;
-        std::vector<TH1F*> NFREG;
-        std::vector<TH1F*> NBREG;
 
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
