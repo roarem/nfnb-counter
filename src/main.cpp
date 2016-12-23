@@ -50,6 +50,15 @@ int main(int argc, char* argv[])
 	Count NBNFandNPOM(nbnfout=nbnfout,bcorrout=bcorrout,datapath=datapath,number_of_events=number_of_events);
     	NBNFandNPOM.ReadAndCount();
     }
+    else if (strcmp(argv[1],"alt")==0)
+    {
+	std::string datapath = "/home/roar/DISKS/1/13000_attempts/900/";
+    	const char* nbnfout = "900_500k.root";
+    	const char* bcorrout= "900_500k_bcorr.csv";
+    	double number_of_events = 500000.0;
+	Count NBNFandNPOM(nbnfout=nbnfout,bcorrout=bcorrout,datapath=datapath,number_of_events=number_of_events);
+    	NBNFandNPOM.ReadAndCount();
+    }
     else
     {
 	std::cout << "Wrong input, yo" << std::endl;

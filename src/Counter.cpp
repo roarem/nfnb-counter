@@ -258,7 +258,8 @@ void Count::ReadAndCount()
 		    }
 		}
 
-                Sin_Dou(nbnf_index,rap,IDIAG,ICHJ);
+		if (ICHJ!=0)
+		    Sin_Dou(nbnf_index,rap,IDIAG,ICHJ);
                 Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
                 eta_pt_cut(nbnf_index,psrap_abs,p_T,ICHJ);
 
@@ -419,7 +420,7 @@ void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
     {
 	if (rap_abs < counted_sin_size)
 	{
-	    for(int i=rap_abs ; i>-1 ; i--)
+	    for(int i=rap_abs ; i<counted_sin_size ; i++)
 	    {
 	        nf_nb_sin[2*i+nbnf_index] += 1;
 	        counted_sin[i] = 1;
@@ -431,7 +432,7 @@ void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
     {
 	if (rap_abs < counted_dou_size)
 	{
-	    for(int i=rap_abs ; i>-1 ; i--)
+	    for(int i=rap_abs ; i<counted_dou_size ; i++)
 	    {
 	        nf_nb_dou[2*i+nbnf_index] += 1;
 	        counted_dou[i] = 1;
