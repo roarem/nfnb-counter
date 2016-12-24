@@ -58,51 +58,6 @@ void Count::InitializeNBNF()
 
     }
 
-    /* 
-    std::vector<const char*> HistNamesSin;
-    HistNamesSin.push_back("ALL Single");
-    HistNamesSin.push_back("|\\eta|<1 Single");
-    HistNamesSin.push_back("0.3<p_{T}<1.5 Single");
-
-    NBNFSIN.push_back(new TH1F("allSinFull",HistNamesSin[0],NBins,start,stop));
-    NFSIN. push_back(new TH1F("nfFullSin",HistNamesSin[0],NBins,start,stop));
-    NBSIN. push_back(new TH1F("nbFullSin",HistNamesSin[0],NBins,start,stop));
-    NBNFSIN.push_back(new TH1F("allEta2Sin",HistNamesSin[0],NBins,start,stop));
-    NFSIN. push_back(new TH1F("nfEta2Sin",HistNamesSin[0],NBins,start,stop));
-    NBSIN. push_back(new TH1F("nbEta2Sin",HistNamesSin[0],NBins,start,stop));
-    NBNFSIN.push_back(new TH1F("allEta1Sin",HistNamesSin[0],NBins,start,stop));
-    NFSIN. push_back(new TH1F("nfEta1Sin",HistNamesSin[0],NBins,start,stop));
-    NBSIN. push_back(new TH1F("nbEta1Sin",HistNamesSin[0],NBins,start,stop));
-    NBNFSIN.push_back(new TH1F("allEta05Sin",HistNamesSin[0],NBins,start,stop));
-    NFSIN. push_back(new TH1F("nfEta05Sin",HistNamesSin[0],NBins,start,stop));
-    NBSIN. push_back(new TH1F("nbEta05Sin",HistNamesSin[0],NBins,start,stop));
-
-    std::vector<const char*> HistNamesDou;
-    HistNamesDou.push_back("ALL Double");
-    HistNamesDou.push_back("|\\eta|<1 Double");
-    HistNamesDou.push_back("0.3<p_{T}<1.5 Double");
-    
-    NBNFDOU.push_back(new TH1F("allDouFull",HistNamesDou[0],NBins,start,stop));
-    NFDOU. push_back(new TH1F("nfFullDou",HistNamesDou[0],NBins,start,stop));
-    NBDOU. push_back(new TH1F("nbFullDou",HistNamesDou[0],NBins,start,stop));
-    NBNFDOU.push_back(new TH1F("allEta2Dou",HistNamesDou[0],NBins,start,stop));
-    NFDOU. push_back(new TH1F("nfEta2Dou",HistNamesDou[0],NBins,start,stop));
-    NBDOU. push_back(new TH1F("nbEta2Dou",HistNamesDou[0],NBins,start,stop));
-    NBNFDOU.push_back(new TH1F("allEta1Dou",HistNamesDou[0],NBins,start,stop));
-    NFDOU. push_back(new TH1F("nfEta1Dou",HistNamesDou[0],NBins,start,stop));
-    NBDOU. push_back(new TH1F("nbEta1Dou",HistNamesDou[0],NBins,start,stop));
-    NBNFDOU.push_back(new TH1F("allEta05Dou",HistNamesDou[0],NBins,start,stop));
-    NFDOU. push_back(new TH1F("nfEta05Dou",HistNamesDou[0],NBins,start,stop));
-    NBDOU. push_back(new TH1F("nbEta05Dou",HistNamesDou[0],NBins,start,stop));
-    
-    for(int i=0 ; i<4 ; i++)
-    {
-        // Setting errorbar calculations
-        NBNFDOU[i]->Sumw2(true);
-        NFDOU[i]->Sumw2(true);
-        NBDOU[i]->Sumw2(true);
-    }
-    */
     for (int i=0 ; i<prefix_size ; i++)
     {
         NPOMSH.push_back(std::vector<std::vector<TH1F*>>());

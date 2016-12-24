@@ -1,3 +1,4 @@
+import ROOT
 import matplotlib as mpl
 #mpl.use('Agg')
 mpl.rc('text',usetex=True)
@@ -8,7 +9,6 @@ mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-import ROOT
 
 
 def osci_search(filepath):
@@ -36,5 +36,5 @@ def osci_search(filepath):
 
 
 if __name__=='__main__':
-    path = '/home/roar/master/qgsm_analysis_tool/ana/b/900_500k.root'
+    path = '/home/roar/master/nbnf_counter/build/900_200k.root'
     osci_search(path)
