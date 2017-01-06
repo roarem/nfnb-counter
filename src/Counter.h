@@ -13,6 +13,7 @@
 
 #define NBNF 1 
   #define bcorr 1
+#define PI 3.14159265358979323846264338327950288
 
 class Count 
 {
@@ -31,12 +32,11 @@ class Count
 
         #if NBNF
         void InitializeNBNF();
-        void Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ);
-        void Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ);
-        void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T, int ICHJ);
+        void Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG);
+        void Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG);
+        void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T);
         void Filler(int npoms, int npomh);
         void Writer();
-	void Destroy();
 
         float NBins = 600;
         float start = -0.5;
@@ -85,10 +85,12 @@ class Count
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nf;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH_nb;
+
+
         #endif//NBNF
 
         #if bcorr
-        void bcorr_initialize();
+	void PhiCheck(double pxi, double pyi, double eta_abs, int FB);
         void BcorrCheck(int EVENTNR, double eta);
         void Bcorrgap();
 
@@ -102,5 +104,17 @@ class Count
             std::vector<std::vector<double>>(13,std::vector<double>(2,0));
         std::vector<std::vector<double>> bne =
             std::vector<std::vector<double>>(9,std::vector<double>(2,0));
+
+	int eta_gap_index_size = 6;
+	int phi_count_size     = 8;
+
+	std::vector<std::vector<std::vector<double>>> phieta_temp =
+	    std::vector<std::vector<std::vector<double>>>(2,
+		    std::vector<std::vector<double>>(eta_gap_index_size,
+			std::vector<double>(phi_count_size,0)));
+
+	std::vector<std::vector<double>> phi_eta_bcorr = 
+	    std::vector<std::vector<double>>(8,std::vector<double>(6,0));
+
         #endif//bcorr
 };

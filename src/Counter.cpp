@@ -213,10 +213,13 @@ void Count::ReadAndCount()
 		    }
 		}
 
-		if (ICHJ!=0)
-		    Sin_Dou(nbnf_index,rap,IDIAG,ICHJ);
-                Non_sin_diff(nbnf_index,psrap_abs,IDIAG,ICHJ);
-                eta_pt_cut(nbnf_index,psrap_abs,p_T,ICHJ);
+		if(ICHJ!=0)
+		{
+		    Sin_Dou(nbnf_index,rap,IDIAG);
+                    Non_sin_diff(nbnf_index,psrap_abs,IDIAG);
+                    eta_pt_cut(nbnf_index,psrap_abs,p_T);
+		    PhiCheck(PXJ,PYJ,psrap_abs,nbnf_index);
+		}
 
                 if (ICHJ != 0)
 		{
@@ -314,7 +317,6 @@ void Count::Bcorrgap()
         temp_eta_gaps[i][1] = bne[j][1]+bne[j+1][1]+bne[j+2][1]+bne[j+3][1]+
                               bne[j+4][1]+bne[j+5][1];
         j+=2;
-
     }
 
     temp_eta_gaps[12][0] = bne[0][0]+bne[1][0]+bne[2][0]+bne[3][0]+
@@ -329,7 +331,7 @@ void Count::Bcorrgap()
         eta_gaps[k][2] += temp_eta_gaps[k][0]*temp_eta_gaps[k][0];
         eta_gaps[k][3] += temp_eta_gaps[k][0]*temp_eta_gaps[k][1];
     }
-} 
+}
 
 void Count::BcorrCheck(int EVENTNR,double eta)
 {
@@ -344,11 +346,54 @@ void Count::BcorrCheck(int EVENTNR,double eta)
         }
     }
 }
+void Count::PhiCheck(double pxi, double pyi, double eta_abs, int FB)
+{
+    if (eta_abs<1.2)
+    {
+	int eta_gap_index;
+	double pi_8 = PI/8.0;
+	double eta10 = eta_abs*10;
+
+	for (int i=eta_gap_index_size-1 ; i>-1 ; i--)
+	{
+	    if (eta10>i)
+	    {
+		eta_gap_index=i;
+		break;
+	    }
+	}
+
+	double phi_abs	= std::atan(std::abs(pyi)/std::abs(pxi));
+	double temp_phi = 0;
+
+	if (pxi>0 and pyi>0)
+	    temp_phi = phi_abs;
+	else if (pxi<0 and pyi>0)
+	    temp_phi = PI-phi_abs;
+	else if (pxi<0 and pyi<0)
+	    temp_phi = PI+phi_abs;
+	else if (pxi>0 and pyi<0 and phi_abs>pi_8)
+	    temp_phi = 2*PI-phi_abs;
+	else if (pxi>0 and pyi<0 and phi_abs<pi_8)
+	    temp_phi = -phi_abs;
+	
+	double phi_counter = pi_8;
+	for (int i=0 ; i<phi_count_size ; i++)
+	{
+	    if (temp_phi<phi_counter) 
+	    {
+		phieta_temp[FB][eta_gap_index][i] += 1;
+		break;
+	    }
+	    phi_counter += 2*pi_8;
+	}
+    }
+}
 #endif//bcorr
 #if NBNF
-void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T, int ICHJ)
+void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T)
 {
-    if (psrap_abs < 1 and ICHJ != 0)
+    if (psrap_abs < 1)
     {
         count_this[0] = 1; //ptcut
         if (psrap_abs > 0.2 and psrap_abs < 0.8)
@@ -358,16 +403,13 @@ void Count::eta_pt_cut(int nbnf_index, float psrap_abs, float p_T, int ICHJ)
         }
     }
 }
-void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
+void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG)
 {
-    if (ICHJ != 0)
-    {
-        nf_nb[nbnf_index+4] += 1;
-        nch += 1;
-    }
+    nf_nb[nbnf_index+4] += 1;
+    nch += 1;
 }
 
-void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
+void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG)
 {
     int rap_abs = (int)std::abs(rap);
     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
@@ -393,8 +435,8 @@ void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
 	    }
 	}
     }
-
 }
+
 
 void Count::Filler(int npoms,int npomh)
 {
@@ -476,40 +518,6 @@ void Count::Writer()
     }
 }
 
-void Count::Destroy()
-{
-    delete output;
-    delete N_CH;
-    for (int i=0 ; i<NBNFSIN_size ; i++)
-    {
-	delete NBNFSIN[i];
-	delete NFSIN[i];
-	delete NBSIN[i];
-    }
-    for (int i=0 ; i<NBNFDOU_size ; i++)
-    {
-	delete NBNFDOU[i];
-	delete NFDOU[i];
-	delete NBDOU[i];
-    }
-    for (int i=0 ; i<NPOM_NCH_size ; i++){
-	for (int j=0 ; j<NPOM_NCHi_size ; j++){
-	    delete NPOM_NCH[i][j];
-	}
-    }
-
-    for (int i=0 ; i<NPOMSH_size ; i++){
-	for (int j=0 ; j<NPOMSHk_size ; j++){
-	    for (int k=0 ; k<NPOMSHki_size ; k++){
-		delete NPOMSH[i][j][k];
-		delete NPOMSH_nf[i][j][k];
-		delete NPOMSH_nb[i][j][k];
-	    }
-	}
-    }
-	
-
-}
 
 #endif//NBNF
 

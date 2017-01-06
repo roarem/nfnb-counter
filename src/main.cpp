@@ -3,8 +3,6 @@
 
 int main(int argc, char* argv[]) 
 {
-    //std::cout << argv[0] << "  " << argv[1] << std::endl;
-    
     if (argc<2)
     {
 	std::cout << "Need input, yo" << std::endl;
@@ -52,7 +50,7 @@ int main(int argc, char* argv[])
     }
     else if (strcmp(argv[1],"alt")==0)
     {
-	std::string datapath = "/home/roar/master/200k/";
+	std::string datapath = "/home/roar//DISKS/1/13000_attempts/900/200k/";
     	const char* nbnfout = "900_200k.root";
     	const char* bcorrout= "900_200k_bcorr.csv";
     	double number_of_events = 200000.0;
