@@ -370,7 +370,6 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG,int ICHJ)
 void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
 {
     int rap_abs = (int)std::abs(rap);
-    //std::cout << rap_abs << std::endl;
     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
     {
 	if (rap_abs < counted_sin_size)
@@ -383,7 +382,7 @@ void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG,int ICHJ)
 	}
 
     }
-    if (IDIAG==11)
+    else if (IDIAG==11)
     {
 	if (rap_abs < counted_dou_size)
 	{
