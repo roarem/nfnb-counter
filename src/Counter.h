@@ -32,7 +32,7 @@ class Count
 
         #if NBNF
         void InitializeNBNF();
-        void Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG);
+        void Sin_Dou(int nbnf_index,float psrap,int IDIAG);
         void Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG);
         void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T);
         void Filler(int npoms, int npomh);
@@ -51,24 +51,33 @@ class Count
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 	
         int nch = 0;
-	    std::vector<int> nf_nb		= std::vector<int>(10,0);
-	    std::vector<int> nf_nb_sin	= std::vector<int>(16,0); 
-        std::vector<int> counted_sin	= std::vector<int>(8,0); 
-        std::vector<int> nf_nb_dou  	= std::vector<int>(16,0); 
-        std::vector<int> counted_dou	= std::vector<int>(8,0); 
+	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
+	    std::vector<int> nf_nb_sin1	    = std::vector<int>(100,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(100,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(100,0); 
+        std::vector<int> nf_nb_dou  	= std::vector<int>(100,0); 
+        //std::vector<int> counted_sin1	= std::vector<int>(80,0); 
+        //std::vector<int> counted_sin6	= std::vector<int>(80,0); 
+        //std::vector<int> counted_sin10	= std::vector<int>(80,0); 
+        int counted_sin1	= 0; 
+        int counted_sin6	= 0; 
+        int counted_sin10	= 0; 
+        int counted_dou	    = 0; 
 
-	    int folders_size     = (int)folders.size();
-	    int prefix_size      = (int)prefix.size();
-	    int count_this_size  = (int)count_this.size();
-	    int counted_sin_size = (int)counted_sin.size();
-	    int counted_dou_size = (int)counted_dou.size();
-	    int NBNFSIN_size     = 0;
-	    int NBNFDOU_size     = 0;
-	    int NPOM_NCH_size    = 0;
-	    int NPOM_NCHi_size   = 0;
-	    int NPOMSH_size	     = 0;
-	    int NPOMSHk_size     = 0;
-	    int NPOMSHki_size    = 0;
+	    int folders_size        = (int)folders.size();
+	    int prefix_size         = (int)prefix.size();
+	    int count_this_size     = (int)count_this.size();
+	    int counted_sin_size1   = (int)nf_nb_sin1.size();
+	    int counted_sin_size6   = (int)nf_nb_sin6.size();
+	    int counted_sin_size10  = (int)nf_nb_sin10.size();
+	    int counted_dou_size    = (int)nf_nb_dou.size();
+	    int NBNFSIN_size        = 0;
+	    int NBNFDOU_size        = 0;
+	    int NPOM_NCH_size       = 0;
+	    int NPOM_NCHi_size      = 0;
+	    int NPOMSH_size	        = 0;
+	    int NPOMSHk_size        = 0;
+	    int NPOMSHki_size       = 0;
 
 
         TH1F* N_CH;
@@ -77,9 +86,9 @@ class Count
         std::vector<TH1F*> NFSIN;
         std::vector<TH1F*> NBSIN;
 
-        std::vector<TH1F*> NBNFDOU;
-        std::vector<TH1F*> NFDOU;
-        std::vector<TH1F*> NBDOU;
+        TH1F* NBNFDOU;
+        TH1F* NFDOU;
+        TH1F* NBDOU;
 
         std::vector<std::vector<TH1F*>> NPOM_NCH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
