@@ -51,24 +51,24 @@ class Count
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 	
         int nch = 0;
-	std::vector<int> nf_nb		= std::vector<int>(10,0);
-	std::vector<int> nf_nb_sin	= std::vector<int>(16,0); 
+	    std::vector<int> nf_nb		= std::vector<int>(10,0);
+	    std::vector<int> nf_nb_sin	= std::vector<int>(16,0); 
         std::vector<int> counted_sin	= std::vector<int>(8,0); 
         std::vector<int> nf_nb_dou  	= std::vector<int>(16,0); 
         std::vector<int> counted_dou	= std::vector<int>(8,0); 
 
-	int folders_size     = (int)folders.size();
-	int prefix_size      = (int)prefix.size();
-	int count_this_size  = (int)count_this.size();
-	int counted_sin_size = (int)counted_sin.size();
-	int counted_dou_size = (int)counted_dou.size();
-	int NBNFSIN_size     = 0;
-	int NBNFDOU_size     = 0;
-	int NPOM_NCH_size    = 0;
-	int NPOM_NCHi_size   = 0;
-	int NPOMSH_size	     = 0;
-	int NPOMSHk_size     = 0;
-	int NPOMSHki_size    = 0;
+	    int folders_size     = (int)folders.size();
+	    int prefix_size      = (int)prefix.size();
+	    int count_this_size  = (int)count_this.size();
+	    int counted_sin_size = (int)counted_sin.size();
+	    int counted_dou_size = (int)counted_dou.size();
+	    int NBNFSIN_size     = 0;
+	    int NBNFDOU_size     = 0;
+	    int NPOM_NCH_size    = 0;
+	    int NPOM_NCHi_size   = 0;
+	    int NPOMSH_size	     = 0;
+	    int NPOMSHk_size     = 0;
+	    int NPOMSHki_size    = 0;
 
 
         TH1F* N_CH;
@@ -90,7 +90,7 @@ class Count
         #endif//NBNF
 
         #if bcorr
-	void PhiCheck(double pxi, double pyi, double eta_abs, int FB);
+	    void PhiCheck(double pxi, double pyi, double eta_abs, int FB);
         void BcorrCheck(int EVENTNR, double eta);
         void Bcorrgap();
 
@@ -105,16 +105,16 @@ class Count
         std::vector<std::vector<double>> bne =
             std::vector<std::vector<double>>(9,std::vector<double>(2,0));
 
-	int eta_gap_index_size = 6;
-	int phi_count_size     = 8;
+	    int eta_gap_index_size = 6;
+	    int phi_count_size     = 8;
 
-	std::vector<std::vector<std::vector<double>>> phieta_temp =
-	    std::vector<std::vector<std::vector<double>>>(2,
+	    std::vector<std::vector<std::vector<double>>> phieta_temp =
+	        std::vector<std::vector<std::vector<double>>>(2,
 		    std::vector<std::vector<double>>(eta_gap_index_size,
 			std::vector<double>(phi_count_size,0)));
 
-	std::vector<std::vector<double>> phi_eta_bcorr = 
-	    std::vector<std::vector<double>>(8,std::vector<double>(6,0));
+	    std::vector<std::vector<double>> phi_eta_bcorr = 
+	        std::vector<std::vector<double>>(8,std::vector<double>(6,0));
 
         #endif//bcorr
 };

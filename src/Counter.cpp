@@ -215,7 +215,7 @@ void Count::ReadAndCount()
 
 		if(ICHJ!=0)
 		{
-		    Sin_Dou(nbnf_index,rap,IDIAG);
+		    Sin_Dou(nbnf_index,psrap_abs,IDIAG);
                     Non_sin_diff(nbnf_index,psrap_abs,IDIAG);
                     eta_pt_cut(nbnf_index,psrap_abs,p_T);
 		    PhiCheck(PXJ,PYJ,psrap_abs,nbnf_index);
@@ -232,11 +232,11 @@ void Count::ReadAndCount()
                 if (psrap_abs < 1 and p_T > 0.05) 
                 {
                     if (ICHJ != 0)
-		    {
+		            {
                         bcorr_count = 1;
-			if (p_T > 0.3 and p_T < 1.5)
-                    	    BcorrCheck(EVENTNR,psrap);
-		    }
+			            if (p_T > 0.3 and p_T < 1.5)
+                            BcorrCheck(EVENTNR,psrap);
+		            }
                 }
                 #endif//bcorr
             }
@@ -409,18 +409,18 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG)
     nch += 1;
 }
 
-void Count::Sin_Dou(int nbnf_index,float rap,int IDIAG)
+void Count::Sin_Dou(int nbnf_index,float psrap_abs,int IDIAG)
 {
     int rap_abs = (int)std::abs(rap);
     if (IDIAG==1 or IDIAG==6 or IDIAG==10)
     {
 	if (rap_abs < counted_sin_size)
 	{
-	    for(int i=rap_abs ; i<counted_sin_size ; i++)
-	    {
+	    //for(int i=rap_abs ; i<counted_sin_size ; i++)
+	    //{
 	        nf_nb_sin[2*i+nbnf_index] += 1;
 	        counted_sin[i] = 1;
-	    }
+	    //}
 	}
 
     }

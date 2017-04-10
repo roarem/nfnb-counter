@@ -37,5 +37,5 @@ def Nbnf_corr():
 
 if __name__=='__main__':
     #Nbnf_corr()
-    #Base()
+    Base()
     Bcorr()
