@@ -12,7 +12,7 @@
 #include "TTree.h"
 
 #define NBNF 1 
-  #define bcorr 1
+  #define bcorr 0
 #define PI 3.14159265358979323846264338327950288
 
 class Count 
@@ -38,8 +38,8 @@ class Count
         void Filler(int npoms, int npomh);
         void Writer();
 
-        float NBins = 600;
-        float start = -0.5;
+        float NBins = 80+1;
+        float start = -0.25;
         float stop  = NBins + start;
 
 
@@ -51,11 +51,12 @@ class Count
         std::vector<int> count_this  = std::vector<int>(prefix.size(),0);
 	
         int nch = 0;
+        int psrap_res = 4;
 	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
-	    std::vector<int> nf_nb_sin1	    = std::vector<int>(100,0); 
-	    std::vector<int> nf_nb_sin6	    = std::vector<int>(100,0); 
-	    std::vector<int> nf_nb_sin10    = std::vector<int>(100,0); 
-        std::vector<int> nf_nb_dou  	= std::vector<int>(100,0); 
+	    std::vector<int> nf_nb_sin1	    = std::vector<int>(20*psrap_res+1,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(20*psrap_res+1,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(20*psrap_res+1,0); 
+        std::vector<int> nf_nb_dou  	= std::vector<int>(20*psrap_res+1,0); 
         //std::vector<int> counted_sin1	= std::vector<int>(80,0); 
         //std::vector<int> counted_sin6	= std::vector<int>(80,0); 
         //std::vector<int> counted_sin10	= std::vector<int>(80,0); 

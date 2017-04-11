@@ -210,9 +210,9 @@ void Count::ReadAndCount()
 		if(ICHJ!=0)
 		{
 		    Sin_Dou(nbnf_index,psrap,IDIAG);
-            Non_sin_diff(nbnf_index,psrap_abs,IDIAG);
-            eta_pt_cut(nbnf_index,psrap_abs,p_T);
-		    PhiCheck(PXJ,PYJ,psrap_abs,nbnf_index);
+            //Non_sin_diff(nbnf_index,psrap_abs,IDIAG);
+            //eta_pt_cut(nbnf_index,psrap_abs,p_T);
+		    //PhiCheck(PXJ,PYJ,psrap_abs,nbnf_index);
 		}
 
         if (ICHJ != 0)
@@ -407,15 +407,15 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG)
 
 void Count::Sin_Dou(int nbnf_index,float psrap,int IDIAG)
 {
-    int psrap_limit     = 10;
-    float psrap_shift   = psrap*10;
-    float psrap_count   = -50;
+    int psrap_limit         = 10;
+    float psrap_res_local   = 1./psrap_res;
+    float psrap_count = -psrap_limit;
 
     if (psrap > -psrap_limit and psrap < psrap_limit)
     {
         for (int i = 0 ; i<counted_sin_size1 ; i++)
         {
-            if (psrap_shift > psrap_count and psrap_shift < psrap_count+1)
+            if (psrap > psrap_count and psrap < psrap_count+psrap_res_local)
             {
                 if (IDIAG==1)
                 {
@@ -439,7 +439,7 @@ void Count::Sin_Dou(int nbnf_index,float psrap,int IDIAG)
                 }
                 break;
             }
-            psrap_count += 1;
+            psrap_count += psrap_res_local;
         }
     }
 }
@@ -458,7 +458,6 @@ void Count::Filler(int npoms,int npomh)
     {
         if (counted_sin1)
         {
-            if(nf_nb_sin1[i+diff_size]){std::cout << nf_nb_sin1[i+diff_size] << std::endl;}
             NBNFSIN[0]->Fill(nf_nb_sin1[i],nf_nb_sin1[i+diff_size]);
             NFSIN[0]->Fill(nf_nb_sin1[i]);
             NBSIN[0]->Fill(nf_nb_sin1[i+diff_size]);
