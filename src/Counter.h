@@ -38,9 +38,12 @@ class Count
         void Filler(int npoms, int npomh);
         void Writer();
 
-        float NBins = 80+1;
-        float start = -0.25;
-        float stop  = NBins + start;
+        float NBins_sindou = 80+1;
+        float start_sindou = -10;
+        float stop_sindou  = 10;
+        float NBins = 600;
+        float start = -0.5;
+        float stop  = NBins - start;
 
 
         TFile *output;
@@ -53,17 +56,19 @@ class Count
         int nch = 0;
         int psrap_res = 4;
 	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
-	    std::vector<int> nf_nb_sin1	    = std::vector<int>(20*psrap_res+1,0); 
-	    std::vector<int> nf_nb_sin6	    = std::vector<int>(20*psrap_res+1,0); 
-	    std::vector<int> nf_nb_sin10    = std::vector<int>(20*psrap_res+1,0); 
-        std::vector<int> nf_nb_dou  	= std::vector<int>(20*psrap_res+1,0); 
-        //std::vector<int> counted_sin1	= std::vector<int>(80,0); 
-        //std::vector<int> counted_sin6	= std::vector<int>(80,0); 
-        //std::vector<int> counted_sin10	= std::vector<int>(80,0); 
+        std::vector<int> nf_nb_sin1	    = std::vector<int>(2,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(2,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(2,0); 
+        std::vector<int> nf_nb_dou11    = std::vector<int>(2,0); 
+        std::vector<int> nf_nb_dou21  	= std::vector<int>(2,0); 
+        std::vector<int> nf_nb_dou31  	= std::vector<int>(2,0); 
+
         int counted_sin1	= 0; 
         int counted_sin6	= 0; 
         int counted_sin10	= 0; 
-        int counted_dou	    = 0; 
+        int counted_dou11   = 0; 
+        int counted_dou21   = 0; 
+        int counted_dou31   = 0; 
 
 	    int folders_size        = (int)folders.size();
 	    int prefix_size         = (int)prefix.size();
@@ -71,7 +76,9 @@ class Count
 	    int counted_sin_size1   = (int)nf_nb_sin1.size();
 	    int counted_sin_size6   = (int)nf_nb_sin6.size();
 	    int counted_sin_size10  = (int)nf_nb_sin10.size();
-	    int counted_dou_size    = (int)nf_nb_dou.size();
+	    int counted_dou_size11  = (int)nf_nb_dou11.size();
+	    int counted_dou_size21  = (int)nf_nb_dou21.size();
+	    int counted_dou_size31  = (int)nf_nb_dou31.size();
 	    int NBNFSIN_size        = 0;
 	    int NBNFDOU_size        = 0;
 	    int NPOM_NCH_size       = 0;
@@ -85,11 +92,11 @@ class Count
 
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> NFSIN;
-        std::vector<TH1F*> NBSIN;
+        //std::vector<TH1F*> NBSIN;
 
-        TH1F* NBNFDOU;
-        TH1F* NFDOU;
-        TH1F* NBDOU;
+        std::vector<TH1F*> NBNFDOU;
+        std::vector<TH1F*> NFDOU;
+        //std::vector<TH1F*> NBDOU;
 
         std::vector<std::vector<TH1F*>> NPOM_NCH;
         std::vector<std::vector<std::vector<TH1F*>>> NPOMSH;
