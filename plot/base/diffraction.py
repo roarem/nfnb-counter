@@ -9,64 +9,75 @@ import matplotlib.ticker as ticker
 import numpy as np
 import ROOT
 
+FILEPATH    ='/home/roar/master/qgsm_analysis_tool/ana/build/' 
+F_NAME      = '13000_4M.root'
+
 class histogram:
-    def __init__(self,f,th1f,limit,nb,dia):
-        self.limit  = limit
-        self.nb     = nb
-        self.th1f   = th1f 
+    def __init__(self,f,dia):
+
+        self.th1f   = f.FindObjectAny(dia[0]) 
+        self.limit  = [self.th1f.GetXaxis().GetXmin(),self.th1f.GetXaxis().GetXmax()]
+        self.nb     = self.th1f.GetNbinsX()
         self.f      = f 
         self.dia    = dia
 
         self.adding()
 
     def adding(self):
-        for d in self.dia:
+        for d in self.dia[1:]:
+            print(d)
             self.th1f.Add(self.f.FindObjectAny(d))
             
     def draw(self,label=''):
         NF      = np.asarray([self.th1f.GetBinContent(i) for i in range(1,self.nb)])
-        NF      = np.trim_zeros(NF,trim='b')
+        #NF      = np.trim_zeros(NF,trim='b')
         NFx     = np.linspace(self.limit[0],self.limit[1],len(NF))
         fig,ax  = plt.subplots()
 
         ax.plot(NFx,NF,linestyle='',marker='o',label=label)
+        ax.legend()
+
+    def close(self):
+        self.f.Close()
 
             
 if __name__=='__main__':
-    filepath    = '/home/roar/master/qgsm_analysis_tool/ana/build/'
-    f           = ROOT.TFile(filepath+'13000_4M.root')
-    nf_limit    = [-10,10]
-    nf_nb       = 81
-    dou_dia     = ['DOU_NF_01','DOU_NF_02','DOU_NF_03']
-    dou_th1f    = ROOT.TH1F("dou","DOU",nf_nb,nf_limit[0],nf_limit[1])
-    dou         = histogram(f,dou_th1f,nf_limit,nf_nb,dou_dia)
+
+    f           = ROOT.TFile(FILEPATH+F_NAME)
+    dou_dia     = ['DOU_NF_01']#,'DOU_NF_02','DOU_NF_03']
+    dou         = histogram(f,dou_dia)
     dou.draw(label='dou')
-    #plt.show()
+    dou.close()
 
-    f.Close()
-    f           = ROOT.TFile(filepath+'13000_4M.root')
-    nf_alldia   = ['DOU_NF_01','DOU_NF_02','DOU_NF_03','SIN_NF_01','SIN_NF_02','SIN_NF_03']
-    nf_allth1f  = ROOT.TH1F("all","ALL",nf_nb,nf_limit[0],nf_limit[1])
-    nf_all      = histogram(f,nf_allth1f,nf_limit,nf_nb,nf_alldia)
-    nf_all.draw(label='all')
+    #f           = ROOT.TFile(FILEPATH+F_NAME)
+    #nf_alldia   = ['DOU_NF_01','DOU_NF_02','DOU_NF_03','SIN_NF_01','SIN_NF_02','SIN_NF_03']
+    #nf_all      = histogram(f,nf_alldia)
+    #nf_all.draw(label='all')
+    #nf_all.close()
     
-    f.Close()
-    f           = ROOT.TFile(filepath+'13000_4M.root')
-    
-    sin_dia     = ['SIN_NF_01','SIN_NF_02','SIN_NF_03']
-    sin_th1f    = ROOT.TH1F("sin","SIN",nf_nb,nf_limit[0],nf_limit[1])
-    sin         = histogram(f,sin_th1f,nf_limit,nf_nb,sin_dia)
-    sin.draw(label='sin')
+    #f           = ROOT.TFile(FILEPATH+F_NAME)
+    #sin_dia     = ['SIN_NF_01','SIN_NF_02','SIN_NF_03']
+    #sin         = histogram(f,sin_dia)
+    #sin.draw(label='sin')
+    #sin.close()
 
-    f.Close()
-    f           = ROOT.TFile(filepath+'13000_4M.root')
+    #f               = ROOT.TFile(FILEPATH+F_NAME)
+    #nbnf_alldia     = ['DOU_NBNF_01','DOU_NBNF_02','DOU_NBNF_03',\
+    #                   'SIN_NBNF_01','SIN_NBNF_02','SIN_NBNF_03']
+    #nbnf_all        = histogram(f,nbnf_alldia)
+    #nbnf_all.draw(label='nbnfall')
+    #nbnf_all.close()
 
-    nbnf_limit      = [-0.5,600.5]
-    nbnf_nb         = 600
-    nbnf_alldia     = ['DOU_NBNF_01','DOU_NBNF_02','DOU_NBNF_03',\
-                       'SIN_NBNF_01','SIN_NBNF_02','SIN_NBNF_03']
-    nbnf_allth1f    = ROOT.TH1F("nbnfall","NBNFALL",nbnf_nb,nbnf_limit[0],nbnf_limit[1])
-    nbnf_all        = histogram(f,nbnf_allth1f,nbnf_limit,nbnf_nb,nbnf_alldia)
-    nbnf_all.draw(label='nbnfall')
+    #f               = ROOT.TFile(FILEPATH+F_NAME)
+    #nbnf_alldia     = ['DOU_NBNF_01','DOU_NBNF_02','DOU_NBNF_03']
+    #nbnf_all        = histogram(f,nbnf_alldia)
+    #nbnf_all.draw(label='nbnfdou')
+    #nbnf_all.close()
+
+    #f               = ROOT.TFile(FILEPATH+F_NAME)
+    #nbnf_alldia     = ['SIN_NBNF_01','SIN_NBNF_02','SIN_NBNF_03']
+    #nbnf_all        = histogram(f,nbnf_alldia)
+    #nbnf_all.draw(label='nbnfsin')
+    #nbnf_all.close()
     
     plt.show()
