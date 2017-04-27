@@ -9,39 +9,64 @@ import matplotlib.ticker as ticker
 import numpy as np
 import ROOT
 
-def diffraction(filepath):
+class histogram:
+    def __init__(self,f,th1f,limit,nb,dia):
+        self.limit  = limit
+        self.nb     = nb
+        self.th1f   = th1f 
+        self.f      = f 
+        self.dia    = dia
 
-    #f09  = ROOT.TFile(filepath+'900_4M.root')
-    #f13  = ROOT.TFile(filepath+'13000_4M.root')
-    files = [ROOT.TFile(filepath+'900_4M.root'),ROOT.TFile(filepath+'13000_4M.root')]
-    objects = ['DOU_NF_0{}','SIN_NF_0{}','DOU_NBNF_0{}','SIN_NBNF_0{}']
+        self.adding()
 
-    fi = []; NF = []; NFx = []
-    figs = []; axs = []; 
-    for k,f in enumerate(files):
-        for i,obj in enumerate(objects):
-
-            fi.append(f.FindObjectAny(obj.format(1)))
-            i = i if k<1 else i+len(objects)
-
-            for j in range(2,len(objects)):
-                fi[i].Add(f.FindObjectAny(obj.format(j)))
+    def adding(self):
+        for d in self.dia:
+            self.th1f.Add(self.f.FindObjectAny(d))
             
-            Nbins = fi[i].GetNbinsX()
+    def draw(self,label=''):
+        NF      = np.asarray([self.th1f.GetBinContent(i) for i in range(1,self.nb)])
+        NF      = np.trim_zeros(NF,trim='b')
+        NFx     = np.linspace(self.limit[0],self.limit[1],len(NF))
+        fig,ax  = plt.subplots()
 
-            NF.append(np.asarray([fi[i].GetBinContent(j) for j in range(1,Nbins)]))
+        ax.plot(NFx,NF,linestyle='',marker='o',label=label)
 
-            NF[i] = np.trim_zeros(NF[i],trim='b')
-
-            limit = [-10,10] if i < 2 else [0,100]
-            NFx.append(np.linspace(limit[0],limit[1],len(NF[i])))
-
-            fig, ax = plt.subplots()
-            axs.append(ax)
-            axs[i].plot(NFx[i],NF[i],linestyle='',marker='o',label='{}'.format(i))
-            axs[i].legend()
-
-    plt.show()
-
+            
 if __name__=='__main__':
-    diffraction('/home/roar/master/qgsm_analysis_tool/ana/build/')
+    filepath    = '/home/roar/master/qgsm_analysis_tool/ana/build/'
+    f           = ROOT.TFile(filepath+'13000_4M.root')
+    nf_limit    = [-10,10]
+    nf_nb       = 81
+    dou_dia     = ['DOU_NF_01','DOU_NF_02','DOU_NF_03']
+    dou_th1f    = ROOT.TH1F("dou","DOU",nf_nb,nf_limit[0],nf_limit[1])
+    dou         = histogram(f,dou_th1f,nf_limit,nf_nb,dou_dia)
+    dou.draw(label='dou')
+    #plt.show()
+
+    f.Close()
+    f           = ROOT.TFile(filepath+'13000_4M.root')
+    nf_alldia   = ['DOU_NF_01','DOU_NF_02','DOU_NF_03','SIN_NF_01','SIN_NF_02','SIN_NF_03']
+    nf_allth1f  = ROOT.TH1F("all","ALL",nf_nb,nf_limit[0],nf_limit[1])
+    nf_all      = histogram(f,nf_allth1f,nf_limit,nf_nb,nf_alldia)
+    nf_all.draw(label='all')
+    
+    f.Close()
+    f           = ROOT.TFile(filepath+'13000_4M.root')
+    
+    sin_dia     = ['SIN_NF_01','SIN_NF_02','SIN_NF_03']
+    sin_th1f    = ROOT.TH1F("sin","SIN",nf_nb,nf_limit[0],nf_limit[1])
+    sin         = histogram(f,sin_th1f,nf_limit,nf_nb,sin_dia)
+    sin.draw(label='sin')
+
+    f.Close()
+    f           = ROOT.TFile(filepath+'13000_4M.root')
+
+    nbnf_limit      = [-0.5,600.5]
+    nbnf_nb         = 600
+    nbnf_alldia     = ['DOU_NBNF_01','DOU_NBNF_02','DOU_NBNF_03',\
+                       'SIN_NBNF_01','SIN_NBNF_02','SIN_NBNF_03']
+    nbnf_allth1f    = ROOT.TH1F("nbnfall","NBNFALL",nbnf_nb,nbnf_limit[0],nbnf_limit[1])
+    nbnf_all        = histogram(f,nbnf_allth1f,nbnf_limit,nbnf_nb,nbnf_alldia)
+    nbnf_all.draw(label='nbnfall')
+    
+    plt.show()
