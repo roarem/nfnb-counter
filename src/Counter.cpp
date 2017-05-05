@@ -28,35 +28,50 @@ void Count::InitializeNBNF()
     
     std::string HistTitleSin = "single diffraction";
     std::string HistTitleDou = "double diffraction";
-    for (int i=1 ; i<4 ; i++)
+    for (int i=0 ; i<3 ; i++)
     {
-        char number_string [4];
-    	sprintf(number_string,"%02d",i);
-    	number_string[3] = '\0';
-    	std::string temp0  = "SIN_NBNF_"+std::string(number_string);
-    	std::string temp1  = "SIN_NF_"+std::string(number_string);
-    	//std::string temp2  = "SIN_NB_"+std::string(number_string);
-        NBNFSIN.push_back(new TH1F(temp0.c_str(),HistTitleSin.c_str(),NBins,start,stop));
-        NFSIN.push_back(new TH1F(temp1.c_str(),HistTitleSin.c_str(),NBins_sindou,start_sindou,stop_sindou));
-        //NBSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),NBins,start,stop));
+        for (int j=0 ; j<3 ; j++)
+        {
+            char number_string [4];
+    	    sprintf(number_string,"%d%d",i,j);
+    	    number_string[3] = '\0';
 
-        // Setting errorbar calculations
-        NBNFSIN[i-1]->Sumw2(true);
-        NFSIN[i-1]->Sumw2(true);
-        //NBSIN[i-1]->Sumw2(true);
+    	    std::string temp0  = "SIN_NBNF_"+std::string(number_string);
+    	    std::string temp1  = "SIN_NBNFNF_"+std::string(number_string);
+    	    std::string temp2  = "SIN_NF_"+std::string(number_string);
+    	    //std::string temp2  = "SIN_NB_"+std::string(number_string);
+            NBNFSIN.push_back(new TH1F(temp0.c_str(),HistTitleSin.c_str(),
+                                  NBins[3],start[3],stop[3]));
+            SINNF.push_back(new TH1F(temp1.c_str(),HistTitleSin.c_str(),
+                                  NBins[3],start[3],stop[3]));
+            NFSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),
+                                NBins[i],start[i],stop[i]));
+            //NBSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),NBins,start,stop));
 
-        std::string temp00   = "DOU_NBNF_"+std::string(number_string);
-        std::string temp01   = "DOU_NF_"+std::string(number_string);
-        //std::string temp02   = "DOU_NB_"+std::string(number_string);
-        NBNFDOU.push_back(new TH1F(temp00.c_str(),HistTitleDou.c_str(),NBins,start,stop));
-        NFDOU  .push_back(new TH1F(temp01.c_str(),HistTitleDou.c_str(),NBins_sindou,start_sindou,stop_sindou));
-        //NBDOU  .push_back(new TH1F(temp02.c_str(),HistTitleDou.c_str(),NBins,start,stop));
-        
-        NBNFDOU[i-1]->Sumw2(true);
-        NFDOU  [i-1]->Sumw2(true);
-        //NBDOU  [i-1]->Sumw2(true);
+            // Setting errorbar calculations
+            //NBSIN[i-1]->Sumw2(true);
+
+            std::string temp00   = "DOU_NBNF_"+std::string(number_string);
+            std::string temp01   = "DOU_NBNFNF_"+std::string(number_string);
+            std::string temp02   = "DOU_NF_"+std::string(number_string);
+            //std::string temp02   = "DOU_NB_"+std::string(number_string);
+            NBNFDOU.push_back(new TH1F(temp00.c_str(),HistTitleDou.c_str(),
+                                  NBins[3],start[3],stop[3]));
+            DOUNF.push_back(new TH1F(temp01.c_str(),HistTitleDou.c_str(),
+                                  NBins[3],start[3],stop[3]));
+            NFDOU  .push_back(new TH1F(temp02.c_str(),HistTitleDou.c_str(),
+                                  NBins[i],start[i],stop[i]));
+            //NBDOU  .push_back(new TH1F(temp02.c_str(),HistTitleDou.c_str(),NBins,start,stop));
+            
+            NBNFSIN [NBNFSIN.size() -1] ->Sumw2(true);
+            SINNF   [SINNF.size() -1]   ->Sumw2(true);
+            NFSIN   [NFSIN  .size() -1] ->Sumw2(true);
+            NBNFDOU [NBNFDOU.size() -1] ->Sumw2(true);
+            DOUNF   [DOUNF.size() -1]   ->Sumw2(true);
+            NFDOU   [NFDOU  .size() -1] ->Sumw2(true);
+            //NBDOU  [i-1]->Sumw2(true);
+        }
     }
-
 
     for (int i=0 ; i<prefix_size ; i++)
     {
@@ -81,9 +96,9 @@ void Count::InitializeNBNF()
                 std::string temp4 = prefix[i]+"_NPOM_NB"+std::string(number_string);
                 std::string temp5 = prefix[i]+"_npom_nb"+std::string(number_string);
 
-                NPOMSH[i][j].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
-                NPOMSH_nf[i][j].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins,start,stop));
-                NPOMSH_nb[i][j].push_back(new TH1F(temp4.c_str(),temp5.c_str(),NBins,start,stop));
+                NPOMSH[i][j].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins[3],start[3],stop[3]));
+                NPOMSH_nf[i][j].push_back(new TH1F(temp2.c_str(),temp3.c_str(),NBins[3],start[3],stop[3]));
+                NPOMSH_nb[i][j].push_back(new TH1F(temp4.c_str(),temp5.c_str(),NBins[3],start[3],stop[3]));
 
                 // Setting errorbar calculations
                 NPOMSH[i][j][k]->Sumw2(true);
@@ -93,7 +108,7 @@ void Count::InitializeNBNF()
         }
     }
 
-    N_CH = new TH1F("nch","NCH",NBins,start,stop);
+    N_CH = new TH1F("nch","NCH",NBins[3],start[3],stop[3]);
     for (int i=0 ; i<25 ; i++)
     {
         NPOM_NCH.push_back(std::vector<TH1F*>());
@@ -104,7 +119,7 @@ void Count::InitializeNBNF()
             number_string[6] = '\0';
             std::string temp  = "multi_NPOM"+std::string(number_string);
             std::string temp1 = "multi_npom"+std::string(number_string);
-            NPOM_NCH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins,start,stop));
+            NPOM_NCH[i].push_back(new TH1F(temp.c_str(),temp1.c_str(),NBins[0],start[0],stop[0]));
             NPOM_NCH[i][j]->Sumw2(true);
         }
     }
@@ -116,7 +131,6 @@ void Count::InitializeNBNF()
    NPOMSH_size	    = (int)NPOMSH.size();
    NPOMSHk_size	    = (int)NPOMSH[0].size();
    NPOMSHki_size    = (int)NPOMSH[0][0].size();
-
 }
 #endif//NBNF
 
@@ -175,6 +189,7 @@ void Count::ReadAndCount()
         if(EVENTNR%100==0)
             Progress(EVENTNR);
 
+        //if(EVENTNR%100==0){
         for (int i=0 ; i<PARTNR ; i++)
         {
             std::getline(finalprFile,finalprLine);
@@ -235,7 +250,7 @@ void Count::ReadAndCount()
                 #endif//bcorr
             }
         }
-
+        //}
         #if NBNF
         Filler(npoms,npomh);
         // Resets nf and nb counters
@@ -408,60 +423,54 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG)
 
 void Count::Sin_Dou(int nbnf_index,float psrap,int IDIAG)
 {
-    /*
-    int psrap_limit         = 10;
-    float psrap_res_local   = 1./psrap_res;
-    float psrap_count = -psrap_limit;
-    if (psrap > -psrap_limit and psrap < psrap_limit)
+    float abspsrap = std::abs(psrap);
+    int lim = 0;
+
+    if(abspsrap<10){
+        if(abspsrap<3){
+            if(abspsrap<2){lim = 3;}
+            else{lim = 2;}}
+        else{lim = 1;}}
+
+    for (int i=0 ; i<lim ; i++)
     {
-        for (int i = 0 ; i<counted_sin_size1 ; i++)
+        if (IDIAG==1)
         {
-            if (psrap >= psrap_count and psrap < psrap_count+psrap_res_local)
-            {
-            */
-                if (IDIAG==1)
-                {
-                    counted_sin1 = 1;
-                    nf_nb_sin1[nbnf_index] += 1;
-                    NFSIN[0]->Fill(psrap);
-                }
-                else if (IDIAG==6)
-                {
-                    counted_sin6 = 1;
-                    nf_nb_sin6[nbnf_index] += 1;
-                    NFSIN[1]->Fill(psrap);
-                }
-                else if (IDIAG==10)
-                {
-                    counted_sin10 = 1;
-                    nf_nb_sin10[nbnf_index] += 1;
-                    NFSIN[2]->Fill(psrap);
-                }
-                else if (IDIAG==11)
-                {
-                    counted_dou11 = 1;
-                    nf_nb_dou11[nbnf_index] += 1;
-                    NFDOU[0]->Fill(psrap);
-                }
-                else if (IDIAG==21)
-                {
-                    counted_dou21 = 1;
-                    nf_nb_dou21[nbnf_index] += 1;
-                    NFDOU[1]->Fill(psrap);
-                }
-                else if (IDIAG==31)
-                {
-                    counted_dou31 = 1;
-                    nf_nb_dou31[nbnf_index] += 1;
-                    NFDOU[2]->Fill(psrap);
-                }
-                /*
-                break;
-            }
-            psrap_count += psrap_res_local;
+            counted_sin1 = 1;
+            nf_nb_sin1[nbnf_index+2*i] += 1;
+            NFSIN[3*i]->Fill(psrap);
+        }
+        else if (IDIAG==6)
+        {
+            counted_sin6 = 1;
+            nf_nb_sin6[nbnf_index+2*i] += 1;
+            NFSIN[3*i+1]->Fill(psrap);
+        }
+        else if (IDIAG==10)
+        {
+            counted_sin10 = 1;
+            nf_nb_sin10[nbnf_index+2*i] += 1;
+            NFSIN[3*i+2]->Fill(psrap);
+        }
+        else if (IDIAG==11)
+        {
+            counted_dou11 = 1;
+            nf_nb_dou11[nbnf_index+2*i] += 1;
+            NFDOU[3*i]->Fill(psrap);
+        }
+        else if (IDIAG==21)
+        {
+            counted_dou21 = 1;
+            nf_nb_dou21[nbnf_index+2*i] += 1;
+            NFDOU[3*i+1]->Fill(psrap);
+        }
+        else if (IDIAG==31)
+        {
+            counted_dou31 = 1;
+            nf_nb_dou31[nbnf_index+2*i] += 1;
+            NFDOU[3*i+2]->Fill(psrap);
         }
     }
-                */
 }
 
 
@@ -473,24 +482,26 @@ void Count::Filler(int npoms,int npomh)
         N_CH->Fill(nch);
     }
     
-    //int diff_size = counted_sin_size1/2;
-    //for (int i=0 ; i<diff_size ; i++)
-    //{
+    for (int i=0 ; i<3 ; i++)
+    {
         if (counted_sin1)
         {
-            NBNFSIN[0]->Fill(nf_nb_sin1[0],nf_nb_sin1[1]);
+            NBNFSIN[3*i]->Fill(nf_nb_sin1[2*i],nf_nb_sin1[2*i+1]);
+            SINNF[3*i]->Fill(nf_nb_sin1[2*i+1]);
             //NFSIN[0]->Fill(nf_nb_sin1[i+diff_size]);
             //NBSIN[0]->Fill(nf_nb_sin1[i]);
         }
         if (counted_sin6)
         {
-            NBNFSIN[1]->Fill(nf_nb_sin6[0],nf_nb_sin6[1]);
+            NBNFSIN[3*i+1]->Fill(nf_nb_sin6[2*i],nf_nb_sin6[2*i+1]);
+            SINNF[3*i+1]->Fill(nf_nb_sin6[2*i+1]);
             //NFSIN[1]->Fill(nf_nb_sin6[i+diff_size]);
             //NBSIN[1]->Fill(nf_nb_sin6[i]);
         }
         if (counted_sin10)
         {
-            NBNFSIN[2]->Fill(nf_nb_sin10[0],nf_nb_sin10[1]);
+            NBNFSIN[3*i+2]->Fill(nf_nb_sin10[2*i],nf_nb_sin10[2*i+1]);
+            SINNF[3*i+2]->Fill(nf_nb_sin10[2*i+1]);
             //NFSIN[2]->Fill(nf_nb_sin10[i+diff_size]);
             //NBSIN[2]->Fill(nf_nb_sin10[i]);
         }
@@ -498,23 +509,26 @@ void Count::Filler(int npoms,int npomh)
         
         if (counted_dou11)
         {
-            NBNFDOU[0]->Fill(nf_nb_dou11[0],nf_nb_dou11[1]);
-            //NFDOU[0]->Fill(nf_nb_dou11[i+diff_size]);
+            NBNFDOU[3*i]->Fill(nf_nb_dou11[2*i],nf_nb_dou11[2*i+1]);
+            DOUNF[3*i]->Fill(nf_nb_dou11[2*i+1]);
+            //NFDOU[1]->Fill(nf_nb_dou11[i+diff_size]);
             //NBDOU[0]->Fill(nf_nb_dou11[i]);
         }
         if (counted_dou21)
         {
-            NBNFDOU[1]->Fill(nf_nb_dou21[0],nf_nb_dou21[1]);
+            NBNFDOU[3*i+1]->Fill(nf_nb_dou21[2*i],nf_nb_dou21[2*i+1]);
+            DOUNF[3*i+1]->Fill(nf_nb_dou21[2*i+1]);
             //NFDOU[1]->Fill(nf_nb_dou21[i+diff_size]);
             //NBDOU[1]->Fill(nf_nb_dou21[i]);
         }
         if (counted_dou31)
         {
-            NBNFDOU[2]->Fill(nf_nb_dou31[0],nf_nb_dou31[1]);
+            NBNFDOU[3*i+2]->Fill(nf_nb_dou31[2*i],nf_nb_dou31[2*i+1]);
+            DOUNF[3*i+2]->Fill(nf_nb_dou31[2*i+1]);
             //NFDOU[2]->Fill(nf_nb_dou31[i+diff_size]);
             //NBDOU[2]->Fill(nf_nb_dou31[i]);
         }
-    //}
+    }
     
     for (int i=0 ; i<count_this_size ; i++)
     {
@@ -540,16 +554,18 @@ void Count::Writer()
     output->cd(folders[5]);
     for(int i=0 ; i<NBNFSIN_size ; i++)
     {
-        NBNFSIN[i]->Write();
-        NFSIN  [i]->Write();
+        NBNFSIN [i]->Write();
+        SINNF   [i]->Write();
+        NFSIN   [i]->Write();
         //NBSIN  [i]->Write();
     }
 
     output->cd(folders[6]);
     for(int i=0 ; i<NBNFDOU_size ; i++)
     {
-        NBNFDOU[i]->Write();
-        NFDOU  [i]->Write();
+        NBNFDOU [i]->Write();
+        DOUNF   [i]->Write();
+        NFDOU   [i]->Write();
         //NBDOU  [i]->Write();
     }
 

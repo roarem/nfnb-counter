@@ -38,12 +38,13 @@ class Count
         void Filler(int npoms, int npomh);
         void Writer();
 
-        float NBins_sindou = 80+1;
-        float start_sindou = -10;
-        float stop_sindou  = 10;
-        float NBins = 600;
-        float start = -0.5;
-        float stop  = NBins - start;
+        std::vector<float> NBins {80+1, 24+1, 16+1, 200};
+        std::vector<float> start {-10,  -3,   -2,   0};
+        std::vector<float> stop  {10,   3,    2,    200};
+
+        //float NBins = 600;
+        //float start = -0.5;
+        //float stop  = NBins - start;
 
 
         TFile *output;
@@ -56,12 +57,12 @@ class Count
         int nch = 0;
         int psrap_res = 4;
 	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
-        std::vector<int> nf_nb_sin1	    = std::vector<int>(2,0); 
-	    std::vector<int> nf_nb_sin6	    = std::vector<int>(2,0); 
-	    std::vector<int> nf_nb_sin10    = std::vector<int>(2,0); 
-        std::vector<int> nf_nb_dou11    = std::vector<int>(2,0); 
-        std::vector<int> nf_nb_dou21  	= std::vector<int>(2,0); 
-        std::vector<int> nf_nb_dou31  	= std::vector<int>(2,0); 
+        std::vector<int> nf_nb_sin1	    = std::vector<int>(6,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(6,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(6,0); 
+        std::vector<int> nf_nb_dou11    = std::vector<int>(6,0); 
+        std::vector<int> nf_nb_dou21  	= std::vector<int>(6,0); 
+        std::vector<int> nf_nb_dou31  	= std::vector<int>(6,0); 
 
         int counted_sin1	= 0; 
         int counted_sin6	= 0; 
@@ -91,10 +92,12 @@ class Count
         TH1F* N_CH;
 
         std::vector<TH1F*> NBNFSIN;
+        std::vector<TH1F*> SINNF;
         std::vector<TH1F*> NFSIN;
         //std::vector<TH1F*> NBSIN;
 
         std::vector<TH1F*> NBNFDOU;
+        std::vector<TH1F*> DOUNF;
         std::vector<TH1F*> NFDOU;
         //std::vector<TH1F*> NBDOU;
 
