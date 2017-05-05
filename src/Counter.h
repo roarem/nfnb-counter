@@ -38,9 +38,13 @@ class Count
         void Filler(int npoms, int npomh);
         void Writer();
 
-        std::vector<float> NBins {80+1, 24+1, 16+1, 200};
-        std::vector<float> start {-10,  -3,   -2,   0};
-        std::vector<float> stop  {10,   3,    2,    200};
+
+        //std::vector<float> NBins {80+1, 64+1,48+1,32+1, 200};
+        //std::vector<float> start {-10,-8,-6,-4, 0};
+        //std::vector<float> stop  {10, 8, 6, 4,  200};
+        std::vector<float> NBins {200,32+1,48+1,64+1,80+1};
+        std::vector<float> start {0,-4,-6,-8,-10};
+        std::vector<float> stop  {200,4,6,8,10};
 
         //float NBins = 600;
         //float start = -0.5;
@@ -57,12 +61,12 @@ class Count
         int nch = 0;
         int psrap_res = 4;
 	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
-        std::vector<int> nf_nb_sin1	    = std::vector<int>(6,0); 
-	    std::vector<int> nf_nb_sin6	    = std::vector<int>(6,0); 
-	    std::vector<int> nf_nb_sin10    = std::vector<int>(6,0); 
-        std::vector<int> nf_nb_dou11    = std::vector<int>(6,0); 
-        std::vector<int> nf_nb_dou21  	= std::vector<int>(6,0); 
-        std::vector<int> nf_nb_dou31  	= std::vector<int>(6,0); 
+        std::vector<int> nf_nb_sin1	    = std::vector<int>(8,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(8,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(8,0); 
+        std::vector<int> nf_nb_dou11    = std::vector<int>(8,0); 
+        std::vector<int> nf_nb_dou21  	= std::vector<int>(8,0); 
+        std::vector<int> nf_nb_dou31  	= std::vector<int>(8,0); 
 
         int counted_sin1	= 0; 
         int counted_sin6	= 0; 

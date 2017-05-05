@@ -28,22 +28,21 @@ void Count::InitializeNBNF()
     
     std::string HistTitleSin = "single diffraction";
     std::string HistTitleDou = "double diffraction";
-    for (int i=0 ; i<3 ; i++)
+    for (int i=1 ; i<5 ; i++)
     {
-        for (int j=0 ; j<3 ; j++)
+        for (int j=0 ; j<4 ; j++)
         {
             char number_string [4];
-    	    sprintf(number_string,"%d%d",i,j);
+    	    sprintf(number_string,"%d%d",i-1,j);
     	    number_string[3] = '\0';
-
     	    std::string temp0  = "SIN_NBNF_"+std::string(number_string);
     	    std::string temp1  = "SIN_NBNFNF_"+std::string(number_string);
     	    std::string temp2  = "SIN_NF_"+std::string(number_string);
     	    //std::string temp2  = "SIN_NB_"+std::string(number_string);
             NBNFSIN.push_back(new TH1F(temp0.c_str(),HistTitleSin.c_str(),
-                                  NBins[3],start[3],stop[3]));
+                                  NBins[0],start[0],stop[0]));
             SINNF.push_back(new TH1F(temp1.c_str(),HistTitleSin.c_str(),
-                                  NBins[3],start[3],stop[3]));
+                                  NBins[0],start[0],stop[0]));
             NFSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),
                                 NBins[i],start[i],stop[i]));
             //NBSIN.push_back(new TH1F(temp2.c_str(),HistTitleSin.c_str(),NBins,start,stop));
@@ -56,9 +55,9 @@ void Count::InitializeNBNF()
             std::string temp02   = "DOU_NF_"+std::string(number_string);
             //std::string temp02   = "DOU_NB_"+std::string(number_string);
             NBNFDOU.push_back(new TH1F(temp00.c_str(),HistTitleDou.c_str(),
-                                  NBins[3],start[3],stop[3]));
+                                  NBins[0],start[0],stop[0]));
             DOUNF.push_back(new TH1F(temp01.c_str(),HistTitleDou.c_str(),
-                                  NBins[3],start[3],stop[3]));
+                                  NBins[0],start[0],stop[0]));
             NFDOU  .push_back(new TH1F(temp02.c_str(),HistTitleDou.c_str(),
                                   NBins[i],start[i],stop[i]));
             //NBDOU  .push_back(new TH1F(temp02.c_str(),HistTitleDou.c_str(),NBins,start,stop));
@@ -426,49 +425,56 @@ void Count::Sin_Dou(int nbnf_index,float psrap,int IDIAG)
     float abspsrap = std::abs(psrap);
     int lim = 0;
 
-    if(abspsrap<10){
-        if(abspsrap<3){
-            if(abspsrap<2){lim = 3;}
-            else{lim = 2;}}
-        else{lim = 1;}}
+    //if(abspsrap<10){
+    //    if(abspsrap<3){
+    //        if(abspsrap<2){lim = 3;}
+    //        else{lim = 2;}}
+    //    else{lim = 1;}}
+    for (int i=2 ; i<6 ; i++)
+    {
+        if(abspsrap<2*i)
+            lim=i-1;
+    }
+
 
     for (int i=0 ; i<lim ; i++)
     {
+        
         if (IDIAG==1)
         {
             counted_sin1 = 1;
             nf_nb_sin1[nbnf_index+2*i] += 1;
-            NFSIN[3*i]->Fill(psrap);
+            NFSIN[3*i+1]->Fill(psrap);
         }
         else if (IDIAG==6)
         {
             counted_sin6 = 1;
             nf_nb_sin6[nbnf_index+2*i] += 1;
-            NFSIN[3*i+1]->Fill(psrap);
+            NFSIN[3*i+2]->Fill(psrap);
         }
         else if (IDIAG==10)
         {
             counted_sin10 = 1;
             nf_nb_sin10[nbnf_index+2*i] += 1;
-            NFSIN[3*i+2]->Fill(psrap);
+            NFSIN[3*i+3]->Fill(psrap);
         }
         else if (IDIAG==11)
         {
             counted_dou11 = 1;
             nf_nb_dou11[nbnf_index+2*i] += 1;
-            NFDOU[3*i]->Fill(psrap);
+            NFDOU[3*i+1]->Fill(psrap);
         }
         else if (IDIAG==21)
         {
             counted_dou21 = 1;
             nf_nb_dou21[nbnf_index+2*i] += 1;
-            NFDOU[3*i+1]->Fill(psrap);
+            NFDOU[3*i+2]->Fill(psrap);
         }
         else if (IDIAG==31)
         {
             counted_dou31 = 1;
             nf_nb_dou31[nbnf_index+2*i] += 1;
-            NFDOU[3*i+2]->Fill(psrap);
+            NFDOU[3*i+3]->Fill(psrap);
         }
     }
 }
@@ -482,7 +488,7 @@ void Count::Filler(int npoms,int npomh)
         N_CH->Fill(nch);
     }
     
-    for (int i=0 ; i<3 ; i++)
+    for (int i=0 ; i<4 ; i++)
     {
         if (counted_sin1)
         {
