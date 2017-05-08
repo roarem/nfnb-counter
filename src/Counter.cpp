@@ -249,6 +249,13 @@ void Count::ReadAndCount()
                 #endif//bcorr
             }
         }
+        //if (nf_nb_sin1[7]==4)
+        //    std::cout << "Diagram 1, EVENTNR: " << EVENTNR <<std::endl;
+        //if (nf_nb_dou21[7]==4)
+        //    std::cout << "Diagram 21, EVENTNR: " << EVENTNR <<std::endl;
+        //if (nf_nb_dou31[7]==4)
+        //    std::cout << "Diagram 31, EVENTNR: " << EVENTNR <<std::endl;
+
         //}
         #if NBNF
         Filler(npoms,npomh);

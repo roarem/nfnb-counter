@@ -4,6 +4,7 @@ mpl.rcParams['legend.numpoints']=1
 mpl.rcParams['font.size'] = 27
 mpl.rcParams['font.weight']   = 'bold'
 mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
+mpl.rcParams['lines.linewidth'] = 5
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
@@ -54,7 +55,7 @@ class histogram:
                 print(d)
                 self.th1f.Add(self.f.FindObjectAny(d))
             
-    def draw(self):
+    def draw(self,fig,ax):
         labels          = ['{}'.format(DIA[l[:3]+l[-1]]) for l in self.dia]
         label           = '{} {}'.format('Diagrams ',', '.join(labels))
         title           = '{} with $\eta <$ {}'\
@@ -65,9 +66,9 @@ class histogram:
         self.limit[1]   = len(NF)-1 if self.NBNF=='NBNF' else self.limit[1] 
         NFx             = np.linspace(self.limit[0],self.limit[1],len(NF))
 
-        fig,ax  = plt.subplots()
+        #fig,ax  = plt.subplots()
 
-        ax.plot(NFx,NF,linestyle='-',marker='o',label=label)
+        ax.plot(NFx,NF,linestyle='-',markersize=10,marker='o',label=label)
         ax.set_title(title)
         ax.set_xlabel('$n_F$')
         ax.set_ylabel('$<n_B(n_F)>$') if self.NBNF=='NBNF' else ax.set_ylabel('$\eta$')
@@ -77,7 +78,7 @@ class histogram:
         'temp_plots/{}_eta{}_dia{}.pdf'.\
         format(self.NBNF,ETALIM[self.dia[0][-2]][-2:],DIA[self.dia[0][:3]+self.dia[0][-1]])\
                 .replace(" ","")
-        fig.savefig(filename)
+        #fig.savefig(filename)
 
     def close_file(self):
         self.f.Close()
@@ -85,11 +86,12 @@ class histogram:
             
 if __name__=='__main__':
 
-    SINL = [[0,1,2]]
-    DOUL = [[0,1,2]]
-    limits = [0,1,2,3]
+    SINL = [[0],[1],[2],[],[],[]]
+    DOUL = [[],[],[],[0],[1],[2]]
+    limits = [0,1,3]
     for NBNF in ['NBNF']:#,'NF']:
         for i in limits:
+            fig,ax = plt.subplots()
             for j,k in zip(SINL,DOUL):
                 f           = ROOT.TFile(FILEPATH+F_NAME)
                 lim         = i 
@@ -97,8 +99,9 @@ if __name__=='__main__':
                 DOU         = k#[0,1,2]
                 #NBNF        = 'NBNF'
                 hist        = histogram(f,lim,NBNF,SIN,DOU)
-                hist.draw()
+                hist.draw(fig,ax)
                 hist.close_file()
+            
 
     #f           = ROOT.TFile(FILEPATH+F_NAME)
     #lim         = 0 
@@ -108,4 +111,4 @@ if __name__=='__main__':
     #hist        = histogram(f,lim,NBNF,SIN,DOU)
     #hist.draw()
     #hist.close_file()
-    #plt.show()
+    plt.show()
