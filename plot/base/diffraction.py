@@ -1,18 +1,18 @@
 import matplotlib as mpl
-#mpl.rc('text',usetex=True)
-#mpl.rcParams['legend.numpoints']=1
-#mpl.rcParams['font.size'] = 27
-#mpl.rcParams['font.weight']   = 'bold'
-#mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
+mpl.rc('text',usetex=True)
+mpl.rcParams['legend.numpoints']=1
+mpl.rcParams['font.size'] = 27
+mpl.rcParams['font.weight']   = 'bold'
+mpl.rcParams['text.latex.preamble']=[r'\usepackage{bm} \boldmath']
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import ROOT
 
 FILEPATH    ='/home/roar/master/qgsm_analysis_tool/ana/build/' 
-F_NAME      = '13000_4M.root'
+F_NAME      = '900_4M.root'
 DIA      = {'SIN0':'1','SIN1':'6','SIN2':'10','DOU0':'11','DOU1':'21','DOU2':'31'}
-ETALIM      = {'0':'eta < 10','1':'eta < 3','2':'eta < 2'}
+ETALIM      = {'0':'eta < 4','1':'eta < 6','2':'eta < 8','3':'eta < 10'}
 
 class histogram:
     def __init__(self,f,lim=0,NBNF='NF',SINDIA=[],DOUDIA=[]):
@@ -44,35 +44,40 @@ class histogram:
     def adding(self):
         if 'NBNF' == self.NBNF:
             for nbnf,nf in zip(self.dianbnf[1:],self.dia[1:]):
+                print(nbnf)
                 self.th1f  .Add(self.f.FindObjectAny(nbnf))
                 self.th1fnf.Add(self.f.FindObjectAny(nf))
             self.th1f.Divide(self.th1fnf)
 
         else:
             for d in self.dia[1:]:
+                print(d)
                 self.th1f.Add(self.f.FindObjectAny(d))
-
             
     def draw(self):
-        labels  = ['{}'.format(DIA[l[:3]+l[-1]]) for l in self.dia]
-        label   = '{} {}'.format('Diagrams ',', '.join(labels))
-        title   = '{}   {}'.format(self.NBNF,ETALIM[self.dia[0][-2]])
-        NF      = np.asarray([self.th1f.GetBinContent(i) for i in range(1,self.nb)])
-        NF      = np.trim_zeros(NF,trim='b') if self.NBNF == 'NBNF' else NF
-        self.limit[1] = len(NF)-1 if self.NBNF=='NBNF' else self.limit[1] 
-        NFx     = np.linspace(self.limit[0],self.limit[1],len(NF))
+        labels          = ['{}'.format(DIA[l[:3]+l[-1]]) for l in self.dia]
+        label           = '{} {}'.format('Diagrams ',', '.join(labels))
+        title           = '{} with $\eta <$ {}'\
+                .format('$<n_B(n_F)>$'if self.NBNF else '$\eta$',ETALIM[self.dia[0][-2]][-2:])
+        print(title)
+        NF              = np.asarray([self.th1f.GetBinContent(i) for i in range(1,self.nb+1)])
+        NF              = NF[:35] if self.NBNF == 'NBNF' else NF
+        self.limit[1]   = len(NF)-1 if self.NBNF=='NBNF' else self.limit[1] 
+        NFx             = np.linspace(self.limit[0],self.limit[1],len(NF))
 
         fig,ax  = plt.subplots()
 
         ax.plot(NFx,NF,linestyle='-',marker='o',label=label)
         ax.set_title(title)
+        ax.set_xlabel('$n_F$')
+        ax.set_ylabel('$<n_B(n_F)>$') if self.NBNF=='NBNF' else ax.set_ylabel('$\eta$')
         ax.grid('on')
         ax.legend()
         filename =\
         'temp_plots/{}_eta{}_dia{}.pdf'.\
         format(self.NBNF,ETALIM[self.dia[0][-2]][-2:],DIA[self.dia[0][:3]+self.dia[0][-1]])\
                 .replace(" ","")
-        #fig.savefig(filename)
+        fig.savefig(filename)
 
     def close_file(self):
         self.f.Close()
@@ -80,9 +85,12 @@ class histogram:
             
 if __name__=='__main__':
 
+    SINL = [[0,1,2]]
+    DOUL = [[0,1,2]]
+    limits = [0,1,2,3]
     for NBNF in ['NBNF']:#,'NF']:
-        for i in [0,1,2]:
-            for j,k in zip([[0],[1],[2],[],[],[]],[[],[],[],[0],[1],[2]]):
+        for i in limits:
+            for j,k in zip(SINL,DOUL):
                 f           = ROOT.TFile(FILEPATH+F_NAME)
                 lim         = i 
                 SIN         = j#[0,1,2]
@@ -96,8 +104,8 @@ if __name__=='__main__':
     #lim         = 0 
     #SIN         = [0]#[0,1,2]
     #DOU         = []#[0,1,2]
-    #NBNF        = 'NBNF'
+    #NBNF        = 'NF'
     #hist        = histogram(f,lim,NBNF,SIN,DOU)
     #hist.draw()
     #hist.close_file()
-    plt.show()
+    #plt.show()

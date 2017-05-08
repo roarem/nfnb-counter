@@ -28,9 +28,9 @@ void Count::InitializeNBNF()
     
     std::string HistTitleSin = "single diffraction";
     std::string HistTitleDou = "double diffraction";
-    for (int i=1 ; i<5 ; i++)
+    for (int i=1 ; i<5 ; i++) //eta limit
     {
-        for (int j=0 ; j<4 ; j++)
+        for (int j=0 ; j<3 ; j++) //diagrams
         {
             char number_string [4];
     	    sprintf(number_string,"%d%d",i-1,j);
@@ -422,61 +422,65 @@ void Count::Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG)
 
 void Count::Sin_Dou(int nbnf_index,float psrap,int IDIAG)
 {
-    float abspsrap = std::abs(psrap);
-    int lim = 0;
+    float abspsrap = std::fabs(psrap);
+    //int lim = 1;
 
-    //if(abspsrap<10){
-    //    if(abspsrap<3){
-    //        if(abspsrap<2){lim = 3;}
-    //        else{lim = 2;}}
-    //    else{lim = 1;}}
-    for (int i=2 ; i<6 ; i++)
+    //for (int i=2 ; i<6 ; i++)
+    //{
+        //if(abspsrap>9){
+        //    std::cout << abspsrap<< "  "<< i-1 << std::endl;
+        //    std::cout << psrap << std::endl;
+        //}
+        //if(abspsrap>2*i){
+        //    lim=i-1;
+        //}
+                
+    //}
+
+    //std::cout << abspsrap << " : "<< lim << std::endl;
+    for (int i=0 ; i<4 ; i++)
     {
-        if(abspsrap<2*i)
-            lim=i-1;
-    }
-
-
-    for (int i=0 ; i<lim ; i++)
-    {
-        
-        if (IDIAG==1)
-        {
-            counted_sin1 = 1;
-            nf_nb_sin1[nbnf_index+2*i] += 1;
-            NFSIN[3*i+1]->Fill(psrap);
-        }
-        else if (IDIAG==6)
-        {
-            counted_sin6 = 1;
-            nf_nb_sin6[nbnf_index+2*i] += 1;
-            NFSIN[3*i+2]->Fill(psrap);
-        }
-        else if (IDIAG==10)
-        {
-            counted_sin10 = 1;
-            nf_nb_sin10[nbnf_index+2*i] += 1;
-            NFSIN[3*i+3]->Fill(psrap);
-        }
-        else if (IDIAG==11)
-        {
-            counted_dou11 = 1;
-            nf_nb_dou11[nbnf_index+2*i] += 1;
-            NFDOU[3*i+1]->Fill(psrap);
-        }
-        else if (IDIAG==21)
-        {
-            counted_dou21 = 1;
-            nf_nb_dou21[nbnf_index+2*i] += 1;
-            NFDOU[3*i+2]->Fill(psrap);
-        }
-        else if (IDIAG==31)
-        {
-            counted_dou31 = 1;
-            nf_nb_dou31[nbnf_index+2*i] += 1;
-            NFDOU[3*i+3]->Fill(psrap);
+        if (abspsrap < 2*(i+2)){
+            if (IDIAG==1)
+            {
+                counted_sin1 = 1;
+                nf_nb_sin1[nbnf_index+2*i] += 1;
+                NFSIN[3*i+0]->Fill(psrap);
+            }
+            else if (IDIAG==6)
+            {
+                counted_sin6 = 1;
+                nf_nb_sin6[nbnf_index+2*i] += 1;
+                NFSIN[3*i+1]->Fill(psrap);
+            }
+            else if (IDIAG==10)
+            {
+                counted_sin10 = 1;
+                nf_nb_sin10[nbnf_index+2*i] += 1;
+                NFSIN[3*i+2]->Fill(psrap);
+            }
+            else if (IDIAG==11)
+            {
+                counted_dou11 = 1;
+                nf_nb_dou11[nbnf_index+2*i] += 1;
+                NFDOU[3*i+0]->Fill(psrap);
+            }
+            else if (IDIAG==21)
+            {
+                counted_dou21 = 1;
+                nf_nb_dou21[nbnf_index+2*i] += 1;
+                NFDOU[3*i+1]->Fill(psrap);
+            }
+            else if (IDIAG==31)
+            {
+                counted_dou31 = 1;
+                nf_nb_dou31[nbnf_index+2*i] += 1;
+                NFDOU[3*i+2]->Fill(psrap);
+            }
         }
     }
+    //std::cout << "end" << std::endl;
+
 }
 
 
