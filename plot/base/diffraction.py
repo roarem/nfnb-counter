@@ -13,7 +13,9 @@ import ROOT
 FILEPATH    ='/home/roar/master/qgsm_analysis_tool/ana/build/' 
 F_NAME      = '900_4M.root'
 DIA      = {'SIN0':'1','SIN1':'6','SIN2':'10','DOU0':'11','DOU1':'21','DOU2':'31'}
-ETALIM      = {'0':'eta < 4','1':'eta < 6','2':'eta < 8','3':'eta < 10'}
+#ETALIM      = {'0':'eta > 2','1':'eta > 4','2':'eta > 6','3':'eta > 8'}
+ETALIM      = {'0':'1 < \\eta < 5','1':'3 < \\eta < 7','2':'2 < \\eta < 6',\
+               '3':'|x_F| \\le 0.1','4':'|x_F| \\ge 0.1'}
 
 class histogram:
     def __init__(self,f,lim=0,NBNF='NF',SINDIA=[],DOUDIA=[]):
@@ -58,8 +60,8 @@ class histogram:
     def draw(self,fig,ax):
         labels          = ['{}'.format(DIA[l[:3]+l[-1]]) for l in self.dia]
         label           = '{} {}'.format('Diagrams ',', '.join(labels))
-        title           = '{} with $\eta <$ {}'\
-                .format('$<n_B(n_F)>$'if self.NBNF else '$\eta$',ETALIM[self.dia[0][-2]][-2:])
+        title           = '{} with ${:s}$'\
+                        .format('$<n_B(n_F)>$'if self.NBNF else '$\eta$',ETALIM[self.dia[0][-2]])
         print(title)
         NF              = np.asarray([self.th1f.GetBinContent(i) for i in range(1,self.nb+1)])
         NF              = NF[:35] if self.NBNF == 'NBNF' else NF
@@ -86,9 +88,9 @@ class histogram:
             
 if __name__=='__main__':
 
-    SINL = [[0],[1],[2],[],[],[]]
-    DOUL = [[],[],[],[0],[1],[2]]
-    limits = [0,1,3]
+    SINL = [[]]
+    DOUL = [[0,1,2]]
+    limits = [0,1,2]
     for NBNF in ['NBNF']:#,'NF']:
         for i in limits:
             fig,ax = plt.subplots()

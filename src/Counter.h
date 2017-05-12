@@ -32,9 +32,10 @@ class Count
 
         #if NBNF
         void InitializeNBNF();
-        void Sin_Dou(int nbnf_index,float psrap,int IDIAG);
+        void Sin_Dou(int nbnf_index,float psrap,int IDIAG,double x_F);
         void Non_sin_diff(int nbnf_index,float psrap_abs,int IDIAG);
         void eta_pt_cut(int nbnf_index,float psrap_abs,float p_T);
+        void sindou(int nbnf_index,int IDIAG,int i);
         void Filler(int npoms, int npomh);
         void Writer();
 
@@ -61,12 +62,12 @@ class Count
         int nch = 0;
         int psrap_res = 4;
 	    std::vector<int> nf_nb		    = std::vector<int>(10,0);
-        std::vector<int> nf_nb_sin1	    = std::vector<int>(8,0); 
-	    std::vector<int> nf_nb_sin6	    = std::vector<int>(8,0); 
-	    std::vector<int> nf_nb_sin10    = std::vector<int>(8,0); 
-        std::vector<int> nf_nb_dou11    = std::vector<int>(8,0); 
-        std::vector<int> nf_nb_dou21  	= std::vector<int>(8,0); 
-        std::vector<int> nf_nb_dou31  	= std::vector<int>(8,0); 
+        std::vector<int> nf_nb_sin1	    = std::vector<int>(10,0); 
+	    std::vector<int> nf_nb_sin6	    = std::vector<int>(10,0); 
+	    std::vector<int> nf_nb_sin10    = std::vector<int>(10,0); 
+        std::vector<int> nf_nb_dou11    = std::vector<int>(10,0); 
+        std::vector<int> nf_nb_dou21  	= std::vector<int>(10,0); 
+        std::vector<int> nf_nb_dou31  	= std::vector<int>(10,0); 
 
         int counted_sin1	= 0; 
         int counted_sin6	= 0; 
@@ -97,12 +98,12 @@ class Count
 
         std::vector<TH1F*> NBNFSIN;
         std::vector<TH1F*> SINNF;
-        std::vector<TH1F*> NFSIN;
+        //std::vector<TH1F*> NFSIN;
         //std::vector<TH1F*> NBSIN;
 
         std::vector<TH1F*> NBNFDOU;
         std::vector<TH1F*> DOUNF;
-        std::vector<TH1F*> NFDOU;
+        //std::vector<TH1F*> NFDOU;
         //std::vector<TH1F*> NBDOU;
 
         std::vector<std::vector<TH1F*>> NPOM_NCH;
